@@ -1,0 +1,12 @@
+.Grid:focus {
+  outline: none;
+}
+.Grid--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+}
+.Grid__background {
+  fill: #000;
+}

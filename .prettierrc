@@ -1,0 +1,6 @@
+{
+  "endOfLine": "crlf",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "importOrder": ["^[./]"]
+}

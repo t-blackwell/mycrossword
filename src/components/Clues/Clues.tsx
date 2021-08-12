@@ -1,35 +1,23 @@
 import { Clue } from 'components';
-import { CellPosition, Clue as ClueInterface } from 'interfaces';
+import { Clue as ClueInterface } from 'interfaces';
 import * as React from 'react';
-import { select as cellsActionSelect } from 'redux/cellsSlice';
-import { getClues, select as cluesActionSelect } from 'redux/cluesSlice';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import './Clues.css';
 
 interface CluesProps {
   entries: ClueInterface[];
+  selectedClueId?: string;
 }
 
-export default function Clues({ entries }: CluesProps): JSX.Element {
-  const dispatch = useAppDispatch();
-  const clues = useAppSelector(getClues);
-  const selectedClue = clues.find((clue) => clue.selected);
+export default function Clues({
+  entries,
+  selectedClueId,
+}: CluesProps): JSX.Element {
   const across = entries
     .filter((entry) => entry.direction === 'across')
     .sort((a, b) => a.number - b.number);
   const down = entries
     .filter((entry) => entry.direction === 'down')
     .sort((a, b) => a.number - b.number);
-
-  const updateSelectedClue = (clueId: string, cellPos: CellPosition) => {
-    if (selectedClue?.id !== clueId) {
-      dispatch(cluesActionSelect(clueId));
-      dispatch(cellsActionSelect(cellPos));
-    }
-
-    // move focus back to grid (TODO: change to use React.forwardRef?)
-    document.querySelectorAll<HTMLElement>('.Grid')[0].focus();
-  };
 
   return (
     <div className="Clues">
@@ -38,18 +26,15 @@ export default function Clues({ entries }: CluesProps): JSX.Element {
         {across.map((entry) => (
           <Clue
             answered={false}
+            col={entry.position.x}
+            id={entry.id}
+            isHighlighted={
+              selectedClueId !== undefined &&
+              entry.group.includes(selectedClueId)
+            }
             key={entry.id}
             num={entry.humanNumber}
-            onClick={() =>
-              updateSelectedClue(entry.id, {
-                col: entry.position.x,
-                row: entry.position.y,
-              })
-            }
-            isHighlighted={
-              selectedClue !== undefined &&
-              entry.group.includes(selectedClue.id)
-            }
+            row={entry.position.y}
             text={entry.clue}
           />
         ))}
@@ -59,18 +44,15 @@ export default function Clues({ entries }: CluesProps): JSX.Element {
         {down.map((entry) => (
           <Clue
             answered={false}
+            col={entry.position.x}
+            id={entry.id}
+            isHighlighted={
+              selectedClueId !== undefined &&
+              entry.group.includes(selectedClueId)
+            }
             key={entry.id}
             num={entry.humanNumber}
-            onClick={() =>
-              updateSelectedClue(entry.id, {
-                col: entry.position.x,
-                row: entry.position.y,
-              })
-            }
-            isHighlighted={
-              selectedClue !== undefined &&
-              entry.group.includes(selectedClue.id)
-            }
+            row={entry.position.y}
             text={entry.clue}
           />
         ))}

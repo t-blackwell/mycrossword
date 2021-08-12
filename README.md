@@ -24,6 +24,7 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 
 - [x] create repo
 - [x] write readme
+- [x] improve performance
 - [ ] make css selectors more specific (switch to scss?)
 - [ ] add check/reveal/clear all buttons
 - [ ] create split button component
@@ -35,8 +36,6 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [ ] mark clues as answered
 - [ ] add separators to the grid (thick lines and hyphens to show word breaks)
 - [ ] Anagram helper (!)
-
-The most important issue to tackle is **performance**. While using redux makes it easier to manage the cells and clues, it has made the app slow due to it rerendering everything whenever something changes. Need to investigate whether callbacks/memoization (or something) can get around this or if the approach needs to be reconsidered.
 
 ## Getting started
 

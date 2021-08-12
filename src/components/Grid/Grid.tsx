@@ -1,32 +1,46 @@
 import classNames from 'classnames';
 import { GridCell } from 'components';
 import Spinner from 'components/Spinner/Spinner';
-import type { Cell, CellPosition, Char } from 'interfaces';
+import type { Cell, CellPosition, Char, Clue } from 'interfaces';
 import * as React from 'react';
 import {
   select as cellsActionSelect,
   update as cellsActionUpdate,
 } from 'redux/cellsSlice';
-import { getClues, select as cluesActionSelect } from 'redux/cluesSlice';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { select as cluesActionSelect } from 'redux/cluesSlice';
+import { useAppDispatch } from 'redux/hooks';
 import { isValidChar } from 'utils/general';
 import './Grid.css';
 
 interface GridProps {
   cells: Cell[];
+  clues: Clue[];
   height: number;
   isLoading?: boolean;
   width: number;
 }
 
+const appearsInGroup = (clueId: string | undefined, group: string[]) =>
+  clueId !== undefined && group.includes(clueId);
+
+const cellPositionMatches = (
+  cellPosA: CellPosition,
+  cellPosB?: CellPosition,
+) => {
+  if (cellPosB === undefined) {
+    return false;
+  }
+  return cellPosA.col === cellPosB.col && cellPosA.row === cellPosB.row;
+};
+
 export default function Grid({
   cells,
+  clues,
   height,
   isLoading = false,
   width,
 }: GridProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const clues = useAppSelector(getClues); // TODO: optimise...? pull in as prop?
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);
 
@@ -117,7 +131,7 @@ export default function Grid({
     }
   };
 
-  const onKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (selectedCell === undefined) {
       return;
     }
@@ -155,8 +169,8 @@ export default function Grid({
       onKeyDown={(event) => {
         // prevent keys scrolling page
         event.preventDefault();
+        handleKeyPress(event);
       }}
-      onKeyUp={onKeyUp}
       role="textbox"
       style={{ minWidth: width, minHeight: height, width, height }}
       tabIndex={0}
@@ -176,17 +190,30 @@ export default function Grid({
             x="0"
             y="0"
           />
-          {cells.map(({ clueIds, groupAcross, groupDown, guess, num, pos }) => (
-            <GridCell
-              clueIds={clueIds}
-              groupAcross={groupAcross}
-              groupDown={groupDown}
-              guess={guess}
-              key={`${pos.col},${pos.row}`}
-              num={num}
-              pos={pos}
-            />
-          ))}
+          {cells.map(({ clueIds, groupAcross, groupDown, guess, num, pos }) => {
+            const isSelected = cellPositionMatches(pos, selectedCell?.pos);
+            const isHighlighted = appearsInGroup(selectedClue?.id, [
+              ...(groupAcross !== undefined ? groupAcross : []),
+              ...(groupDown !== undefined ? groupDown : []),
+            ]);
+            const selectedClueIndex =
+              selectedClue !== undefined
+                ? clueIds.indexOf(selectedClue.id)
+                : -1;
+
+            return (
+              <GridCell
+                clueIds={clueIds}
+                guess={guess}
+                isSelected={isSelected}
+                isHighlighted={isHighlighted}
+                key={`${pos.col},${pos.row}`}
+                num={num}
+                pos={pos}
+                selectedClueIndex={selectedClueIndex}
+              />
+            );
+          })}
         </svg>
       )}
     </div>

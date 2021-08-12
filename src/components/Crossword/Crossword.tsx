@@ -94,6 +94,7 @@ export default function Crossword({ data }: CrosswordProps): JSX.Element {
   const clues = useAppSelector(getClues);
   const gridWidth = data.dimensions.cols * cellSize + data.dimensions.cols + 1;
   const gridHeight = data.dimensions.rows * cellSize + data.dimensions.rows + 1;
+  const selectedClue = clues.find((clue) => clue.selected);
 
   React.useEffect(() => {
     // initialise cells
@@ -121,13 +122,14 @@ export default function Crossword({ data }: CrosswordProps): JSX.Element {
         <div className="Crossword__container">
           <Grid
             cells={cells}
+            clues={clues}
             height={gridHeight}
             isLoading={cells.length === 0}
             width={gridWidth}
           />
-          <Controls />
+          <Controls selectedClueGroup={selectedClue?.group} />
         </div>
-        <Clues entries={clues} />
+        <Clues selectedClueId={selectedClue?.id} entries={clues} />
       </div>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </>

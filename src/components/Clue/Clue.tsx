@@ -1,22 +1,41 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import classNames from 'classnames';
+import { CellPosition } from 'interfaces';
 import * as React from 'react';
+import { select as cellsActionSelect } from 'redux/cellsSlice';
+import { select as cluesActionSelect } from 'redux/cluesSlice';
+import { useAppDispatch } from 'redux/hooks';
 import './Clue.css';
 
 interface ClueProps {
   answered: boolean;
-  num: string;
-  onClick: () => void;
+  col: number;
+  id: string;
   isHighlighted: boolean;
+  num: string;
+  row: number;
   text: string;
 }
 
-export default function Clues({
+function Clue({
   answered,
-  num,
-  onClick,
+  id,
   isHighlighted,
+  num,
+  col,
+  row,
   text,
 }: ClueProps): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const updateSelectedClue = React.useCallback(() => {
+    dispatch(cluesActionSelect(id));
+    dispatch(cellsActionSelect({ col, row }));
+
+    // move focus back to grid (TODO: change to use React.forwardRef?)
+    document.querySelectorAll<HTMLElement>('.Grid')[0].focus();
+  }, []);
+
   return (
     <div
       className={classNames(
@@ -24,10 +43,10 @@ export default function Clues({
         answered ? 'Clue--answered' : null,
         isHighlighted ? 'Clue--highlighted' : null,
       )}
-      onClick={onClick}
+      onClick={updateSelectedClue}
       onKeyPress={(event) => {
         if (event.key === 'Enter') {
-          onClick();
+          updateSelectedClue();
         }
       }}
       role="button"
@@ -38,3 +57,5 @@ export default function Clues({
     </div>
   );
 }
+
+export default React.memo(Clue);

@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import { CellPosition, Char } from 'interfaces';
 import * as React from 'react';
-import { getCells, select as cellsActionSelect } from 'redux/cellsSlice';
-import { getClues, select as cluesActionSelect } from 'redux/cluesSlice';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { select as cellsActionSelect } from 'redux/cellsSlice';
+import { select as cluesActionSelect } from 'redux/cluesSlice';
+import { useAppDispatch } from 'redux/hooks';
 import './GridCell.css';
 
 export const cellSize = 31;
@@ -19,47 +19,26 @@ const getDimensions = (cellPos: CellPosition) => {
   return { xRect, yRect, xNum, yNum, xText, yText };
 };
 
-const appearsInGroup = (clueId: string | undefined, group: string[]) =>
-  clueId !== undefined && group.includes(clueId);
-
-const cellPositionMatches = (
-  cellPosA: CellPosition,
-  cellPosB?: CellPosition,
-) => {
-  if (cellPosB === undefined) {
-    return false;
-  }
-  return cellPosA.col === cellPosB.col && cellPosA.row === cellPosB.row;
-};
-
 interface GridCellProps {
   clueIds: string[];
-  groupAcross?: string[];
-  groupDown?: string[];
   guess?: Char;
+  isHighlighted: boolean;
+  isSelected: boolean;
   num?: number;
   pos: CellPosition;
+  selectedClueIndex: number;
 }
 
-export default function GridCell({
+function GridCell({
   clueIds,
-  groupAcross,
-  groupDown,
   guess,
+  isHighlighted,
+  isSelected,
   num,
   pos,
+  selectedClueIndex,
 }: GridCellProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const cells = useAppSelector(getCells);
-  const clues = useAppSelector(getClues);
-  const selectedCell = cells.find((cell) => cell.selected);
-  const selectedClue = clues.find((clue) => clue.selected);
-
-  const isSelected = cellPositionMatches(pos, selectedCell?.pos);
-  const isHighlighted = appearsInGroup(selectedClue?.id, [
-    ...(groupAcross !== undefined ? groupAcross : []),
-    ...(groupDown !== undefined ? groupDown : []),
-  ]);
 
   const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions(pos);
 
@@ -69,8 +48,6 @@ export default function GridCell({
       dispatch(cluesActionSelect(clueIds[0]));
     } else if (clueIds.length === 2 && isSelected) {
       // highlight the other direction if clicking the cell more than once
-      const selectedClueIndex =
-        selectedClue !== undefined ? clueIds.indexOf(selectedClue.id) : -1;
       const otherIndex = selectedClueIndex === 0 ? 1 : 0;
       dispatch(cluesActionSelect(clueIds[otherIndex]));
     }
@@ -118,3 +95,5 @@ export default function GridCell({
     </g>
   );
 }
+
+export default React.memo(GridCell);

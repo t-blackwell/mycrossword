@@ -4,24 +4,25 @@ import {
   clear as cluesActionClear,
   reveal as cellsActionReveal,
 } from 'redux/cellsSlice';
-import { getClues } from 'redux/cluesSlice';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { useAppDispatch } from 'redux/hooks';
 import './Controls.css';
 
-export default function Controls(): JSX.Element {
+interface ControlsProps {
+  selectedClueGroup?: string[];
+}
+
+function Controls({ selectedClueGroup }: ControlsProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const clues = useAppSelector(getClues);
-  const selectedClue = clues.find((clue) => clue.selected);
 
   return (
     <div className="Controls">
-      {selectedClue !== undefined ? (
+      {selectedClueGroup !== undefined ? (
         <>
           <button
             className="Controls__button"
             type="button"
             onClick={() => {
-              dispatch(cluesActionCheck(selectedClue.group));
+              dispatch(cluesActionCheck(selectedClueGroup));
             }}
           >
             Check
@@ -30,7 +31,7 @@ export default function Controls(): JSX.Element {
             className="Controls__button"
             type="button"
             onClick={() => {
-              dispatch(cellsActionReveal(selectedClue.group));
+              dispatch(cellsActionReveal(selectedClueGroup));
             }}
           >
             Reveal
@@ -39,7 +40,7 @@ export default function Controls(): JSX.Element {
             className="Controls__button"
             type="button"
             onClick={() => {
-              dispatch(cluesActionClear(selectedClue.group));
+              dispatch(cluesActionClear(selectedClueGroup));
             }}
           >
             Clear
@@ -52,3 +53,5 @@ export default function Controls(): JSX.Element {
     </div>
   );
 }
+
+export default React.memo(Controls);

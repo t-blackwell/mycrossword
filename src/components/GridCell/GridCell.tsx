@@ -43,13 +43,12 @@ function GridCell({
   const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions(pos);
 
   const updateSelectedCell = () => {
-    if (!isHighlighted || clueIds.length === 1) {
-      // highlight the first direction if unselected or only one
-      dispatch(cluesActionSelect(clueIds[0]));
-    } else if (clueIds.length === 2 && isSelected) {
-      // highlight the other direction if clicking the cell more than once
+    // highlight the other direction if clicking the selected cell more than once
+    if (clueIds.length === 2 && isSelected) {
       const otherIndex = selectedClueIndex === 0 ? 1 : 0;
       dispatch(cluesActionSelect(clueIds[otherIndex]));
+    } else {
+      dispatch(cluesActionSelect(clueIds[0]));
     }
 
     if (!isSelected) {

@@ -44,7 +44,50 @@ export default function Grid({
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);
 
-  // TODO: move logic into utils
+  const movePrev = () => {
+    if (selectedClue === undefined || selectedCell === undefined) {
+      return;
+    }
+
+    const atTheStart =
+      (selectedClue.direction === 'across' &&
+        selectedCell.pos.col === selectedClue.position.x) ||
+      (selectedClue.direction === 'down' &&
+        selectedCell.pos.row === selectedClue.position.y);
+
+    if (atTheStart) {
+      // if we're at the start of the clue, try to move to the previous
+      // one in the group if it exists
+      const groupIndex = selectedClue.group.indexOf(selectedClue.id);
+      if (groupIndex > 0) {
+        const prevClueId = selectedClue.group[groupIndex - 1];
+        const prevClue = clues.find((clue) => clue.id === prevClueId);
+
+        if (prevClue !== undefined) {
+          dispatch(cluesActionSelect(prevClueId));
+
+          dispatch(
+            cellsActionSelect({
+              col:
+                prevClue.position.x +
+                (prevClue.direction === 'across' ? prevClue.length - 1 : 0),
+              row:
+                prevClue.position.y +
+                (prevClue.direction === 'down' ? prevClue.length - 1 : 0),
+            }),
+          );
+        }
+      }
+    } else {
+      // move to the previous cell in the clue
+      const cellPos: CellPosition =
+        selectedClue.direction === 'across'
+          ? { col: selectedCell.pos.col - 1, row: selectedCell.pos.row }
+          : { col: selectedCell.pos.col, row: selectedCell.pos.row - 1 };
+      dispatch(cellsActionSelect(cellPos));
+    }
+  };
+
   const moveNext = () => {
     if (selectedClue === undefined || selectedCell === undefined) {
       return;
@@ -150,6 +193,9 @@ export default function Grid({
           guess: undefined,
         }),
       );
+      if (event.code === 'Backspace') {
+        movePrev();
+      }
     } else if (isValidChar(key)) {
       // overwrite the cell's value
       dispatch(

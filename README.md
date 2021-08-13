@@ -25,16 +25,17 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] create repo
 - [x] write readme
 - [x] improve performance
+- [x] move backwards on backspace keypress
 - [ ] make css selectors more specific (switch to scss?)
 - [ ] add check/reveal/clear all buttons
 - [ ] create split button component
 - [ ] create theme css (`theme: 'yellow' | 'pink' | 'blue' | 'green'`)
-- [ ] move backwards on backspace keypress
 - [ ] add `#num-direction` to url on clue selection and highlight on load
 - [ ] save grid to local storage to make guesses persist
 - [ ] allow to move over black cells
 - [ ] mark clues as answered
 - [ ] add separators to the grid (thick lines and hyphens to show word breaks)
+- [ ] media queries
 - [ ] Anagram helper (!)
 
 ## Getting started

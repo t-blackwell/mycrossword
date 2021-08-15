@@ -1,8 +1,14 @@
 import { cellSize, Clues, Controls, Grid } from 'components';
 import type { Cell, Char, GuardianClue, GuardianCrossword } from 'interfaces';
 import * as React from 'react';
-import { getCells, updateAll as cellsActionUpdateAll } from 'redux/cellsSlice';
-import { getClues, updateAll as cluesActionUpdateAll } from 'redux/cluesSlice';
+import {
+  getCells,
+  updateGrid as cellsActionUpdateGrid,
+} from 'redux/cellsSlice';
+import {
+  getClues,
+  updateGrid as cluesActionUpdateGrid,
+} from 'redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import './Crossword.css';
 
@@ -99,14 +105,14 @@ export default function Crossword({ data }: CrosswordProps): JSX.Element {
   React.useEffect(() => {
     // initialise cells
     dispatch(
-      cellsActionUpdateAll(
+      cellsActionUpdateGrid(
         transposeData(data.dimensions.cols, data.dimensions.rows, data.entries),
       ),
     );
 
     // initialise clues
     dispatch(
-      cluesActionUpdateAll(
+      cluesActionUpdateGrid(
         data.entries.map((entry) => ({
           ...entry,
           answered: false,

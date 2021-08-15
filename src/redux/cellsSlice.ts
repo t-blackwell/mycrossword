@@ -34,7 +34,25 @@ export const cellsSlice = createSlice({
   name: 'cells',
   initialState,
   reducers: {
-    check: (state, action: PayloadAction<string[]>) => {
+    checkGrid: (state) => {
+      state.cells = state.cells.map((cell) => ({
+        ...cell,
+        guess: cell.guess === cell.val ? cell.val : undefined,
+      }));
+    },
+    checkLetter: (state) => {
+      state.cells = state.cells.map((cell) => {
+        if (cell.selected) {
+          return {
+            ...cell,
+            guess: cell.guess === cell.val ? cell.val : undefined,
+          };
+        }
+
+        return cell;
+      });
+    },
+    checkWord: (state, action: PayloadAction<string[]>) => {
       state.cells = state.cells.map((cell) => {
         const intersection = action.payload.filter((clueId) =>
           cell.clueIds.includes(clueId),
@@ -50,7 +68,13 @@ export const cellsSlice = createSlice({
         return cell;
       });
     },
-    clear: (state, action: PayloadAction<string[]>) => {
+    clearGrid: (state) => {
+      state.cells = state.cells.map((cell) => ({
+        ...cell,
+        guess: undefined,
+      }));
+    },
+    clearWord: (state, action: PayloadAction<string[]>) => {
       state.cells = state.cells.map((cell) => {
         const intersection = action.payload.filter((clueId) =>
           cell.clueIds.includes(clueId),
@@ -80,7 +104,25 @@ export const cellsSlice = createSlice({
         return cell;
       });
     },
-    reveal: (state, action: PayloadAction<string[]>) => {
+    revealGrid: (state) => {
+      state.cells = state.cells.map((cell) => ({
+        ...cell,
+        guess: cell.val,
+      }));
+    },
+    revealLetter: (state) => {
+      state.cells = state.cells.map((cell) => {
+        if (cell.selected) {
+          return {
+            ...cell,
+            guess: cell.val,
+          };
+        }
+
+        return cell;
+      });
+    },
+    revealWord: (state, action: PayloadAction<string[]>) => {
       state.cells = state.cells.map((cell) => {
         const intersection = action.payload.filter((clueId) =>
           cell.clueIds.includes(clueId),
@@ -104,7 +146,10 @@ export const cellsSlice = createSlice({
           cell.pos.row === action.payload.row,
       }));
     },
-    update: (state, action: PayloadAction<Cell>) => {
+    updateGrid: (state, action: PayloadAction<Cell[]>) => {
+      state.cells = action.payload;
+    },
+    updateOne: (state, action: PayloadAction<Cell>) => {
       state.cells = state.cells.map((cell) => {
         if (
           cell.pos.col === action.payload.pos.col &&
@@ -115,14 +160,22 @@ export const cellsSlice = createSlice({
         return cell;
       });
     },
-    updateAll: (state, action: PayloadAction<Cell[]>) => {
-      state.cells = action.payload;
-    },
   },
 });
 
-export const { check, clear, reveal, select, update, updateAll } =
-  cellsSlice.actions;
+export const {
+  checkGrid,
+  checkLetter,
+  checkWord,
+  clearGrid,
+  clearWord,
+  revealGrid,
+  revealLetter,
+  revealWord,
+  select,
+  updateGrid,
+  updateOne,
+} = cellsSlice.actions;
 
 export const getCells = (state: RootState) => state.cells.cells;
 

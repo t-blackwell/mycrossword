@@ -5,7 +5,7 @@ import type { Cell, CellPosition, Char, Clue } from 'interfaces';
 import * as React from 'react';
 import {
   select as cellsActionSelect,
-  update as cellsActionUpdate,
+  updateOne as cellsActionUpdateOne,
 } from 'redux/cellsSlice';
 import { select as cluesActionSelect } from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
@@ -188,7 +188,7 @@ export default function Grid({
     } else if (['Backspace', 'Delete'].includes(event.code)) {
       // clear the cell's value
       dispatch(
-        cellsActionUpdate({
+        cellsActionUpdateOne({
           ...selectedCell,
           guess: undefined,
         }),
@@ -199,7 +199,7 @@ export default function Grid({
     } else if (isValidChar(key)) {
       // overwrite the cell's value
       dispatch(
-        cellsActionUpdate({
+        cellsActionUpdateOne({
           ...selectedCell,
           guess: key as Char,
         }),

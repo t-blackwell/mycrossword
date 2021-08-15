@@ -21,13 +21,13 @@ export const cluesSlice = createSlice({
         selected: clue.id === action.payload,
       }));
     },
-    updateAll: (state, action: PayloadAction<Clue[]>) => {
+    updateGrid: (state, action: PayloadAction<Clue[]>) => {
       state.clues = action.payload;
     },
   },
 });
 
-export const { select, updateAll } = cluesSlice.actions;
+export const { select, updateGrid } = cluesSlice.actions;
 
 export const getClues = (state: RootState) => state.clues.clues;
 

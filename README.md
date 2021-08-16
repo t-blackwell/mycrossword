@@ -28,9 +28,9 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] move backwards on backspace keypress
 - [x] create dropdown button component
 - [x] add check/reveal/clear all buttons
-- [ ] add "{verb} grid" confirmation
+- [x] add "{verb} grid" confirmation
 - [ ] make css selectors more specific (switch to scss?)
-- [ ] create theme css (`theme: 'yellow' | 'pink' | 'blue' | 'green'`)
+- [ ] create theme css (`theme: 'yellow' | 'pink' | 'blue' | 'green'`) - use css variables
 - [ ] add `#num-direction` to url on clue selection and highlight on load
 - [ ] save grid to local storage to make guesses persist
 - [ ] allow to move over black cells
@@ -39,6 +39,7 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [ ] tab key cycles through clues
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
 - [ ] media queries
+- [ ] consolidate button styles
 - [ ] Anagram helper (!)
 
 ## Getting started

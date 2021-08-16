@@ -1,4 +1,4 @@
-import { DropdownButton } from 'components';
+import { Confirm, DropdownButton } from 'components';
 import * as React from 'react';
 import {
   checkGrid as cellsActionCheckGrid,
@@ -21,6 +21,10 @@ export default function Controls({
   selectedClueGroup,
 }: ControlsProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const [showCheckGridConfirm, setShowCheckGridConfirm] = React.useState(false);
+  const [showRevealGridConfirm, setShowRevealGridConfirm] =
+    React.useState(false);
+  const [showClearGridConfirm, setShowClearGridConfirm] = React.useState(false);
 
   const checkMenu = React.useMemo(
     () => [
@@ -39,7 +43,7 @@ export default function Controls({
         text: 'Check word',
       },
 
-      { onClick: () => dispatch(cellsActionCheckGrid()), text: 'Check grid' },
+      { onClick: () => setShowCheckGridConfirm(true), text: 'Check grid' },
     ],
     [selectedClueGroup],
   );
@@ -60,8 +64,7 @@ export default function Controls({
         },
         text: 'Reveal word',
       },
-
-      { onClick: () => dispatch(cellsActionRevealGrid()), text: 'Reveal grid' },
+      { onClick: () => setShowRevealGridConfirm(true), text: 'Reveal grid' },
     ],
     [selectedClueGroup],
   );
@@ -77,10 +80,55 @@ export default function Controls({
         },
         text: 'Clear word',
       },
-      { onClick: () => dispatch(cellsActionClearGrid()), text: 'Clear grid' },
+      { onClick: () => setShowClearGridConfirm(true), text: 'Clear grid' },
     ],
     [selectedClueGroup],
   );
+
+  if (showCheckGridConfirm) {
+    return (
+      <div className="Controls">
+        <Confirm
+          buttonText="Confirm check grid"
+          onCancel={() => setShowCheckGridConfirm(false)}
+          onConfirm={() => {
+            dispatch(cellsActionCheckGrid());
+            setShowCheckGridConfirm(false);
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (showRevealGridConfirm) {
+    return (
+      <div className="Controls">
+        <Confirm
+          buttonText="Confirm reveal grid"
+          onCancel={() => setShowRevealGridConfirm(false)}
+          onConfirm={() => {
+            dispatch(cellsActionRevealGrid());
+            setShowRevealGridConfirm(false);
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (showClearGridConfirm) {
+    return (
+      <div className="Controls">
+        <Confirm
+          buttonText="Confirm clear grid"
+          onCancel={() => setShowClearGridConfirm(false)}
+          onConfirm={() => {
+            dispatch(cellsActionClearGrid());
+            setShowClearGridConfirm(false);
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="Controls">

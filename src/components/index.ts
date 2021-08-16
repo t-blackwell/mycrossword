@@ -1,5 +1,6 @@
 export { default as Clue } from './Clue/Clue';
 export { default as Clues } from './Clues/Clues';
+export { default as Confirm } from './Confirm/Confirm';
 export { default as Controls } from './Controls/Controls';
 export { default as Crossword } from './Crossword/Crossword';
 export { default as DropdownButton } from './DropdownButton/DropdownButton';

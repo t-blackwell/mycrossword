@@ -116,7 +116,7 @@ export default function Crossword({ data }: CrosswordProps): JSX.Element {
         data.entries.map((entry) => ({
           ...entry,
           answered: false,
-          selected: false,
+          selected: `#${entry.id}` === window.location.hash,
         })),
       ),
     );

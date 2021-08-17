@@ -16,6 +16,9 @@ export const cluesSlice = createSlice({
   initialState,
   reducers: {
     select: (state, action: PayloadAction<string>) => {
+      // append clue to URL e.g. #1-across
+      window.location.hash = action.payload;
+
       state.clues = state.clues.map((clue) => ({
         ...clue,
         selected: clue.id === action.payload,

@@ -1,6 +1,8 @@
+import { Direction } from 'interfaces';
+
 export default interface GuardianClue {
   clue: string;
-  direction: 'across' | 'down';
+  direction: Direction;
   group: string[];
   humanNumber: string;
   id: string;

@@ -48,7 +48,8 @@ function GridCell({
       const otherIndex = selectedClueIndex === 0 ? 1 : 0;
       dispatch(cluesActionSelect(clueIds[otherIndex]));
     } else {
-      dispatch(cluesActionSelect(clueIds[0]));
+      const index = selectedClueIndex === -1 ? 0 : selectedClueIndex;
+      dispatch(cluesActionSelect(clueIds[index]));
     }
 
     if (!isSelected) {

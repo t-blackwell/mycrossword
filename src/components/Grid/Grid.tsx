@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import { GridCell } from 'components';
+import { GridCell, GridSeparators } from 'components';
 import Spinner from 'components/Spinner/Spinner';
-import type { Cell, CellPosition, Char, Clue } from 'interfaces';
+import type { Cell, CellPosition, Char, Clue, GuardianClue } from 'interfaces';
 import * as React from 'react';
 import {
   select as cellsActionSelect,
@@ -11,14 +11,6 @@ import { select as cluesActionSelect } from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
 import { isValidChar } from 'utils/general';
 import './Grid.css';
-
-interface GridProps {
-  cells: Cell[];
-  clues: Clue[];
-  height: number;
-  isLoading?: boolean;
-  width: number;
-}
 
 const appearsInGroup = (clueId: string | undefined, group: string[]) =>
   clueId !== undefined && group.includes(clueId);
@@ -33,11 +25,21 @@ const cellPositionMatches = (
   return cellPosA.col === cellPosB.col && cellPosA.row === cellPosB.row;
 };
 
+interface GridProps {
+  cells: Cell[];
+  clues: Clue[];
+  height: number;
+  isLoading?: boolean;
+  rawClues: GuardianClue[];
+  width: number;
+}
+
 export default function Grid({
   cells,
   clues,
   height,
   isLoading = false,
+  rawClues,
   width,
 }: GridProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -260,6 +262,7 @@ export default function Grid({
               />
             );
           })}
+          <GridSeparators clues={rawClues} />
         </svg>
       )}
     </div>

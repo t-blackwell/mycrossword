@@ -131,6 +131,7 @@ export default function Crossword({ data }: CrosswordProps): JSX.Element {
             clues={clues}
             height={gridHeight}
             isLoading={cells.length === 0}
+            rawClues={data.entries}
             width={gridWidth}
           />
           <Controls selectedClueGroup={selectedClue?.group} />

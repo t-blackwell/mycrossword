@@ -10,7 +10,7 @@ import {
   updateGrid as cluesActionUpdateGrid,
 } from 'redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
-import './Crossword.css';
+import './MyCrossword.scss';
 
 /**
  * Transpose clue entries to cell array.
@@ -94,7 +94,7 @@ interface CrosswordProps {
   data: GuardianCrossword;
 }
 
-export default function Crossword({ data }: CrosswordProps): JSX.Element {
+export default function MyCrossword({ data }: CrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
@@ -124,8 +124,8 @@ export default function Crossword({ data }: CrosswordProps): JSX.Element {
 
   return (
     <>
-      <div className="Crossword">
-        <div className="Crossword__container">
+      <div className="MyCrossword">
+        <div className="MyCrossword__container">
           <Grid
             cells={cells}
             clues={clues}

@@ -11,7 +11,7 @@ import {
   revealWord as cellsActionRevealWord,
 } from 'redux/cellsSlice';
 import { useAppDispatch } from 'redux/hooks';
-import './Controls.css';
+import './Controls.scss';
 
 interface ControlsProps {
   selectedClueGroup?: string[];

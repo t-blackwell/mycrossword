@@ -5,7 +5,7 @@ import * as React from 'react';
 import { select as cellsActionSelect } from 'redux/cellsSlice';
 import { select as cluesActionSelect } from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
-import './Clue.css';
+import './Clue.scss';
 
 interface ClueProps {
   answered: boolean;

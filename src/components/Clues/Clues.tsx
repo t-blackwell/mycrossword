@@ -1,7 +1,7 @@
 import { Clue } from 'components';
 import { Clue as ClueInterface } from 'interfaces';
 import * as React from 'react';
-import './Clues.css';
+import './Clues.scss';
 
 interface CluesProps {
   entries: ClueInterface[];

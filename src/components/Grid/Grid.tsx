@@ -10,7 +10,7 @@ import {
 import { select as cluesActionSelect } from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
 import { isValidChar } from 'utils/general';
-import './Grid.css';
+import './Grid.scss';
 
 const appearsInGroup = (clueId: string | undefined, group: string[]) =>
   clueId !== undefined && group.includes(clueId);

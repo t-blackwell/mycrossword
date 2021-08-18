@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
-import './Spinner.css';
+import './Spinner.scss';
 
 interface SpinnerProps {
   size: 'small' | 'standard' | 'large';

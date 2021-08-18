@@ -31,7 +31,7 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] add "{verb} grid" confirmation
 - [x] add separators to the grid (thick lines and hyphens to show word breaks)
 - [x] add `#num-direction` to url on clue selection and highlight on load
-- [ ] make css selectors more specific (switch to scss?)
+- [x] make css selectors more specific (switch to scss?)
 - [ ] create theme css (`theme: 'yellow' | 'pink' | 'blue' | 'green'`) - use css variables
 - [ ] save grid to local storage to make guesses persist
 - [ ] allow to move over black cells

@@ -1,0 +1,16 @@
+.MyCrossword {
+  .Clues {
+    display: flex;
+  }
+  .Clues__list {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+  }
+  .Clues__listHeader {
+    border-bottom: 1px dotted #ccc;
+    margin-top: 0;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+}

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
-import './DropdownButton.css';
+import './DropdownButton.scss';
 
 interface CaretDownIconProps {
   className?: string;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './Confirm.css';
+import './Confirm.scss';
 
 interface ConfirmProps {
   buttonText: string;

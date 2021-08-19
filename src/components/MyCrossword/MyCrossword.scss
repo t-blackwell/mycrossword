@@ -1,5 +1,8 @@
+@use '_variables' as vars;
+
 .MyCrossword {
   display: flex;
-  font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+  font-family: vars.$font-family;
+  font-size: vars.$font-size;
   -webkit-font-smoothing: subpixel-antialiased;
 }

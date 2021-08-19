@@ -1,3 +1,5 @@
+@use '_variables' as vars;
+
 .MyCrossword {
   .Clues {
     display: flex;
@@ -5,12 +7,12 @@
   .Clues__list {
     display: flex;
     flex-direction: column;
-    padding: 0 10px;
+    padding: 0 vars.$grid-size;
   }
   .Clues__listHeader {
-    border-bottom: 1px dotted #ccc;
+    border-bottom: 1px dotted vars.$light-grey;
     margin-top: 0;
-    padding-bottom: 4px;
-    margin-bottom: 8px;
+    padding-bottom: vars.$grid-size * 0.4;
+    margin-bottom: vars.$grid-size * 0.8;
   }
 }

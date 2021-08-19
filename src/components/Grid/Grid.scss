@@ -1,3 +1,5 @@
+@use '_variables' as vars;
+
 .MyCrossword {
   .Grid:focus {
     outline: none;
@@ -6,9 +8,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #000;
+    background-color: vars.$grid-background;
   }
   .Grid__background {
-    fill: #000;
+    fill: vars.$grid-background;
   }
 }

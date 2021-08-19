@@ -1,21 +1,23 @@
+@use '_variables' as vars;
+
 .MyCrossword {
   .Controls {
     display: flex;
-    margin-left: -5px;
-    margin-right: -5px;
-    padding: 12px 0;
+    margin-left: vars.$grid-size * -0.5;
+    margin-right: vars.$grid-size * -0.5;
+    padding: vars.$grid-size * 1.2 0;
   }
   .Controls__button {
     border: none;
-    border-radius: 2px;
-    padding: 8px 12px;
-    background-color: #bb3b80;
-    color: #fff;
+    border-radius: vars.$border-radius;
+    padding: vars.$button-padding;
+    background-color: vars.$button-background;
+    color: vars.$button-color;
     font-weight: bold;
     cursor: pointer;
-    margin: 0 5px;
+    margin: 0 vars.$grid-size * 0.5;
   }
   .Controls__button:hover {
-    background-color: #942f65;
+    background-color: vars.$button-background-selected;
   }
 }

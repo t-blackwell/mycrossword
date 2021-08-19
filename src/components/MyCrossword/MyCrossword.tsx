@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { cellSize, Clues, Controls, Grid } from 'components';
 import type { Cell, Char, GuardianClue, GuardianCrossword } from 'interfaces';
 import * as React from 'react';
@@ -92,9 +93,13 @@ const transposeData = (cols: number, rows: number, entries: GuardianClue[]) => {
 
 interface CrosswordProps {
   data: GuardianCrossword;
+  theme?: 'yellow' | 'pink' | 'blue' | 'green';
 }
 
-export default function MyCrossword({ data }: CrosswordProps): JSX.Element {
+export default function MyCrossword({
+  data,
+  theme = 'yellow',
+}: CrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
@@ -124,7 +129,7 @@ export default function MyCrossword({ data }: CrosswordProps): JSX.Element {
 
   return (
     <>
-      <div className="MyCrossword">
+      <div className={classNames('MyCrossword', `MyCrossword--${theme}Theme`)}>
         <div className="MyCrossword__container">
           <Grid
             cells={cells}

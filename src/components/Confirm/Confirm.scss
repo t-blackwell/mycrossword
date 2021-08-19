@@ -1,34 +1,41 @@
+@use '_variables' as vars;
+
 .MyCrossword {
   .Confirm {
     display: flex;
     flex-direction: column;
-    margin: 0 5px;
+    margin: 0 vars.$grid-size * 0.5;
   }
   .Confirm__buttonContainer {
     display: inline-flex;
-    margin: 0 -5px;
+    margin: 0 vars.$grid-size * -0.5;
   }
   .Confirm__button {
-    background-color: #bb3b80;
-    color: white;
-    padding: 8px 12px;
-    margin: 0 5px;
+    background-color: vars.$button-background;
+    color: vars.$button-color;
+    padding: vars.$button-padding;
+    margin: 0 vars.$grid-size * 0.5;
     font-weight: bold;
     border: none;
     cursor: pointer;
     white-space: nowrap;
-    border-radius: 2px;
+    border-radius: vars.$border-radius;
+  }
+  .Confirm__button:hover {
+    background-color: vars.$button-background-selected;
   }
   .Confirm__button--cancel {
-    background-color: rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0, 0, 0, 0.23);
-    color: rgba(0, 0, 0, 0.87);
+    background-color: vars.$outline-button-background;
+    border: 1px solid vars.$outline-button-border;
+    color: vars.$outline-button-color;
+  }
+  .Confirm__button--cancel:hover {
+    background-color: vars.$outline-button-background-selected;
   }
   .Confirm__timeout {
-    font-size: 12px;
+    font-size: vars.$font-size-caption;
     font-weight: 400;
-    line-height: 1.66;
-    letter-spacing: 0.4px;
-    margin-top: 10px;
+    letter-spacing: vars.$grid-size * 0.04;
+    margin-top: vars.$grid-size;
   }
 }

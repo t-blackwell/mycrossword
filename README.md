@@ -32,14 +32,14 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] add separators to the grid (thick lines and hyphens to show word breaks)
 - [x] add `#num-direction` to url on clue selection and highlight on load
 - [x] make css selectors more specific (switch to scss?)
-- [ ] create theme css (`theme: 'yellow' | 'pink' | 'blue' | 'green'`) - use css variables
+- [x] create theme css (`theme: 'yellow' | 'pink' | 'blue' | 'green'`) - use css variables
 - [ ] save grid to local storage to make guesses persist
 - [ ] allow to move over black cells
 - [ ] mark clues as answered
 - [ ] tab key cycles through clues
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
 - [ ] media queries
-- [ ] consolidate button styles
+- [ ] open dropdown upwards when no room below
 - [ ] Anagram helper (!)
 
 ## Getting started

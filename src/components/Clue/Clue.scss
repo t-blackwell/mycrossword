@@ -1,23 +1,48 @@
+@use '_variables' as vars;
+
 .MyCrossword {
   .Clue {
     cursor: pointer;
     display: flex;
-    font-size: 14px;
-    line-height: 22px;
-    padding: 3px 12px 3px 0;
-    color: #000;
+    line-height: vars.$line-height;
+    padding: vars.$grid-size * 0.3 vars.$grid-size * 1.2 vars.$grid-size * 0.3 0;
+    color: vars.$grid-color;
   }
   .Clue--answered {
-    color: #767676;
+    color: vars.$grey;
   }
   .Clue--highlighted {
-    background-color: #fff7b2;
     font-weight: bold;
-    color: #000;
+    color: vars.$grid-color;
   }
   .Clue__num {
     font-weight: bold;
-    width: 20px;
-    padding-right: 10px;
+    width: vars.$grid-size * 2;
+    padding-right: vars.$grid-size;
+  }
+}
+
+/** Theme styles **/
+.MyCrossword--yellowTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-yellow-light;
+  }
+}
+
+.MyCrossword--pinkTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-pink-light;
+  }
+}
+
+.MyCrossword--blueTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-blue-light;
+  }
+}
+
+.MyCrossword--greenTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-green-light;
   }
 }

@@ -2,9 +2,9 @@
 
 .MyCrossword {
   .Spinner {
-    border: 4px solid rgba(92, 112, 128, 0.2);
+    border: vars.$grid-size * 0.4 solid rgba(92, 112, 128, 0.2);
     border-radius: 50%;
-    border-top: 4px solid rgba(92, 112, 128, 0.8);
+    border-top: vars.$grid-size * 0.4 solid rgba(92, 112, 128, 0.8);
     -webkit-animation: spin 0.5s linear infinite; /* Safari */
     animation: spin 0.5s linear infinite;
     box-sizing: border-box;

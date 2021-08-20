@@ -5,8 +5,11 @@
     cursor: pointer;
     display: flex;
     line-height: vars.$line-height;
-    padding: vars.$grid-size * 0.3 vars.$grid-size * 1.2 vars.$grid-size * 0.3 0;
+    padding: vars.$grid-size * 0.4 vars.$grid-size * 1.2 vars.$grid-size * 0.4
+      vars.$grid-size * 0.4;
     color: vars.$grid-color;
+    border-left: 3px solid transparent;
+    user-select: none;
   }
   .Clue--answered {
     color: vars.$grey;
@@ -15,10 +18,22 @@
     font-weight: bold;
     color: vars.$grid-color;
   }
+  .Clue:not(.Clue--highlighted):hover {
+    background-color: vars.$faint-grey4;
+  }
   .Clue__num {
     font-weight: bold;
-    width: vars.$grid-size * 2;
+    flex: 0 0 vars.$grid-size * 2;
     padding-right: vars.$grid-size;
+  }
+  /* prevents layout shift on hover */
+  .Clue__text::before {
+    display: block;
+    content: attr(data-text);
+    font-weight: bold;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
   }
 }
 
@@ -26,23 +41,27 @@
 .MyCrossword--yellowTheme {
   .Clue--highlighted {
     background-color: vars.$theme-yellow-light;
+    border-color: vars.$theme-yellow;
   }
 }
 
 .MyCrossword--pinkTheme {
   .Clue--highlighted {
     background-color: vars.$theme-pink-light;
+    border-color: vars.$theme-pink;
   }
 }
 
 .MyCrossword--blueTheme {
   .Clue--highlighted {
     background-color: vars.$theme-blue-light;
+    border-color: vars.$theme-blue;
   }
 }
 
 .MyCrossword--greenTheme {
   .Clue--highlighted {
     background-color: vars.$theme-green-light;
+    border-color: vars.$theme-green;
   }
 }

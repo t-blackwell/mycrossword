@@ -18,29 +18,33 @@ $grid-foreground: #fff;
 
 $grey: #767676;
 $light-grey: #ccc;
+$faint-grey1: rgba(0, 0, 0, 0.23);
+$faint-grey2: rgba(0, 0, 0, 0.15);
+$faint-grey3: rgba(0, 0, 0, 0.08);
+$faint-grey4: rgba(0, 0, 0, 0.04);
 
 $button-color: #fff;
 $button-background: #bb3b80;
 $button-background-selected: #942f65;
 
 $dropdown-background: #fff;
-$dropdown-border: rgba(0, 0, 0, 0.15);
-$dropdown-item-hover: rgba(0, 0, 0, 0.08);
+$dropdown-border: $faint-grey2;
+$dropdown-item-hover: $faint-grey3;
 
-$outline-button-background: rgba(0, 0, 0, 0.04);
-$outline-button-background-selected: rgba(0, 0, 0, 0.08);
-$outline-button-border: rgba(0, 0, 0, 0.23);
+$outline-button-background: $faint-grey4;
+$outline-button-background-selected: $faint-grey3;
+$outline-button-border: $faint-grey1;
 $outline-button-color: rgba(0, 0, 0, 0.87);
 
 /** Theme styles **/
 $theme-yellow: #ffe500;
 $theme-yellow-light: #fff7b2;
 
-$theme-pink: #ffc2c2;
+$theme-pink: #ffacac;
 $theme-pink-light: #fdd;
 
-$theme-blue: #b9ddff;
-$theme-blue-light: #e2f3ff;
+$theme-blue: #a1cdfe;
+$theme-blue-light: #dbebfe;
 
-$theme-green: #96fbbd;
-$theme-green-light: #caffde;
+$theme-green: #10ffa4;
+$theme-green-light: #aafadb;

@@ -53,7 +53,9 @@ function Clue({
       tabIndex={0}
     >
       <span className="Clue__num">{num}</span>
-      <span className="Clue__text">{text}</span>
+      <span className="Clue__text" data-text={text}>
+        {text}
+      </span>
     </div>
   );
 }

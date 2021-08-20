@@ -24,31 +24,32 @@
     background-color: vars.$button-background-selected;
   }
   .DropdownButton__menu {
-    display: none;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     position: absolute;
     background-color: vars.$dropdown-background;
     border: 1px solid vars.$dropdown-border;
     z-index: 1;
     margin: vars.$grid-size * 0.2 vars.$grid-size * 0.5 0 vars.$grid-size * 0.5;
     border-radius: vars.$border-radius;
-    min-width: calc(100% - vars.$grid-size * 1.2);
+    min-width: calc(100% - #{vars.$grid-size * 1.2});
   }
   .DropdownButton--expanded .DropdownButton__menu {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    visibility: visible;
   }
   .DropdownButton__menuItem {
     display: flex;
     background-color: transparent;
     border: none;
     padding: vars.$button-padding;
-    cursor: pointer;
     font-weight: bold;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  .DropdownButton__menuItem:hover {
+  .DropdownButton__menuItem:not(:disabled):hover {
     background-color: vars.$dropdown-item-hover;
+    cursor: pointer;
   }
 }

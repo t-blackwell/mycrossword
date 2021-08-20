@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
+import { isInViewport } from 'utils/general';
 import './DropdownButton.scss';
 
 interface CaretDownIconProps {
@@ -38,13 +39,16 @@ function DropdownButton({
     throw new Error('DropdownButton should have at least 2 menu items');
   }
 
-  const ref = React.useRef<HTMLDivElement>(null);
+  const componentRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const menuRef = React.useRef<HTMLDivElement>(null);
   const [menuExpanded, setMenuExpanded] = React.useState(false);
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const isOutside =
-        ref.current !== null && !ref.current.contains(event.target as Node);
+        componentRef.current !== null &&
+        !componentRef.current.contains(event.target as Node);
 
       if (menuExpanded && isOutside) {
         setMenuExpanded(false);
@@ -58,6 +62,26 @@ function DropdownButton({
     };
   }, [menuExpanded]);
 
+  const toggleMenuExpanded = () => {
+    if (menuRef.current !== null && buttonRef.current !== null) {
+      menuRef.current.style.marginTop = '';
+
+      if (!menuExpanded) {
+        // check if dropdown fits in viewport
+        const menuRect = menuRef.current.getBoundingClientRect();
+        const inView = isInViewport(menuRect);
+
+        // open dropdown upwards
+        if (!inView) {
+          const height = menuRect.height + buttonRef.current.clientHeight + 2;
+          menuRef.current.style.marginTop = `-${height}px`;
+        }
+      }
+    }
+
+    setMenuExpanded((val) => !val);
+  };
+
   return (
     <div
       className={classNames(
@@ -65,17 +89,18 @@ function DropdownButton({
         menuExpanded ? 'DropdownButton--expanded' : null,
         className,
       )}
-      ref={ref}
+      ref={componentRef}
     >
       <button
         className="DropdownButton__button"
-        onClick={() => setMenuExpanded((val) => !val)}
+        onClick={toggleMenuExpanded}
+        ref={buttonRef}
         type="button"
       >
         <span>{text}</span>
         <CaretDownIcon className="DropdownButton__dropdownButtonIcon" />
       </button>
-      <div className="DropdownButton__menu">
+      <div className="DropdownButton__menu" ref={menuRef}>
         {menu.map((item) => (
           <button
             className="DropdownButton__menuItem"

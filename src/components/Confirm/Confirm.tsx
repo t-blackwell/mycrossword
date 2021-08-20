@@ -17,13 +17,17 @@ export default function Confirm({
   const [seconds, setSeconds] = React.useState(timeout);
 
   React.useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (seconds === 1) {
         onCancel();
       } else {
         setSeconds((secs) => secs - 1);
       }
     }, 1000);
+
+    return function cleanup() {
+      clearTimeout(timer);
+    };
   }, [seconds]);
 
   return (

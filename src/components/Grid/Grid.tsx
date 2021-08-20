@@ -198,6 +198,26 @@ export default function Grid({
       if (event.code === 'Backspace') {
         movePrev();
       }
+    } else if (event.code === 'Tab') {
+      // cycle through the clues
+      const index = clues.findIndex((clue) => clue.selected);
+      let nextIndex = 0;
+
+      // forwards or backwards
+      if (event.shiftKey) {
+        nextIndex = index > 0 ? index - 1 : clues.length - 1;
+      } else {
+        nextIndex = index < clues.length - 1 ? index + 1 : 0;
+      }
+      const nextClue = clues[nextIndex];
+
+      dispatch(cluesActionSelect(nextClue.id));
+      dispatch(
+        cellsActionSelect({
+          col: nextClue.position.x,
+          row: nextClue.position.y,
+        }),
+      );
     } else if (isValidChar(key)) {
       // overwrite the cell's value
       dispatch(

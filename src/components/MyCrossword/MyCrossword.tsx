@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { cellSize, Clues, Controls, Grid } from 'components';
+import { Clues, Controls, Grid } from 'components';
 import type { Cell, Char, GuardianClue, GuardianCrossword } from 'interfaces';
 import * as React from 'react';
 import {
@@ -103,8 +103,7 @@ export default function MyCrossword({
   const dispatch = useAppDispatch();
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
-  const gridWidth = data.dimensions.cols * cellSize + data.dimensions.cols + 1;
-  const gridHeight = data.dimensions.rows * cellSize + data.dimensions.rows + 1;
+
   const selectedClue = clues.find((clue) => clue.selected);
 
   React.useEffect(() => {
@@ -134,10 +133,10 @@ export default function MyCrossword({
           <Grid
             cells={cells}
             clues={clues}
-            height={gridHeight}
+            cols={data.dimensions.cols}
             isLoading={cells.length === 0}
             rawClues={data.entries}
-            width={gridWidth}
+            rows={data.dimensions.rows}
           />
           <Controls selectedClueGroup={selectedClue?.group} />
         </div>

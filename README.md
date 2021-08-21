@@ -35,11 +35,12 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] create theme css (`theme: 'yellow' | 'pink' | 'blue' | 'green'`) - use css variables
 - [x] open dropdown upwards when no room below
 - [x] tab key cycles through clues
+- [x] allow to move over black cells
 - [ ] save grid to local storage to make guesses persist
-- [ ] allow to move over black cells
 - [ ] mark clues as answered
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
 - [ ] media queries
+- [ ] prevent check/reveal when solutions unavailable
 - [ ] Anagram helper (!)
 
 ## Getting started

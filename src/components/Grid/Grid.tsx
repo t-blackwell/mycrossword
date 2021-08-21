@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { GridCell, GridSeparators } from 'components';
+import { cellSize, GridCell, GridSeparators } from 'components';
 import Spinner from 'components/Spinner/Spinner';
 import type { Cell, CellPosition, Char, Clue, GuardianClue } from 'interfaces';
 import * as React from 'react';
@@ -28,23 +28,25 @@ const cellPositionMatches = (
 interface GridProps {
   cells: Cell[];
   clues: Clue[];
-  height: number;
+  cols: number;
   isLoading?: boolean;
   rawClues: GuardianClue[];
-  width: number;
+  rows: number;
 }
 
 export default function Grid({
   cells,
   clues,
-  height,
+  cols,
   isLoading = false,
   rawClues,
-  width,
+  rows,
 }: GridProps): JSX.Element {
   const dispatch = useAppDispatch();
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);
+  const width = cols * cellSize + cols + 1;
+  const height = rows * cellSize + rows + 1;
 
   const movePrev = () => {
     if (selectedClue === undefined || selectedCell === undefined) {
@@ -132,46 +134,76 @@ export default function Grid({
     }
   };
 
+  /**
+   * Find the next cell on the current row/column (wrap on grid overflow)
+   * @param {number} colDelta - Horizontal delta (-1, 0, 1)
+   * @param {number} rowDelta - Vertical delta (-1, 0, 1)
+   */
+  const findNextCell = (colDelta: number, rowDelta: number) => {
+    const nextPos = (i: number, amount: number, max: number) => {
+      const j = i + amount;
+
+      if (j === -1) {
+        return max - 1;
+      }
+      if (j === max) {
+        return 0;
+      }
+
+      return j;
+    };
+
+    let { col, row } = selectedCell?.pos!;
+
+    // loop won't be infinite as it will always wrap and find the selected cell on the same row/col
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (colDelta === 1 || colDelta === -1) {
+        col = nextPos(col, colDelta, cols);
+      } else if (rowDelta === 1 || rowDelta === -1) {
+        row = nextPos(row, rowDelta, rows);
+      }
+
+      const tempCell = cells.find(
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        (cell) => cell.pos.col === col && cell.pos.row === row,
+      );
+
+      if (tempCell !== undefined) {
+        return tempCell;
+      }
+    }
+  };
+
   const moveDirection = (direction: string) => {
     if (selectedClue === undefined || selectedCell === undefined) {
       return;
     }
-
-    let cellPos: CellPosition | undefined;
+    let nextCell: Cell | undefined;
 
     switch (direction) {
       case 'Up':
-        cellPos = { col: selectedCell.pos.col, row: selectedCell.pos.row - 1 };
+        nextCell = findNextCell(0, -1);
         break;
       case 'Down':
-        cellPos = { col: selectedCell.pos.col, row: selectedCell.pos.row + 1 };
+        nextCell = findNextCell(0, 1);
         break;
       case 'Left':
-        cellPos = { col: selectedCell.pos.col - 1, row: selectedCell.pos.row };
+        nextCell = findNextCell(-1, 0);
         break;
       case 'Right':
-        cellPos = { col: selectedCell.pos.col + 1, row: selectedCell.pos.row };
+        nextCell = findNextCell(1, 0);
         break;
       default:
-        cellPos = undefined;
+        nextCell = undefined;
     }
 
-    if (cellPos !== undefined) {
-      const nextCell = cells.find(
-        (cell) =>
-          cell.pos.col === cellPos?.col && cell.pos.row === cellPos?.row,
-      );
+    if (nextCell !== undefined) {
+      dispatch(cellsActionSelect(nextCell.pos));
 
-      if (nextCell !== undefined) {
-        dispatch(cellsActionSelect(cellPos));
-
-        // update the selected clue
-        if (
-          nextCell?.clueIds.length === 1 &&
-          nextCell.clueIds[0] !== selectedClue?.id
-        ) {
-          dispatch(cluesActionSelect(nextCell.clueIds[0]));
-        }
+      // update the selected clue
+      if (!nextCell.clueIds.includes(selectedClue.id)) {
+        dispatch(cluesActionSelect(nextCell.clueIds[0]));
       }
     }
   };

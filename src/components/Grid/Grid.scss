@@ -14,3 +14,13 @@
     fill: vars.$grid-background;
   }
 }
+
+/** Breakpoints **/
+.MyCrossword--xs {
+  .Grid[style] {
+    width: auto !important;
+    height: auto !important;
+    min-width: auto !important;
+    min-height: auto !important;
+  }
+}

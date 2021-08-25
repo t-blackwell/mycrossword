@@ -16,3 +16,30 @@
     margin-bottom: vars.$grid-size * 0.8;
   }
 }
+
+/** Breakpoints **/
+.MyCrossword--md {
+  .Clues {
+    flex-direction: column;
+  }
+  .Clues__list--down {
+    margin-top: vars.$grid-size;
+  }
+}
+
+.MyCrossword--sm {
+  flex-direction: column;
+  .Clues {
+    margin-top: vars.$grid-size;
+  }
+}
+
+.MyCrossword--xs {
+  flex-direction: column;
+  .Clues {
+    flex-direction: column;
+  }
+  .Clues__list {
+    margin-top: vars.$grid-size;
+  }
+}

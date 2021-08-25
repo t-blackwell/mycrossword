@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { Clues, Controls, Grid } from 'components';
+import { useBreakpoint } from 'hooks';
 import type { Cell, Char, GuardianClue, GuardianCrossword } from 'interfaces';
 import * as React from 'react';
 import {
@@ -101,6 +102,7 @@ export default function MyCrossword({
   theme = 'yellow',
 }: CrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const breakpoint = useBreakpoint();
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
 
@@ -127,7 +129,13 @@ export default function MyCrossword({
   }, [dispatch, data]);
 
   return (
-    <div className={classNames('MyCrossword', `MyCrossword--${theme}Theme`)}>
+    <div
+      className={classNames(
+        'MyCrossword',
+        `MyCrossword--${breakpoint}`,
+        `MyCrossword--${theme}Theme`,
+      )}
+    >
       <div className="MyCrossword__container">
         <Grid
           cells={cells}

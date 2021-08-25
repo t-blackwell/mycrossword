@@ -37,10 +37,15 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] tab key cycles through clues
 - [x] allow to move over black cells
 - [x] mark clues as answered
+- [x] media queries
 - [ ] save grid to local storage to make guesses persist
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
-- [ ] media queries
 - [ ] prevent check/reveal when solutions unavailable
+- [ ] layout improvements
+  - [ ] fixed top clue when xs
+  - [ ] change button text to "Anag." when xs
+  - [ ] wrap buttons
+  - [ ] prevent jump from confirm cpt text "this will automatically cancel..."
 - [ ] Anagram helper (!)
 
 ## Getting started

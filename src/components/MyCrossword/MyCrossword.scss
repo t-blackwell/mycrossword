@@ -6,3 +6,9 @@
   font-size: vars.$font-size;
   -webkit-font-smoothing: subpixel-antialiased;
 }
+
+/** Breakpoints **/
+.MyCrossword--sm {
+  align-items: center;
+  justify-content: center;
+}

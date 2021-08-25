@@ -25,7 +25,7 @@ export default function Clues({
         <h3 className="Clues__listHeader">Across</h3>
         {across.map((entry) => (
           <Clue
-            answered={false}
+            answered={entry.answered}
             col={entry.position.x}
             id={entry.id}
             isHighlighted={
@@ -43,7 +43,7 @@ export default function Clues({
         <h3 className="Clues__listHeader">Down</h3>
         {down.map((entry) => (
           <Clue
-            answered={false}
+            answered={entry.answered}
             col={entry.position.x}
             id={entry.id}
             isHighlighted={

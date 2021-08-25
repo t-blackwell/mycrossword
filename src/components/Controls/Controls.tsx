@@ -1,89 +1,202 @@
 import { Confirm, DropdownButton } from 'components';
+import { Cell, Clue } from 'interfaces';
 import * as React from 'react';
 import {
-  checkGrid as cellsActionCheckGrid,
-  checkLetter as cellsActionCheckLetter,
-  checkWord as cellsActionCheckWord,
   clearGrid as cellsActionClearGrid,
-  clearWord as cellsActionClearWord,
   revealGrid as cellsActionRevealGrid,
-  revealLetter as cellsActionRevealLetter,
-  revealWord as cellsActionRevealWord,
+  updateGrid as cellsActionUpdateGrid,
 } from 'redux/cellsSlice';
+import {
+  answerGrid as cluesActionAnswerGrid,
+  answerOne as cluesActionAnswerOne,
+  unanswerGrid as cluesActionUnanswerGrid,
+  unanswerOne as cluesActionUnanswerOne,
+} from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
+import { blankNeighbours, mergeCell } from 'utils/cell';
+import { getCrossingClueIds, isCluePopulated } from 'utils/clue';
 import './Controls.scss';
 
 interface ControlsProps {
-  selectedClueGroup?: string[];
+  cells: Cell[];
+  clues: Clue[];
 }
 
-export default function Controls({
-  selectedClueGroup,
-}: ControlsProps): JSX.Element {
+export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const selectedCell = cells.find((cell) => cell.selected);
+  const selectedClue = clues.find((clue) => clue.selected);
   const [showCheckGridConfirm, setShowCheckGridConfirm] = React.useState(false);
   const [showRevealGridConfirm, setShowRevealGridConfirm] =
     React.useState(false);
   const [showClearGridConfirm, setShowClearGridConfirm] = React.useState(false);
 
-  const checkMenu = React.useMemo(
-    () => [
-      {
-        disabled: selectedClueGroup === undefined,
-        onClick: () => dispatch(cellsActionCheckLetter()),
-        text: 'Check letter',
-      },
-      {
-        disabled: selectedClueGroup === undefined,
-        onClick: () => {
-          if (selectedClueGroup !== undefined) {
-            dispatch(cellsActionCheckWord(selectedClueGroup));
-          }
-        },
-        text: 'Check word',
-      },
+  const updateAnsweredForCrossingClues = (clue: Clue, updatedCells: Cell[]) => {
+    const clueIds = getCrossingClueIds(clue, updatedCells);
+    clueIds.forEach((clueId) => {
+      const crossingClue = clues.find((c) => c.id === clueId);
 
-      { onClick: () => setShowCheckGridConfirm(true), text: 'Check grid' },
-    ],
-    [selectedClueGroup],
-  );
+      if (crossingClue) {
+        if (isCluePopulated(crossingClue, updatedCells)) {
+          dispatch(cluesActionAnswerOne(crossingClue.group));
+        } else {
+          dispatch(cluesActionUnanswerOne(crossingClue.group));
+        }
+      }
+    });
+  };
 
-  const revealMenu = React.useMemo(
-    () => [
-      {
-        disabled: selectedClueGroup === undefined,
-        onClick: () => dispatch(cellsActionRevealLetter()),
-        text: 'Reveal letter',
-      },
-      {
-        disabled: selectedClueGroup === undefined,
-        onClick: () => {
-          if (selectedClueGroup !== undefined) {
-            dispatch(cellsActionRevealWord(selectedClueGroup));
-          }
-        },
-        text: 'Reveal word',
-      },
-      { onClick: () => setShowRevealGridConfirm(true), text: 'Reveal grid' },
-    ],
-    [selectedClueGroup],
-  );
+  const checkMenu = [
+    {
+      disabled: selectedCell === undefined,
+      onClick: () => {
+        if (selectedCell === undefined) {
+          return;
+        }
 
-  const clearMenu = React.useMemo(
-    () => [
-      {
-        disabled: selectedClueGroup === undefined,
-        onClick: () => {
-          if (selectedClueGroup !== undefined) {
-            dispatch(cellsActionClearWord(selectedClueGroup));
-          }
-        },
-        text: 'Clear word',
+        if (selectedCell.guess !== selectedCell.val) {
+          // merge in selectedCell with its letter cleared
+          const updatedCells = mergeCell(
+            { ...selectedCell, guess: undefined },
+            cells,
+          );
+
+          dispatch(cellsActionUpdateGrid(updatedCells));
+
+          // mark across and/or down clue as unanswered
+          dispatch(cluesActionUnanswerOne(selectedCell.clueIds));
+        }
       },
-      { onClick: () => setShowClearGridConfirm(true), text: 'Clear grid' },
-    ],
-    [selectedClueGroup],
-  );
+      text: 'Check letter',
+    },
+    {
+      disabled: selectedClue === undefined,
+      onClick: () => {
+        if (selectedClue !== undefined) {
+          const updatedCells = cells.map((cell) => {
+            const intersection = selectedClue.group.filter((clueId) =>
+              cell.clueIds.includes(clueId),
+            );
+
+            if (intersection.length > 0) {
+              return {
+                ...cell,
+                guess: cell.guess === cell.val ? cell.val : undefined,
+              };
+            }
+
+            return cell;
+          });
+
+          dispatch(cellsActionUpdateGrid(updatedCells));
+          updateAnsweredForCrossingClues(selectedClue, updatedCells);
+        }
+      },
+      text: 'Check word',
+    },
+    { onClick: () => setShowCheckGridConfirm(true), text: 'Check grid' },
+  ];
+
+  const revealMenu = [
+    {
+      disabled: selectedCell === undefined,
+      onClick: () => {
+        if (selectedCell === undefined) {
+          return;
+        }
+
+        // merge in selectedCell with its letter revealed
+        const updatedCells = mergeCell(
+          { ...selectedCell, guess: selectedCell.val },
+          cells,
+        );
+
+        dispatch(cellsActionUpdateGrid(updatedCells));
+
+        // if all cells are populated, mark clue as answered
+        selectedCell.clueIds.forEach((clueId) => {
+          const clue = clues.find((c) => c.id === clueId)!;
+          const populated = isCluePopulated(clue, updatedCells);
+
+          if (populated) {
+            dispatch(cluesActionAnswerOne(clue.group));
+          }
+        });
+      },
+      text: 'Reveal letter',
+    },
+    {
+      disabled: selectedClue === undefined,
+      onClick: () => {
+        if (selectedClue !== undefined) {
+          const updatedCells = cells.map((cell) => {
+            const intersection = selectedClue.group.filter((clueId) =>
+              cell.clueIds.includes(clueId),
+            );
+
+            if (intersection.length > 0) {
+              return {
+                ...cell,
+                guess: cell.val,
+              };
+            }
+
+            return cell;
+          });
+
+          dispatch(cellsActionUpdateGrid(updatedCells));
+
+          updateAnsweredForCrossingClues(selectedClue, updatedCells);
+        }
+      },
+      text: 'Reveal word',
+    },
+    { onClick: () => setShowRevealGridConfirm(true), text: 'Reveal grid' },
+  ];
+
+  const clearMenu = [
+    {
+      disabled: selectedClue === undefined,
+      onClick: () => {
+        if (selectedClue !== undefined) {
+          const updatedCells = cells.map((cell) => {
+            const intersection = selectedClue.group.filter((clueId) =>
+              cell.clueIds.includes(clueId),
+            );
+
+            if (intersection.length > 0) {
+              if (cell.clueIds.length === 1) {
+                // only one direction, can safely clear the cell
+                return {
+                  ...cell,
+                  guess: undefined,
+                };
+              }
+
+              // more than one direction, check if neighbouring letters are blank
+              const clueId = intersection[0];
+              const across = clueId.includes('across');
+              if (blankNeighbours(cells, cell, across)) {
+                return {
+                  ...cell,
+                  guess: undefined,
+                };
+              }
+            }
+
+            return cell;
+          });
+
+          dispatch(cellsActionUpdateGrid(updatedCells));
+
+          // mark clue (and others in its group) as unanswered
+          dispatch(cluesActionUnanswerOne(selectedClue.group));
+        }
+      },
+      text: 'Clear word',
+    },
+    { onClick: () => setShowClearGridConfirm(true), text: 'Clear grid' },
+  ];
 
   if (showCheckGridConfirm) {
     return (
@@ -92,7 +205,22 @@ export default function Controls({
           buttonText="Confirm check grid"
           onCancel={() => setShowCheckGridConfirm(false)}
           onConfirm={() => {
-            dispatch(cellsActionCheckGrid());
+            const updatedCells = cells.map((cell) => ({
+              ...cell,
+              guess: cell.guess === cell.val ? cell.val : undefined,
+            }));
+
+            dispatch(cellsActionUpdateGrid(updatedCells));
+
+            // check all clues to see if they need to be marked as unanswered
+            clues.forEach((clue) => {
+              if (isCluePopulated(clue, updatedCells)) {
+                dispatch(cluesActionAnswerOne(clue.group));
+              } else {
+                dispatch(cluesActionUnanswerOne(clue.group));
+              }
+            });
+
             setShowCheckGridConfirm(false);
           }}
         />
@@ -108,6 +236,7 @@ export default function Controls({
           onCancel={() => setShowRevealGridConfirm(false)}
           onConfirm={() => {
             dispatch(cellsActionRevealGrid());
+            dispatch(cluesActionAnswerGrid());
             setShowRevealGridConfirm(false);
           }}
         />
@@ -123,6 +252,7 @@ export default function Controls({
           onCancel={() => setShowClearGridConfirm(false)}
           onConfirm={() => {
             dispatch(cellsActionClearGrid());
+            dispatch(cluesActionUnanswerGrid());
             setShowClearGridConfirm(false);
           }}
         />

@@ -5,10 +5,16 @@ import type { Cell, CellPosition, Char, Clue, GuardianClue } from 'interfaces';
 import * as React from 'react';
 import {
   select as cellsActionSelect,
-  updateOne as cellsActionUpdateOne,
+  updateGrid as cellsActionUpdateGrid,
 } from 'redux/cellsSlice';
-import { select as cluesActionSelect } from 'redux/cluesSlice';
+import {
+  select as cluesActionSelect,
+  answerOne as cluesActionAnswerOne,
+  unanswerOne as cluesActionUnanswerOne,
+} from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
+import { mergeCell } from 'utils/cell';
+import { isCluePopulated } from 'utils/clue';
 import { isValidChar } from 'utils/general';
 import './Grid.scss';
 
@@ -209,7 +215,7 @@ export default function Grid({
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (selectedCell === undefined) {
+    if (selectedClue === undefined || selectedCell === undefined) {
       return;
     }
     const key = event.key.toUpperCase();
@@ -221,12 +227,27 @@ export default function Grid({
       moveDirection(event.code.replace('Arrow', ''));
     } else if (['Backspace', 'Delete'].includes(event.code)) {
       // clear the cell's value
-      dispatch(
-        cellsActionUpdateOne({
-          ...selectedCell,
-          guess: undefined,
-        }),
-      );
+      const updatedCell: Cell = {
+        ...selectedCell,
+        guess: undefined,
+      };
+
+      const updatedCells = mergeCell(updatedCell, cells);
+      dispatch(cellsActionUpdateGrid(updatedCells));
+
+      // mark clue(s) as unanswered (ones in group and crossing)
+      selectedCell.clueIds.forEach((clueId) => {
+        const clue = clues.find((c) => c.id === clueId);
+
+        if (clue) {
+          if (isCluePopulated(clue, updatedCells)) {
+            dispatch(cluesActionAnswerOne(clue.group));
+          } else {
+            dispatch(cluesActionUnanswerOne(clue.group));
+          }
+        }
+      });
+
       if (event.code === 'Backspace') {
         movePrev();
       }
@@ -251,13 +272,25 @@ export default function Grid({
         }),
       );
     } else if (isValidChar(key)) {
+      const updatedCell: Cell = {
+        ...selectedCell,
+        guess: key as Char,
+      };
+
+      const updatedCells = mergeCell(updatedCell, cells);
+
       // overwrite the cell's value
-      dispatch(
-        cellsActionUpdateOne({
-          ...selectedCell,
-          guess: key as Char,
-        }),
-      );
+      dispatch(cellsActionUpdateGrid(updatedCells));
+
+      // if all cells are populated, mark clue as answered
+      selectedCell.clueIds.forEach((clueId) => {
+        const clue = clues.find((c) => c.id === clueId)!;
+        const populated = isCluePopulated(clue, updatedCells);
+
+        if (populated) {
+          dispatch(cluesActionAnswerOne(clue.group));
+        }
+      });
 
       moveNext();
     }
@@ -281,7 +314,9 @@ export default function Grid({
         <svg preserveAspectRatio="xMinYMin" viewBox={`0 0 ${width} ${height}`}>
           <rect
             className="Grid__background"
-            onClick={() => {
+            onMouseDown={(event) => {
+              event.preventDefault();
+
               // remove focus from grid (TODO: change to use React.forwardRef?)
               document.querySelectorAll<HTMLElement>('.Grid')[0].blur();
             }}

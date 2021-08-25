@@ -72,7 +72,7 @@ const data: GuardianCrossword = {
       id: '15-across',
       number: 15,
       humanNumber: '15, 9',
-      clue: 'Sounding challenge to mount­aineer, money serious current issue (7,6)',
+      clue: 'Sounding challenge to mountaineer, money serious current issue (7,6)',
       direction: 'across',
       length: 7,
       group: ['15-across', '9-across'],

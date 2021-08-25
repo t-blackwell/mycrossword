@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import classNames from 'classnames';
-import { CellPosition } from 'interfaces';
 import * as React from 'react';
 import { select as cellsActionSelect } from 'redux/cellsSlice';
 import { select as cluesActionSelect } from 'redux/cluesSlice';

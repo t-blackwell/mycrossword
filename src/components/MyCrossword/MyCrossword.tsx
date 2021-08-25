@@ -127,22 +127,19 @@ export default function MyCrossword({
   }, [dispatch, data]);
 
   return (
-    <>
-      <div className={classNames('MyCrossword', `MyCrossword--${theme}Theme`)}>
-        <div className="MyCrossword__container">
-          <Grid
-            cells={cells}
-            clues={clues}
-            cols={data.dimensions.cols}
-            isLoading={cells.length === 0}
-            rawClues={data.entries}
-            rows={data.dimensions.rows}
-          />
-          <Controls selectedClueGroup={selectedClue?.group} />
-        </div>
-        <Clues selectedClueId={selectedClue?.id} entries={clues} />
+    <div className={classNames('MyCrossword', `MyCrossword--${theme}Theme`)}>
+      <div className="MyCrossword__container">
+        <Grid
+          cells={cells}
+          clues={clues}
+          cols={data.dimensions.cols}
+          isLoading={cells.length === 0}
+          rawClues={data.entries}
+          rows={data.dimensions.rows}
+        />
+        <Controls cells={cells} clues={clues} />
       </div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </>
+      <Clues selectedClueId={selectedClue?.id} entries={clues} />
+    </div>
   );
 }

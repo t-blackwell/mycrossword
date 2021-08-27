@@ -3,7 +3,7 @@ import * as React from 'react';
 import data from './testData/guardian.cryptic.28505';
 
 function App() {
-  return <MyCrossword data={data} />;
+  return <MyCrossword id={data.id} data={data} />;
 }
 
 export default App;

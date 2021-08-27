@@ -24,7 +24,7 @@
   .Clue__num {
     font-weight: bold;
     flex: 0 0 vars.$grid-size * 2;
-    margin-right: vars.$grid-size;
+    margin-right: vars.$grid-size * 2;
   }
   /* prevents layout shift on hover */
   .Clue__text::before {

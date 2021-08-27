@@ -1,5 +1,5 @@
 import { Confirm, DropdownButton } from 'components';
-import { Cell, Clue } from 'interfaces';
+import { Cell, Clue, GuessGrid } from 'interfaces';
 import * as React from 'react';
 import {
   clearGrid as cellsActionClearGrid,
@@ -15,14 +15,24 @@ import {
 import { useAppDispatch } from 'redux/hooks';
 import { blankNeighbours, mergeCell } from 'utils/cell';
 import { getCrossingClueIds, isCluePopulated } from 'utils/clue';
+import { getGuessGrid } from 'utils/guess';
 import './Controls.scss';
 
 interface ControlsProps {
   cells: Cell[];
   clues: Clue[];
+  gridCols: number;
+  gridRows: number;
+  setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
 }
 
-export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
+export default function Controls({
+  cells,
+  clues,
+  gridCols,
+  gridRows,
+  setGuessGrid,
+}: ControlsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);
@@ -30,6 +40,10 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
   const [showRevealGridConfirm, setShowRevealGridConfirm] =
     React.useState(false);
   const [showClearGridConfirm, setShowClearGridConfirm] = React.useState(false);
+
+  const updateGuessGrid = (updatedCells: Cell[]) => {
+    setGuessGrid(getGuessGrid(gridCols, gridRows, updatedCells));
+  };
 
   const updateAnsweredForCrossingClues = (clue: Clue, updatedCells: Cell[]) => {
     const clueIds = getCrossingClueIds(clue, updatedCells);
@@ -65,6 +79,9 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
 
           // mark across and/or down clue as unanswered
           dispatch(cluesActionUnanswerOne(selectedCell.clueIds));
+
+          // update guesses in local storage
+          updateGuessGrid(updatedCells);
         }
       },
       text: 'Check letter',
@@ -90,6 +107,9 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
 
           dispatch(cellsActionUpdateGrid(updatedCells));
           updateAnsweredForCrossingClues(selectedClue, updatedCells);
+
+          // update guesses in local storage
+          updateGuessGrid(updatedCells);
         }
       },
       text: 'Check word',
@@ -122,32 +142,40 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
             dispatch(cluesActionAnswerOne(clue.group));
           }
         });
+
+        // update guesses in local storage
+        updateGuessGrid(updatedCells);
       },
       text: 'Reveal letter',
     },
     {
       disabled: selectedClue === undefined,
       onClick: () => {
-        if (selectedClue !== undefined) {
-          const updatedCells = cells.map((cell) => {
-            const intersection = selectedClue.group.filter((clueId) =>
-              cell.clueIds.includes(clueId),
-            );
-
-            if (intersection.length > 0) {
-              return {
-                ...cell,
-                guess: cell.val,
-              };
-            }
-
-            return cell;
-          });
-
-          dispatch(cellsActionUpdateGrid(updatedCells));
-
-          updateAnsweredForCrossingClues(selectedClue, updatedCells);
+        if (selectedClue === undefined) {
+          return;
         }
+
+        const updatedCells = cells.map((cell) => {
+          const intersection = selectedClue.group.filter((clueId) =>
+            cell.clueIds.includes(clueId),
+          );
+
+          if (intersection.length > 0) {
+            return {
+              ...cell,
+              guess: cell.val,
+            };
+          }
+
+          return cell;
+        });
+
+        dispatch(cellsActionUpdateGrid(updatedCells));
+
+        updateAnsweredForCrossingClues(selectedClue, updatedCells);
+
+        // update guesses in local storage
+        updateGuessGrid(updatedCells);
       },
       text: 'Reveal word',
     },
@@ -191,6 +219,9 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
 
           // mark clue (and others in its group) as unanswered
           dispatch(cluesActionUnanswerOne(selectedClue.group));
+
+          // update guesses in local storage
+          updateGuessGrid(updatedCells);
         }
       },
       text: 'Clear word',
@@ -222,6 +253,9 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
             });
 
             setShowCheckGridConfirm(false);
+
+            // update guesses in local storage
+            updateGuessGrid(updatedCells);
           }}
         />
       </div>
@@ -238,6 +272,13 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
             dispatch(cellsActionRevealGrid());
             dispatch(cluesActionAnswerGrid());
             setShowRevealGridConfirm(false);
+
+            // update guesses in local storage
+            const updatedCells = cells.map((cell) => ({
+              ...cell,
+              guess: cell.val,
+            }));
+            updateGuessGrid(updatedCells);
           }}
         />
       </div>
@@ -254,6 +295,9 @@ export default function Controls({ cells, clues }: ControlsProps): JSX.Element {
             dispatch(cellsActionClearGrid());
             dispatch(cluesActionUnanswerGrid());
             setShowClearGridConfirm(false);
+
+            // clear guesses in local storage
+            updateGuessGrid([]);
           }}
         />
       </div>

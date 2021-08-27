@@ -14,7 +14,7 @@ const breakpoints: Breakpoint[] = [
   { name: 'xxl', max: 99999 },
 ];
 
-const useBreakpoint = () => {
+export default function useBreakpoint() {
   const [breakpoint, setBreakPoint] = React.useState<string>();
   const [windowWidth, setWindowWidth] = React.useState<number>();
 
@@ -41,6 +41,4 @@ const useBreakpoint = () => {
     };
   }, [windowWidth]);
   return breakpoint;
-};
-
-export default useBreakpoint;
+}

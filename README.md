@@ -38,7 +38,7 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] allow to move over black cells
 - [x] mark clues as answered
 - [x] media queries
-- [ ] save grid to local storage to make guesses persist
+- [x] save grid to local storage to make guesses persist
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
 - [ ] prevent check/reveal when solutions unavailable
 - [ ] layout improvements

@@ -1,7 +1,13 @@
 import classNames from 'classnames';
 import { Clues, Controls, Grid } from 'components';
-import { useBreakpoint } from 'hooks';
-import type { Cell, Char, GuardianClue, GuardianCrossword } from 'interfaces';
+import { useBreakpoint, useLocalStorage } from 'hooks';
+import type {
+  Cell,
+  Char,
+  GuardianClue,
+  GuardianCrossword,
+  GuessGrid,
+} from 'interfaces';
 import * as React from 'react';
 import {
   getCells,
@@ -12,6 +18,8 @@ import {
   updateGrid as cluesActionUpdateGrid,
 } from 'redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { isCluePopulated } from 'utils/clue';
+import { getGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
 /**
@@ -21,7 +29,12 @@ import './MyCrossword.scss';
  * @param entries
  * @returns
  */
-const transposeData = (cols: number, rows: number, entries: GuardianClue[]) => {
+const transposeData = (
+  cols: number,
+  rows: number,
+  entries: GuardianClue[],
+  guessGrid: GuessGrid,
+) => {
   const cells: Cell[] = [];
 
   entries.forEach((entry) => {
@@ -46,9 +59,12 @@ const transposeData = (cols: number, rows: number, entries: GuardianClue[]) => {
       );
 
       if (currentCell === undefined) {
+        const guess = guessGrid.value[col][row];
+
         // add cell
         const newCell: Cell = {
           clueIds: [entry.id],
+          guess: guess !== '' ? guess : undefined,
           num: i === 0 ? entry.number : undefined,
           pos: { col, row },
           selected: false,
@@ -94,15 +110,21 @@ const transposeData = (cols: number, rows: number, entries: GuardianClue[]) => {
 
 interface CrosswordProps {
   data: GuardianCrossword;
+  id: string;
   theme?: 'yellow' | 'pink' | 'blue' | 'green';
 }
 
 export default function MyCrossword({
   data,
+  id,
   theme = 'yellow',
 }: CrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
   const breakpoint = useBreakpoint();
+  const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
+    id,
+    getGuessGrid(data.dimensions.cols, data.dimensions.rows),
+  );
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
 
@@ -110,18 +132,24 @@ export default function MyCrossword({
 
   React.useEffect(() => {
     // initialise cells
-    dispatch(
-      cellsActionUpdateGrid(
-        transposeData(data.dimensions.cols, data.dimensions.rows, data.entries),
-      ),
+    const initCells = transposeData(
+      data.dimensions.cols,
+      data.dimensions.rows,
+      data.entries,
+      guessGrid,
     );
+
+    dispatch(cellsActionUpdateGrid(initCells));
 
     // initialise clues
     dispatch(
       cluesActionUpdateGrid(
         data.entries.map((entry) => ({
           ...entry,
-          answered: false,
+          answered: isCluePopulated(
+            { ...entry, selected: false, answered: false }, // TODO: use Partial<Clue>?
+            initCells,
+          ),
           selected: `#${entry.id}` === window.location.hash,
         })),
       ),
@@ -141,11 +169,19 @@ export default function MyCrossword({
           cells={cells}
           clues={clues}
           cols={data.dimensions.cols}
+          guessGrid={guessGrid}
           isLoading={cells.length === 0}
           rawClues={data.entries}
           rows={data.dimensions.rows}
+          setGuessGrid={setGuessGrid}
         />
-        <Controls cells={cells} clues={clues} />
+        <Controls
+          cells={cells}
+          clues={clues}
+          gridCols={data.dimensions.cols}
+          gridRows={data.dimensions.rows}
+          setGuessGrid={setGuessGrid}
+        />
       </div>
       <Clues selectedClueId={selectedClue?.id} entries={clues} />
     </div>

@@ -1,7 +1,15 @@
 import classNames from 'classnames';
 import { cellSize, GridCell, GridSeparators } from 'components';
 import Spinner from 'components/Spinner/Spinner';
-import type { Cell, CellPosition, Char, Clue, GuardianClue } from 'interfaces';
+import { useDebounce } from 'hooks';
+import type {
+  Cell,
+  CellPosition,
+  Char,
+  Clue,
+  GuardianClue,
+  GuessGrid,
+} from 'interfaces';
 import * as React from 'react';
 import {
   select as cellsActionSelect,
@@ -16,6 +24,7 @@ import { useAppDispatch } from 'redux/hooks';
 import { mergeCell } from 'utils/cell';
 import { isCluePopulated } from 'utils/clue';
 import { isValidChar } from 'utils/general';
+import { getGuessGrid } from 'utils/guess';
 import './Grid.scss';
 
 const appearsInGroup = (clueId: string | undefined, group: string[]) =>
@@ -35,24 +44,39 @@ interface GridProps {
   cells: Cell[];
   clues: Clue[];
   cols: number;
+  guessGrid: GuessGrid;
   isLoading?: boolean;
   rawClues: GuardianClue[];
   rows: number;
+  setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
 }
 
 export default function Grid({
   cells,
   clues,
   cols,
+  guessGrid,
   isLoading = false,
   rawClues,
   rows,
+  setGuessGrid,
 }: GridProps): JSX.Element {
   const dispatch = useAppDispatch();
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);
   const width = cols * cellSize + cols + 1;
   const height = rows * cellSize + rows + 1;
+  const [guesses, setGuesses] = React.useState<GuessGrid>(guessGrid);
+  const debouncedGuesses: GuessGrid = useDebounce<GuessGrid>(guesses, 1000);
+
+  React.useEffect(() => {
+    // only update local storage after debounce delay
+    setGuessGrid(debouncedGuesses);
+  }, [debouncedGuesses]);
+
+  const updateGuesses = (updatedCells: Cell[]) => {
+    setGuesses(getGuessGrid(cols, rows, updatedCells));
+  };
 
   const movePrev = () => {
     if (selectedClue === undefined || selectedCell === undefined) {
@@ -251,6 +275,8 @@ export default function Grid({
       if (event.code === 'Backspace') {
         movePrev();
       }
+
+      updateGuesses(updatedCells);
     } else if (event.code === 'Tab') {
       // cycle through the clues
       const index = clues.findIndex((clue) => clue.selected);
@@ -293,6 +319,8 @@ export default function Grid({
       });
 
       moveNext();
+
+      updateGuesses(updatedCells);
     }
   };
 

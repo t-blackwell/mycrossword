@@ -34,5 +34,6 @@ type Char =
   | '6'
   | '7'
   | '8'
-  | '9';
+  | '9'
+  | '';
 export default Char;

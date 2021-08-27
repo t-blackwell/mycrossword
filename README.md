@@ -39,8 +39,8 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] mark clues as answered
 - [x] media queries
 - [x] save grid to local storage to make guesses persist
+- [x] prevent check/reveal when solutions unavailable
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
-- [ ] prevent check/reveal when solutions unavailable
 - [ ] layout improvements
   - [ ] fixed top clue when xs
   - [ ] change button text to "Anag." when xs

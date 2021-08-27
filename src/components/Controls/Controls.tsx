@@ -24,6 +24,7 @@ interface ControlsProps {
   gridCols: number;
   gridRows: number;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
+  solutionsAvailable: boolean;
 }
 
 export default function Controls({
@@ -32,6 +33,7 @@ export default function Controls({
   gridCols,
   gridRows,
   setGuessGrid,
+  solutionsAvailable,
 }: ControlsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const selectedCell = cells.find((cell) => cell.selected);
@@ -306,10 +308,18 @@ export default function Controls({
 
   return (
     <div className="Controls">
-      <DropdownButton menu={checkMenu} text="Check" />
-      <DropdownButton menu={revealMenu} text="Reveal" />
+      {solutionsAvailable ? (
+        <>
+          <DropdownButton menu={checkMenu} text="Check" />
+          <DropdownButton menu={revealMenu} text="Reveal" />
+        </>
+      ) : null}
       <DropdownButton menu={clearMenu} text="Clear" />
-      <button className="Controls__button" type="button">
+      <button
+        className="Controls__button"
+        disabled={selectedClue === undefined}
+        type="button"
+      >
         Anagram helper
       </button>
     </div>

@@ -11,8 +11,8 @@
     margin: 0 vars.$grid-size * -0.5;
   }
   .Confirm__button {
-    background-color: vars.$button-background;
-    color: vars.$button-color;
+    background-color: vars.$confirm-button-background;
+    color: vars.$confirm-button-color;
     padding: vars.$button-padding;
     margin: 0 vars.$grid-size * 0.5;
     font-weight: bold;
@@ -22,7 +22,7 @@
     border-radius: vars.$border-radius;
   }
   .Confirm__button:hover {
-    background-color: vars.$button-background-selected;
+    background-color: vars.$confirm-button-hover;
   }
   .Confirm__button--cancel {
     background-color: vars.$outline-button-background;

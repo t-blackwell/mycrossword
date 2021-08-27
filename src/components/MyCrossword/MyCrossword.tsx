@@ -181,6 +181,7 @@ export default function MyCrossword({
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
           setGuessGrid={setGuessGrid}
+          solutionsAvailable={data.solutionAvailable}
         />
       </div>
       <Clues selectedClueId={selectedClue?.id} entries={clues} />

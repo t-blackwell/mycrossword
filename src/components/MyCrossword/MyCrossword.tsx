@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { Clues, Controls, Grid } from 'components';
+import { cellSize, Clues, Controls, Grid, StickyClue } from 'components';
 import { useBreakpoint, useLocalStorage } from 'hooks';
 import type {
   Cell,
@@ -165,16 +165,34 @@ export default function MyCrossword({
       )}
     >
       <div className="MyCrossword__container">
-        <Grid
-          cells={cells}
-          clues={clues}
-          cols={data.dimensions.cols}
-          guessGrid={guessGrid}
-          isLoading={cells.length === 0}
-          rawClues={data.entries}
-          rows={data.dimensions.rows}
-          setGuessGrid={setGuessGrid}
-        />
+        <div
+          className="MyCrossword__gridContainer"
+          style={{
+            maxWidth:
+              data.dimensions.cols * cellSize + data.dimensions.cols + 1,
+          }}
+        >
+          {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
+            <StickyClue
+              num={
+                selectedClue !== undefined
+                  ? `${selectedClue.number} ${selectedClue.direction}`
+                  : ''
+              }
+              text={selectedClue?.clue ?? ''}
+            />
+          ) : null}
+          <Grid
+            cells={cells}
+            clues={clues}
+            cols={data.dimensions.cols}
+            guessGrid={guessGrid}
+            isLoading={cells.length === 0}
+            rawClues={data.entries}
+            rows={data.dimensions.rows}
+            setGuessGrid={setGuessGrid}
+          />
+        </div>
         <Controls
           cells={cells}
           clues={clues}

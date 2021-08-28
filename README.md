@@ -42,7 +42,7 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] prevent check/reveal when solutions unavailable
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
 - [ ] layout improvements
-  - [ ] fixed top clue when xs
+  - [x] fixed top clue when xs
   - [ ] change button text to "Anag." when xs
   - [ ] wrap buttons
   - [ ] prevent jump from confirm cpt text "this will automatically cancel..."

@@ -8,5 +8,6 @@ export { default as Grid } from './Grid/Grid';
 export { default as GridCell } from './GridCell/GridCell';
 export { default as GridSeparators } from './GridSeparators/GridSeparators';
 export { default as Spinner } from './Spinner/Spinner';
+export { default as StickyClue } from './StickyClue/StickyClue';
 
 export * from './GridCell/GridCell';

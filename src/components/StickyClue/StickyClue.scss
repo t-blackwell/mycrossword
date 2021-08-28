@@ -1,0 +1,28 @@
+@use '_variables' as vars;
+
+.MyCrossword {
+  .StickyClue {
+    display: flex;
+    align-items: center;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    padding: vars.$grid-size 0;
+    background-color: vars.$page-background;
+    border-bottom: 1px solid vars.$grid-background;
+    height: vars.$grid-size * 3;
+    max-height: vars.$grid-size * 3;
+    line-height: 1.3;
+  }
+  .StickyClue__inner {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .StickyClue__num {
+    font-weight: bold;
+    margin-right: vars.$grid-size;
+    text-transform: capitalize;
+  }
+}

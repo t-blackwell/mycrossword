@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: column;
     padding: 0 vars.$grid-size;
+    flex: 50%;
   }
   .Clues__listHeader {
     border-bottom: 1px dotted vars.$light-grey;

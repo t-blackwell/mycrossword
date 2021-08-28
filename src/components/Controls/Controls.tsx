@@ -19,6 +19,7 @@ import { getGuessGrid } from 'utils/guess';
 import './Controls.scss';
 
 interface ControlsProps {
+  breakpoint: string;
   cells: Cell[];
   clues: Clue[];
   gridCols: number;
@@ -28,6 +29,7 @@ interface ControlsProps {
 }
 
 export default function Controls({
+  breakpoint,
   cells,
   clues,
   gridCols,
@@ -315,13 +317,15 @@ export default function Controls({
         </>
       ) : null}
       <DropdownButton menu={clearMenu} text="Clear" />
-      <button
-        className="Controls__button"
-        disabled={selectedClue === undefined}
-        type="button"
-      >
-        Anagram helper
-      </button>
+      <div className="Controls__buttonContainer">
+        <button
+          className="Controls__button"
+          disabled={selectedClue === undefined}
+          type="button"
+        >
+          {breakpoint === 'xs' ? 'Anag.' : 'Anagram helper'}
+        </button>
+      </div>
     </div>
   );
 }

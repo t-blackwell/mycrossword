@@ -14,7 +14,7 @@
     background-color: vars.$confirm-button-background;
     color: vars.$confirm-button-color;
     padding: vars.$button-padding;
-    margin: 0 vars.$grid-size * 0.5;
+    margin: vars.$button-margin;
     font-weight: bold;
     border: none;
     cursor: pointer;

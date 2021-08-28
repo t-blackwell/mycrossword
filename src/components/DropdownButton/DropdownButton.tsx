@@ -73,7 +73,7 @@ function DropdownButton({
 
         // open dropdown upwards
         if (!inView) {
-          const height = menuRect.height + buttonRef.current.clientHeight + 2;
+          const height = menuRect.height + buttonRef.current.clientHeight + 10;
           menuRef.current.style.marginTop = `-${height}px`;
         }
       }

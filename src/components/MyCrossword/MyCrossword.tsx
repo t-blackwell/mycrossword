@@ -194,6 +194,7 @@ export default function MyCrossword({
           />
         </div>
         <Controls
+          breakpoint={breakpoint ?? ''}
           cells={cells}
           clues={clues}
           gridCols={data.dimensions.cols}

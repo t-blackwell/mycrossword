@@ -8,7 +8,7 @@
     background-color: vars.$button-background;
     color: vars.$button-color;
     padding: vars.$button-padding;
-    margin: 0 vars.$grid-size * 0.5;
+    margin: vars.$button-margin;
     font-weight: bold;
     border: none;
     cursor: pointer;
@@ -32,9 +32,9 @@
     background-color: vars.$dropdown-background;
     border: 1px solid vars.$dropdown-border;
     z-index: 1;
-    margin: vars.$grid-size * 0.2 vars.$grid-size * 0.5 0 vars.$grid-size * 0.5;
+    margin: 0 vars.$grid-size * 0.5;
     border-radius: vars.$border-radius;
-    min-width: calc(100% - #{vars.$grid-size * 1.2});
+    min-width: calc(100% - #{vars.$grid-size});
   }
   .DropdownButton--expanded .DropdownButton__menu {
     visibility: visible;
@@ -44,7 +44,6 @@
     background-color: transparent;
     border: none;
     padding: vars.$button-padding;
-    font-weight: bold;
     white-space: nowrap;
     text-overflow: ellipsis;
   }

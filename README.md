@@ -40,12 +40,12 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
 - [x] media queries
 - [x] save grid to local storage to make guesses persist
 - [x] prevent check/reveal when solutions unavailable
-- [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
-- [ ] layout improvements
+- [x] layout improvements
   - [x] fixed top clue when xs
-  - [ ] change button text to "Anag." when xs
-  - [ ] wrap buttons
-  - [ ] prevent jump from confirm cpt text "this will automatically cancel..."
+  - [x] change button text to "Anag." when xs
+  - [x] wrap buttons
+  - [x] prevent jump from confirm cpt text "this will automatically cancel..."
+- [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
 - [ ] Anagram helper (!)
 
 ## Getting started

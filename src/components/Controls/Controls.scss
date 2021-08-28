@@ -5,7 +5,9 @@
     display: flex;
     margin-left: vars.$grid-size * -0.5;
     margin-right: vars.$grid-size * -0.5;
-    padding: vars.$grid-size * 1.2 0;
+    padding: vars.$grid-size * 0.6 0;
+    flex-wrap: wrap;
+    min-height: vars.$grid-size * 7;
   }
   .Controls__button {
     border: none;
@@ -15,7 +17,7 @@
     color: vars.$button-color;
     font-weight: bold;
     cursor: pointer;
-    margin: 0 vars.$grid-size * 0.5;
+    margin: vars.$button-margin;
   }
   .Controls__button:disabled {
     cursor: default;

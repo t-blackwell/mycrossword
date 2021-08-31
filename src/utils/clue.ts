@@ -1,4 +1,4 @@
-import { Cell, Clue } from 'interfaces';
+import { Cell, Clue, GuardianClue } from 'interfaces';
 
 function getGroupCells(groupIds: string[], cells: Cell[]) {
   const groupCells: Cell[] = [];
@@ -31,4 +31,19 @@ export function getCrossingClueIds(clue: Clue, cells: Cell[]) {
 
   // remove duplicates
   return Array.from(new Set(clueIds));
+}
+
+export function initialiseClues(
+  entries: GuardianClue[],
+  cells: Cell[],
+  selectedClueId?: string,
+) {
+  return entries.map((entry) => ({
+    ...entry,
+    answered: isCluePopulated(
+      { ...entry, selected: false, answered: false }, // TODO: use Partial<Clue>?
+      cells,
+    ),
+    selected: `#${entry.id}` === selectedClueId,
+  }));
 }

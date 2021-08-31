@@ -13,7 +13,7 @@ export default interface GuardianCrossword {
     | 'prize'
     | 'everyman';
   date: number;
-  dateSolutionAvailable: number;
+  dateSolutionAvailable?: number;
   dimensions: {
     cols: number;
     rows: number;
@@ -22,7 +22,7 @@ export default interface GuardianCrossword {
   id: string;
   name: string;
   number: number;
-  pdf: string;
+  pdf?: string;
   solutionAvailable: boolean;
-  webPublicationDate: number;
+  webPublicationDate?: number;
 }

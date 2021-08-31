@@ -346,7 +346,11 @@ export default function Grid({
               event.preventDefault();
 
               // remove focus from grid (TODO: change to use React.forwardRef?)
-              document.querySelectorAll<HTMLElement>('.Grid')[0].blur();
+              const gridElement =
+                document.querySelectorAll<HTMLElement>('.Grid');
+              if (gridElement.length === 1) {
+                gridElement[0].blur();
+              }
             }}
             width={width}
             height={height}

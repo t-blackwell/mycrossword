@@ -31,7 +31,10 @@ function Clue({
     dispatch(cellsActionSelect({ col, row }));
 
     // move focus back to grid (TODO: change to use React.forwardRef?)
-    document.querySelectorAll<HTMLElement>('.Grid')[0].focus();
+    const gridElement = document.querySelectorAll<HTMLElement>('.Grid');
+    if (gridElement.length === 1) {
+      gridElement[0].focus();
+    }
   }, []);
 
   return (

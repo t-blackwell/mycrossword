@@ -73,7 +73,7 @@ interface GridSeparatorsProps {
 
 function GridSeparators({ clues }: GridSeparatorsProps): JSX.Element {
   return (
-    <g className="GridSeparators">
+    <svg className="GridSeparators">
       {clues
         .filter((clue) => Object.keys(clue.separatorLocations).length > 0)
         .map((clue) => {
@@ -95,7 +95,7 @@ function GridSeparators({ clues }: GridSeparatorsProps): JSX.Element {
 
           return separators;
         })}
-    </g>
+    </svg>
   );
 }
 

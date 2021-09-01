@@ -1,26 +1,9 @@
 import userEvent from '@testing-library/user-event';
-import { GuardianCrossword } from 'interfaces';
 import * as React from 'react';
-import { updateGrid as cellsUpdateGrid } from 'redux/cellsSlice';
-import { updateGrid as cluesUpdateGrid } from 'redux/cluesSlice';
-import { initialiseCells } from 'utils/cell';
-import { initialiseClues } from 'utils/clue';
+import { initialiseStore } from 'utils/test';
 import testData from '../../testData/test.valid.1';
-import { render, screen, store } from '../../utils/test';
+import { render, screen, store } from '../../utils/rtl';
 import Clue from './Clue';
-
-function initialiseState(data: GuardianCrossword) {
-  const cells = initialiseCells(
-    data.dimensions.cols,
-    data.dimensions.rows,
-    data.entries,
-  );
-
-  const clues = initialiseClues(data.entries, cells);
-
-  store.dispatch(cellsUpdateGrid(cells));
-  store.dispatch(cluesUpdateGrid(clues));
-}
 
 test('it renders', () => {
   render(
@@ -80,7 +63,7 @@ test('it renders highlighted', () => {
 });
 
 test('it selects clue', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   render(
     <Clue

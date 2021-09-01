@@ -1,6 +1,6 @@
-import { GuardianCrossword } from 'interfaces';
 import { initialiseCells } from 'utils/cell';
 import { initialiseClues } from 'utils/clue';
+import { initialiseStore } from 'utils/test';
 import testData from '../testData/test.valid.1';
 import {
   answerGrid,
@@ -16,28 +16,21 @@ function getState() {
   return store.getState().clues.clues;
 }
 
-function getDataClues(data: GuardianCrossword) {
+test('it updates grid', () => {
   const cells = initialiseCells(
-    data.dimensions.cols,
-    data.dimensions.rows,
-    data.entries,
+    testData.dimensions.cols,
+    testData.dimensions.rows,
+    testData.entries,
   );
 
-  return initialiseClues(data.entries, cells);
-}
+  const clues = initialiseClues(testData.entries, cells);
 
-function initialiseState(data: GuardianCrossword) {
-  store.dispatch(updateGrid(getDataClues(data)));
-}
-
-test('it updates grid', () => {
-  const clues = getDataClues(testData);
   store.dispatch(updateGrid(clues));
   expect(getState()).toStrictEqual(clues);
 });
 
 test('it selects clue', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   const clueId = '1-across';
   const clue = getState().find((stateClue) => stateClue.id === clueId);
@@ -53,7 +46,7 @@ test('it selects clue', () => {
 });
 
 test('it answers/unanswers grid', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   // answer all clues
   store.dispatch(answerGrid());
@@ -71,7 +64,7 @@ test('it answers/unanswers grid', () => {
 });
 
 test('it answers clue', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   const clueId = '1-across';
   const clue = getState().find((stateClue) => stateClue.id === clueId);
@@ -88,10 +81,10 @@ test('it answers clue', () => {
 });
 
 test('it answers linked clue', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
-  const clueId = '3-down';
-  const linkedClueId = '4-down';
+  const clueId = '2-down';
+  const linkedClueId = '3-down';
 
   const clue = getState().find((stateClue) => stateClue.id === clueId);
   expect(clue).toBeDefined();
@@ -114,7 +107,7 @@ test('it answers linked clue', () => {
 });
 
 test('it unanswers clue', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   // answer all clues
   store.dispatch(answerGrid());
@@ -136,13 +129,13 @@ test('it unanswers clue', () => {
 });
 
 test('it unanswers linked clue', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   // answer all clues
   store.dispatch(answerGrid());
 
-  const clueId = '3-down';
-  const linkedClueId = '4-down';
+  const clueId = '2-down';
+  const linkedClueId = '3-down';
 
   const clue = getState().find((stateClue) => stateClue.id === clueId);
   expect(clue).toBeDefined();

@@ -1,5 +1,6 @@
-import { CellPosition, GuardianCrossword } from 'interfaces';
+import { CellPosition } from 'interfaces';
 import { initialiseCells } from 'utils/cell';
+import { initialiseStore } from 'utils/test';
 import testData from '../testData/test.valid.1';
 import { clearGrid, revealGrid, select, updateGrid } from './cellsSlice';
 import { store } from './store';
@@ -8,26 +9,18 @@ function getState() {
   return store.getState().cells.cells;
 }
 
-function getDataCells(data: GuardianCrossword) {
-  return initialiseCells(
-    data.dimensions.cols,
-    data.dimensions.rows,
-    data.entries,
-  );
-}
-
-function initialiseState(data: GuardianCrossword) {
-  store.dispatch(updateGrid(getDataCells(data)));
-}
-
 test('it updates grid', () => {
-  const cells = getDataCells(testData);
+  const cells = initialiseCells(
+    testData.dimensions.cols,
+    testData.dimensions.rows,
+    testData.entries,
+  );
   store.dispatch(updateGrid(cells));
   expect(getState()).toStrictEqual(cells);
 });
 
 test('it selects cell', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   // nothing should be selected
   expect(getState().filter((cell) => cell.selected).length).toBe(0);
@@ -62,7 +55,7 @@ test('it selects cell', () => {
 });
 
 test('it clears/reveals grid', () => {
-  initialiseState(testData);
+  initialiseStore(store, testData);
 
   // reveal all cells
   store.dispatch(revealGrid());

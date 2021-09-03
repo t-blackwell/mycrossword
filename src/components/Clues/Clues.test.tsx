@@ -4,8 +4,11 @@ import testData from '../../testData/test.valid.1';
 import { render, screen, store } from '../../utils/rtl';
 import Clues from './Clues';
 
-test('it renders', () => {
+beforeEach(() => {
   initialiseStore(store, testData);
+});
+
+test('it renders', () => {
   const { clues } = store.getState().clues;
 
   render(<Clues entries={clues} />);
@@ -26,11 +29,22 @@ test('it renders', () => {
 });
 
 test('it highlights selected clue', () => {
-  initialiseStore(store, testData);
   const { clues } = store.getState().clues;
 
   render(<Clues entries={clues} selectedClueId="1-across" />);
 
   const clueText = screen.getByText('Toy on a string (2-2)');
   expect(clueText.parentElement).toHaveClass('Clue--highlighted');
+});
+
+test('it highlights linked clues', () => {
+  const { clues } = store.getState().clues;
+
+  render(<Clues entries={clues} selectedClueId="2-down" />);
+
+  const clueTextOne = screen.getByText('Bits and bobs (4,3,4)');
+  expect(clueTextOne.parentElement).toHaveClass('Clue--highlighted');
+
+  const clueTextTwo = screen.getByText('See 2');
+  expect(clueTextTwo.parentElement).toHaveClass('Clue--highlighted');
 });

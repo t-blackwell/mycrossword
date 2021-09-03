@@ -8,7 +8,7 @@ import './GridCell.scss';
 
 export const cellSize = 31;
 
-const getDimensions = (cellPos: CellPosition) => {
+export const getDimensions = (cellPos: CellPosition) => {
   const xRect = 1 + (cellSize + 1) * cellPos.col;
   const yRect = 1 + (cellSize + 1) * cellPos.row;
   const xNum = xRect + 1;
@@ -38,6 +38,12 @@ function GridCell({
   pos,
   selectedClueIndex,
 }: GridCellProps): JSX.Element {
+  if (clueIds.length !== 1 && clueIds.length !== 2) {
+    throw new Error(
+      'Crossword data error: cell does not have 1 or 2 directions',
+    );
+  }
+
   const dispatch = useAppDispatch();
 
   const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions(pos);

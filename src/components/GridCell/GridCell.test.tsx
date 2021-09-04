@@ -1,8 +1,9 @@
 import { CellPosition } from 'interfaces';
 import * as React from 'react';
+import testData from 'testData/test.valid.1';
+import { restoreConsoleError, suppressConsoleError } from 'utils/jest';
+import { render, store } from 'utils/rtl';
 import { initialiseStore } from 'utils/test';
-import testData from '../../testData/test.valid.1';
-import { render, store } from '../../utils/rtl';
 import GridCell, { cellSize, getDimensions } from './GridCell';
 
 const cellPos: CellPosition = { col: 0, row: 0 };
@@ -132,8 +133,7 @@ test('it renders selected', () => {
 });
 
 test('it throws with 0 clueIds', () => {
-  // suppress console error
-  jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+  suppressConsoleError();
 
   expect(() =>
     render(
@@ -149,13 +149,11 @@ test('it throws with 0 clueIds', () => {
     ),
   ).toThrow();
 
-  // restore console error
-  jest.spyOn(console, 'error').mockRestore();
+  restoreConsoleError();
 });
 
 test('it throws with more than 2 clueIds', () => {
-  // suppress console error
-  jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+  suppressConsoleError();
 
   expect(() =>
     render(
@@ -171,8 +169,7 @@ test('it throws with more than 2 clueIds', () => {
     ),
   ).toThrow();
 
-  // restore console error
-  jest.spyOn(console, 'error').mockRestore();
+  restoreConsoleError();
 });
 
 test('it gets correct dimensions', () => {

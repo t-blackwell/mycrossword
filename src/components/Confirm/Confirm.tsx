@@ -8,17 +8,22 @@ interface ConfirmProps {
   timeout?: number;
 }
 
+export const defaultTimeout = 5;
+
 export default function Confirm({
   buttonText,
   onCancel,
   onConfirm,
-  timeout = 7,
+  timeout = defaultTimeout,
 }: ConfirmProps): JSX.Element {
+  if (timeout <= 0) {
+    throw new Error('Confirm should have a timeout greater than zero');
+  }
   const [seconds, setSeconds] = React.useState(timeout);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      if (seconds === 1) {
+      if (seconds <= 1) {
         onCancel();
       } else {
         setSeconds((secs) => secs - 1);

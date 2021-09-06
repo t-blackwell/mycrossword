@@ -312,15 +312,16 @@ export default function Controls({
     <div className="Controls">
       {solutionsAvailable ? (
         <>
-          <DropdownButton menu={checkMenu} text="Check" />
-          <DropdownButton menu={revealMenu} text="Reveal" />
+          <DropdownButton id="check-control" menu={checkMenu} text="Check" />
+          <DropdownButton id="reveal-control" menu={revealMenu} text="Reveal" />
         </>
       ) : null}
-      <DropdownButton menu={clearMenu} text="Clear" />
+      <DropdownButton id="clear-control" menu={clearMenu} text="Clear" />
       <div className="Controls__buttonContainer">
         <button
           className="Controls__button"
           disabled={selectedClue === undefined}
+          id="anagram-control"
           type="button"
         >
           {breakpoint === 'xs' ? 'Anag.' : 'Anagram helper'}

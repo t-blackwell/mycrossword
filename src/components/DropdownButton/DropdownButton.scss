@@ -35,6 +35,8 @@
     margin: 0 vars.$grid-size * 0.5;
     border-radius: vars.$border-radius;
     min-width: calc(100% - #{vars.$grid-size});
+    padding: 0;
+    list-style: none;
   }
   .DropdownButton--expanded .DropdownButton__menu {
     visibility: visible;
@@ -46,6 +48,7 @@
     padding: vars.$button-padding;
     white-space: nowrap;
     text-overflow: ellipsis;
+    width: 100%;
   }
   .DropdownButton__menuItem:not(:disabled):hover {
     background-color: vars.$dropdown-item-hover;

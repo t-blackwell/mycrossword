@@ -24,14 +24,22 @@ function CaretDownIcon({ className }: CaretDownIconProps): JSX.Element {
   );
 }
 
+export interface DropdownMenuItem {
+  disabled?: boolean;
+  onClick: () => void;
+  text: string;
+}
+
 interface DropdownButtonProps {
   className?: string;
-  menu: { disabled?: boolean; onClick: () => void; text: string }[];
+  id?: string;
+  menu: DropdownMenuItem[];
   text: string;
 }
 
 function DropdownButton({
   className,
+  id,
   menu,
   text,
 }: DropdownButtonProps): JSX.Element {
@@ -41,7 +49,7 @@ function DropdownButton({
 
   const componentRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const menuRef = React.useRef<HTMLDivElement>(null);
+  const menuRef = React.useRef<HTMLUListElement>(null);
   const [menuExpanded, setMenuExpanded] = React.useState(false);
 
   React.useEffect(() => {
@@ -92,7 +100,11 @@ function DropdownButton({
       ref={componentRef}
     >
       <button
+        aria-controls={id !== undefined ? `${id}-listbox` : undefined}
+        aria-expanded={menuExpanded ? 'true' : 'false'}
+        aria-haspopup="true"
         className="DropdownButton__button"
+        id={id}
         onClick={toggleMenuExpanded}
         ref={buttonRef}
         type="button"
@@ -100,22 +112,29 @@ function DropdownButton({
         <span>{text}</span>
         <CaretDownIcon className="DropdownButton__dropdownButtonIcon" />
       </button>
-      <div className="DropdownButton__menu" ref={menuRef}>
+      <ul
+        aria-label={`${text} menu`}
+        className="DropdownButton__menu"
+        id={id !== undefined ? `${id}-listbox` : undefined}
+        ref={menuRef}
+        role="listbox"
+      >
         {menu.map((item) => (
-          <button
-            className="DropdownButton__menuItem"
-            disabled={item.disabled}
-            key={item.text}
-            onClick={() => {
-              item.onClick();
-              setMenuExpanded(false);
-            }}
-            type="button"
-          >
-            {item.text}
-          </button>
+          <li key={item.text}>
+            <button
+              className="DropdownButton__menuItem"
+              disabled={item.disabled}
+              onClick={() => {
+                item.onClick();
+                setMenuExpanded(false);
+              }}
+              type="button"
+            >
+              {item.text}
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

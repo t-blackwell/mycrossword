@@ -46,7 +46,7 @@ Ultimately the goal is to make it backwards compatible with [MyCrossword](https:
   - [x] wrap buttons
   - [x] prevent jump from confirm cpt text "this will automatically cancel..."
 - [ ] add props to main component: `loadGrid`, `saveGrid`, `onMove`, `onFocusClue`
-- [ ] special instructions
+- [ ] display error messages
 - [ ] Anagram helper (!)
 
 ## Getting started

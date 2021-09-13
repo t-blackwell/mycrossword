@@ -9,6 +9,7 @@
 
 /** Breakpoints **/
 .MyCrossword--sm {
-  align-items: center;
-  justify-content: center;
+  .MyCrossword__container {
+    margin: 0 auto;
+  }
 }

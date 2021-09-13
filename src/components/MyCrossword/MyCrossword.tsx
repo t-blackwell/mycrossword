@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { initialiseCells } from 'utils/cell';
 import { initialiseClues } from 'utils/clue';
-import { getGuessGrid } from 'utils/guess';
+import { initialiseGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
 interface CrosswordProps {
@@ -32,7 +32,7 @@ export default function MyCrossword({
   const breakpoint = useBreakpoint();
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
     id,
-    getGuessGrid(data.dimensions.cols, data.dimensions.rows),
+    initialiseGuessGrid(data.dimensions.cols, data.dimensions.rows),
   );
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);

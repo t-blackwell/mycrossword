@@ -1,24 +1,37 @@
 import { Cell, GuessGrid } from 'interfaces';
 
 /**
- * Generate empty guess grid.
+ * Initialise a guess grid with a single char (default = '').
  * @param cols
  * @param rows
  * @param cells
  * @returns
  */
-// eslint-disable-next-line import/prefer-default-export
-export function getGuessGrid(cols: number, rows: number, cells?: Cell[]) {
+export function initialiseGuessGrid(
+  cols: number,
+  rows: number,
+  char: string = '',
+) {
   const grid: GuessGrid = {
-    value: new Array(rows).fill('').map(() => new Array(cols).fill('')),
+    value: new Array(rows).fill(char).map(() => new Array(cols).fill(char)),
   };
+  return grid;
+}
+
+/**
+ * Generate guess grid from cells.
+ * @param cols
+ * @param rows
+ * @param cells
+ * @returns
+ */
+export function getGuessGrid(cols: number, rows: number, cells: Cell[]) {
+  const grid = initialiseGuessGrid(cols, rows);
 
   // overlay the guesses from the cells
-  if (cells !== undefined) {
-    cells.forEach(({ guess, pos }) => {
-      grid.value[pos.col][pos.row] = guess !== undefined ? guess : '';
-    });
-  }
+  cells.forEach(({ guess, pos }) => {
+    grid.value[pos.col][pos.row] = guess !== undefined ? guess : '';
+  });
 
   return grid;
 }

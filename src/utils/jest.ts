@@ -3,5 +3,5 @@ export function suppressConsoleError() {
 }
 
 export function restoreConsoleError() {
-  jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+  jest.spyOn(console, 'error').mockRestore();
 }

@@ -3,6 +3,7 @@
 .MyCrossword {
   .Clues {
     display: flex;
+    flex-grow: 1;
   }
   .Clues__list {
     display: flex;
@@ -23,8 +24,11 @@
   .Clues {
     flex-direction: column;
   }
+  .Clues__list {
+    flex: initial;
+  }
   .Clues__list--down {
-    margin-top: vars.$grid-size;
+    margin-top: vars.$grid-size * 2;
   }
 }
 
@@ -40,7 +44,7 @@
   .Clues {
     flex-direction: column;
   }
-  .Clues__list {
-    margin-top: vars.$grid-size;
+  .Clues__list--down {
+    margin-top: vars.$grid-size * 2;
   }
 }

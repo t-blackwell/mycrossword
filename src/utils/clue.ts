@@ -44,6 +44,6 @@ export function initialiseClues(
       { ...entry, selected: false, answered: false }, // TODO: use Partial<Clue>?
       cells,
     ),
-    selected: `#${entry.id}` === selectedClueId,
+    selected: entry.id === selectedClueId,
   }));
 }

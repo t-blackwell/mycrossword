@@ -53,7 +53,7 @@ export default function MyCrossword({
     const initClues = initialiseClues(
       data.entries,
       initCells,
-      window.location.hash,
+      window.location.hash.replace('#', ''),
     );
     dispatch(cluesActionUpdateGrid(initClues));
   }, [dispatch, data]);

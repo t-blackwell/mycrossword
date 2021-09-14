@@ -1,4 +1,8 @@
 export function isValidChar(char: string) {
+  if (char.length !== 1) {
+    return false;
+  }
+
   const whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   return whitelist.includes(char);
 }

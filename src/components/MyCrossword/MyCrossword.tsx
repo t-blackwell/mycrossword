@@ -38,7 +38,7 @@ export default function MyCrossword({
   const dispatch = useAppDispatch();
   const breakpoint = useBreakpoint();
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
-    id,
+    `crosswords.${id}`,
     initialiseGuessGrid(data.dimensions.cols, data.dimensions.rows),
   );
   const cells = useAppSelector(getCells);

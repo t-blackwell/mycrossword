@@ -1,8 +1,12 @@
+import userEvent from '@testing-library/user-event';
+import { GuessGrid } from 'interfaces';
 import * as React from 'react';
-import invalidData1 from 'testData/test.invalid.1';
+import invalidData from 'testData/test.invalid.1';
 import validData from 'testData/test.valid.1';
-import { render, screen } from 'utils/rtl';
+import { act, fireEvent, render, screen } from 'utils/rtl';
 import MyCrossword from './MyCrossword';
+
+const debounceTime = 1000;
 
 test('it renders', () => {
   const { container } = render(<MyCrossword data={validData} id="test" />);
@@ -53,8 +57,61 @@ test('it renders with different theme', () => {
 });
 
 test('it displays error with invalid data', () => {
-  render(<MyCrossword data={invalidData1} id="test" />);
+  render(<MyCrossword data={invalidData} id="test" />);
 
   screen.getByText('Something went wrong');
   screen.getByText('Crossword data error: solution length mismatch');
+});
+
+test('it displays valid guess grid', () => {
+  const guessGrid: GuessGrid = {
+    value: [
+      ['X', 'X', 'X', 'X', 'X', 'X', '', '', '', '', '', '', ''],
+      ['X', '', 'X', '', '', '', '', '', '', '', '', '', ''],
+      ['X', '', 'X', '', '', '', '', '', '', '', '', '', ''],
+      ['X', 'X', 'X', 'X', 'X', 'X', 'X', '', '', '', '', '', ''],
+      ['', '', 'X', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', 'X', '', '', '', '', '', '', '', '', '', ''],
+      ['', 'X', 'X', 'X', 'X', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ],
+  };
+
+  render(<MyCrossword data={validData} id="test" loadGrid={guessGrid} />);
+
+  expect(screen.getAllByText('X').length).toBe(23);
+});
+
+test('it displays error with invalid guess grid', () => {
+  render(<MyCrossword data={validData} id="test" loadGrid={{ value: [] }} />);
+
+  screen.getByText('Something went wrong');
+  screen.getByText('Error loading grid');
+});
+
+test('it calls saveGrid', () => {
+  jest.useFakeTimers();
+
+  const saveGrid = jest.fn();
+  render(<MyCrossword data={validData} id="test" saveGrid={saveGrid} />);
+  expect(saveGrid).toHaveBeenCalledTimes(1);
+
+  const grid = screen.getByRole('textbox');
+
+  // click first cell and type 'A'
+  const gridCells = document.querySelectorAll('.GridCell');
+  userEvent.click(gridCells[0]);
+  fireEvent.keyDown(grid, { key: 'A', code: 'KeyA' });
+
+  act(() => {
+    jest.advanceTimersByTime(debounceTime);
+  });
+  expect(saveGrid).toHaveBeenCalledTimes(2);
+
+  jest.useRealTimers();
 });

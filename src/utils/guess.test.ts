@@ -1,6 +1,7 @@
+import { GuessGrid } from 'interfaces';
 import { revealGrid as cellsActionRevealGrid } from 'redux/cellsSlice';
 import testData from 'testData/test.valid.1';
-import { getGuessGrid, initialiseGuessGrid } from './guess';
+import { getGuessGrid, initialiseGuessGrid, validateGuessGrid } from './guess';
 import { store } from './rtl';
 import { initialiseStore } from './test';
 
@@ -77,4 +78,70 @@ test('it gets guess grid with defined cells', () => {
     ['', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', ''],
   ]);
+});
+
+test('validateGuessGrid returns true with valid size and characters', () => {
+  const guessGrid: GuessGrid = {
+    value: [
+      ['Y', 'E', 'L', 'L', 'O', 'W', '', '', '', '', '', '', ''],
+      ['O', '', 'I', '', '', '', '', '', '', '', '', '', ''],
+      ['Y', '', 'E', '', '', '', '', '', '', '', '', '', ''],
+      ['O', 'D', 'D', 'S', 'A', 'N', 'D', '', '', '', '', '', ''],
+      ['', '', 'O', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', 'W', '', '', '', '', '', '', '', '', '', ''],
+      ['', 'E', 'N', 'D', 'S', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ],
+  };
+
+  expect(validateGuessGrid(guessGrid, 13, 13)).toBeTruthy();
+});
+
+test('validateGuessGrid returns false with wrong size', () => {
+  const guessGrid: GuessGrid = {
+    value: [
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+    ],
+  };
+
+  expect(validateGuessGrid(guessGrid, 10, 10)).toBeFalsy();
+});
+
+test('validateGuessGrid returns false with special character', () => {
+  const guessGrid: GuessGrid = {
+    value: [
+      // @ts-ignore: invalid type
+      ['$', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+    ],
+  };
+
+  expect(validateGuessGrid(guessGrid, 5, 5)).toBeFalsy();
+});
+
+test('validateGuessGrid returns false with double character', () => {
+  const guessGrid: GuessGrid = {
+    value: [
+      // @ts-ignore: invalid type
+      ['AA', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+    ],
+  };
+
+  expect(validateGuessGrid(guessGrid, 5, 5)).toBeFalsy();
 });

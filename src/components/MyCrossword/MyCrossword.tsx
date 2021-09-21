@@ -21,18 +21,22 @@ import {
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { initialiseCells } from 'utils/cell';
 import { initialiseClues } from 'utils/clue';
-import { initialiseGuessGrid } from 'utils/guess';
+import { initialiseGuessGrid, validateGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
 interface CrosswordProps {
   data: GuardianCrossword;
   id: string;
+  loadGrid?: GuessGrid;
+  saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   theme?: 'yellow' | 'pink' | 'blue' | 'green';
 }
 
 export default function MyCrossword({
   data,
   id,
+  loadGrid,
+  saveGrid,
   theme = 'yellow',
 }: CrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -44,7 +48,19 @@ export default function MyCrossword({
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
   const selectedClue = clues.find((clue) => clue.selected);
-  const [errorMessage, setErrorMessage] = React.useState<string>();
+  const [gridErrorMessage, setGridErrorMessage] = React.useState<string>();
+
+  // validate overriding guess grid if defined
+  if (
+    loadGrid !== undefined &&
+    !validateGuessGrid(loadGrid, data.dimensions.cols, data.dimensions.rows)
+  ) {
+    return (
+      <div className={classNames('MyCrossword', `MyCrossword--${breakpoint}`)}>
+        <GridError message="Error loading grid" />
+      </div>
+    );
+  }
 
   React.useEffect(() => {
     try {
@@ -53,7 +69,7 @@ export default function MyCrossword({
         data.dimensions.cols,
         data.dimensions.rows,
         data.entries,
-        guessGrid,
+        loadGrid ?? guessGrid,
       );
       dispatch(cellsActionUpdateGrid(initCells));
 
@@ -65,10 +81,10 @@ export default function MyCrossword({
       );
       dispatch(cluesActionUpdateGrid(initClues));
 
-      setErrorMessage(undefined);
+      setGridErrorMessage(undefined);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setErrorMessage(error.message);
+        setGridErrorMessage(error.message);
       } else {
         throw error;
       }
@@ -76,10 +92,10 @@ export default function MyCrossword({
   }, [dispatch, data]);
 
   // something went wrong...
-  if (errorMessage !== undefined) {
+  if (gridErrorMessage !== undefined) {
     return (
       <div className={classNames('MyCrossword', `MyCrossword--${breakpoint}`)}>
-        <GridError message={errorMessage} />
+        <GridError message={gridErrorMessage} />
       </div>
     );
   }
@@ -118,7 +134,7 @@ export default function MyCrossword({
             isLoading={cells.length === 0}
             rawClues={data.entries}
             rows={data.dimensions.rows}
-            setGuessGrid={setGuessGrid}
+            setGuessGrid={saveGrid ?? setGuessGrid}
           />
         </div>
         <Controls
@@ -127,7 +143,7 @@ export default function MyCrossword({
           clues={clues}
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
-          setGuessGrid={setGuessGrid}
+          setGuessGrid={saveGrid ?? setGuessGrid}
           solutionsAvailable={data.solutionAvailable}
         />
       </div>

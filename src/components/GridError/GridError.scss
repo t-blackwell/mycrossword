@@ -1,0 +1,29 @@
+@use '_variables' as vars;
+
+.MyCrossword {
+  .GridError {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 481px;
+    height: 481px;
+    padding: vars.$grid-size * 2;
+    background-color: vars.$grid-background;
+    color: vars.$grid-foreground;
+    text-align: center;
+  }
+  .GridError__title {
+    font-weight: normal;
+    margin: 0;
+  }
+  .GridError__subTitle {
+    font-family: monospace;
+  }
+}
+
+/** Breakpoints **/
+.MyCrossword--xs {
+  .GridError {
+    width: auto;
+  }
+}

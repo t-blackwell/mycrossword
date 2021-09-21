@@ -1,7 +1,6 @@
 import * as React from 'react';
 import invalidData1 from 'testData/test.invalid.1';
 import validData from 'testData/test.valid.1';
-import { restoreConsoleError, suppressConsoleError } from 'utils/jest';
 import { render, screen } from 'utils/rtl';
 import MyCrossword from './MyCrossword';
 
@@ -53,8 +52,9 @@ test('it renders with different theme', () => {
   screen.getByText('See 2');
 });
 
-test('it throws with invalid data', () => {
-  suppressConsoleError();
-  expect(() => render(<MyCrossword data={invalidData1} id="test" />)).toThrow();
-  restoreConsoleError();
+test('it displays error with invalid data', () => {
+  render(<MyCrossword data={invalidData1} id="test" />);
+
+  screen.getByText('Something went wrong');
+  screen.getByText('Crossword data error: solution length mismatch');
 });

@@ -1,5 +1,12 @@
 import classNames from 'classnames';
-import { cellSize, Clues, Controls, Grid, StickyClue } from 'components';
+import {
+  cellSize,
+  Clues,
+  Controls,
+  Grid,
+  GridError,
+  StickyClue,
+} from 'components';
 import { useBreakpoint, useLocalStorage } from 'hooks';
 import type { GuardianCrossword, GuessGrid } from 'interfaces';
 import * as React from 'react';
@@ -36,27 +43,46 @@ export default function MyCrossword({
   );
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
-
   const selectedClue = clues.find((clue) => clue.selected);
+  const [errorMessage, setErrorMessage] = React.useState<string>();
 
   React.useEffect(() => {
-    // initialise cells
-    const initCells = initialiseCells(
-      data.dimensions.cols,
-      data.dimensions.rows,
-      data.entries,
-      guessGrid,
-    );
-    dispatch(cellsActionUpdateGrid(initCells));
+    try {
+      // initialise cells
+      const initCells = initialiseCells(
+        data.dimensions.cols,
+        data.dimensions.rows,
+        data.entries,
+        guessGrid,
+      );
+      dispatch(cellsActionUpdateGrid(initCells));
 
-    // initialise clues
-    const initClues = initialiseClues(
-      data.entries,
-      initCells,
-      window.location.hash.replace('#', ''),
-    );
-    dispatch(cluesActionUpdateGrid(initClues));
+      // initialise clues
+      const initClues = initialiseClues(
+        data.entries,
+        initCells,
+        window.location.hash.replace('#', ''),
+      );
+      dispatch(cluesActionUpdateGrid(initClues));
+
+      setErrorMessage(undefined);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        throw error;
+      }
+    }
   }, [dispatch, data]);
+
+  // something went wrong...
+  if (errorMessage !== undefined) {
+    return (
+      <div className={classNames('MyCrossword', `MyCrossword--${breakpoint}`)}>
+        <GridError message={errorMessage} />
+      </div>
+    );
+  }
 
   return (
     <div

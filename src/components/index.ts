@@ -6,6 +6,7 @@ export { default as MyCrossword } from './MyCrossword/MyCrossword';
 export { default as DropdownButton } from './DropdownButton/DropdownButton';
 export { default as Grid } from './Grid/Grid';
 export { default as GridCell } from './GridCell/GridCell';
+export { default as GridError } from './GridError/GridError';
 export { default as GridSeparators } from './GridSeparators/GridSeparators';
 export { default as Spinner } from './Spinner/Spinner';
 export { default as StickyClue } from './StickyClue/StickyClue';

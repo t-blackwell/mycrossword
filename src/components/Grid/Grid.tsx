@@ -9,6 +9,7 @@ import type {
   Clue,
   GuardianClue,
   GuessGrid,
+  CellChange,
 } from 'interfaces';
 import * as React from 'react';
 import {
@@ -46,6 +47,7 @@ interface GridProps {
   cols: number;
   guessGrid: GuessGrid;
   isLoading?: boolean;
+  onCellChange?: (cellChange: CellChange) => void;
   rawClues: GuardianClue[];
   rows: number;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
@@ -57,6 +59,7 @@ export default function Grid({
   cols,
   guessGrid,
   isLoading = false,
+  onCellChange,
   rawClues,
   rows,
   setGuessGrid,
@@ -73,6 +76,16 @@ export default function Grid({
     // only update local storage after debounce delay
     setGuessGrid(debouncedGuesses);
   }, [debouncedGuesses]);
+
+  const cellChange = (cell: Cell, newGuess: Char | undefined) => {
+    if (onCellChange !== undefined && cell.guess !== newGuess) {
+      onCellChange({
+        pos: cell.pos,
+        guess: newGuess,
+        previousGuess: cell.guess,
+      });
+    }
+  };
 
   const updateGuesses = (updatedCells: Cell[]) => {
     setGuesses(getGuessGrid(cols, rows, updatedCells));
@@ -250,6 +263,8 @@ export default function Grid({
       // move to the next cell
       moveDirection(event.code.replace('Arrow', ''));
     } else if (['Backspace', 'Delete'].includes(event.code)) {
+      cellChange(selectedCell, undefined);
+
       // clear the cell's value
       const updatedCell: Cell = {
         ...selectedCell,
@@ -298,6 +313,8 @@ export default function Grid({
         }),
       );
     } else if (isValidChar(key)) {
+      cellChange(selectedCell, key as Char);
+
       const updatedCell: Cell = {
         ...selectedCell,
         guess: key as Char,

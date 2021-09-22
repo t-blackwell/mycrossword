@@ -615,3 +615,74 @@ test('display characters and update cell positions', () => {
 
   jest.useRealTimers();
 });
+
+test('onCellChange called', () => {
+  initialiseStore(store, testData);
+  const onCellChange = jest.fn();
+  const setGuessGrid = jest.fn();
+
+  const { rerender } = render(
+    <Grid
+      cells={getCells()}
+      clues={getClues()}
+      cols={testData.dimensions.cols}
+      guessGrid={emptyGuessGrid}
+      onCellChange={onCellChange}
+      rawClues={testData.entries}
+      rows={testData.dimensions.rows}
+      setGuessGrid={setGuessGrid}
+    />,
+  );
+
+  const grid = screen.getByRole('textbox');
+
+  // click top left cell
+  userEvent.click(screen.getByText('1').parentElement!);
+  rerender(
+    <Grid
+      cells={getCells()}
+      clues={getClues()}
+      cols={testData.dimensions.cols}
+      guessGrid={emptyGuessGrid}
+      onCellChange={onCellChange}
+      rawClues={testData.entries}
+      rows={testData.dimensions.rows}
+      setGuessGrid={setGuessGrid}
+    />,
+  );
+
+  // type 'A'
+  fireEvent.keyDown(grid, { key: 'A', code: 'KeyA' });
+  expect(onCellChange).toHaveBeenCalledTimes(1);
+  rerender(
+    <Grid
+      cells={getCells()}
+      clues={getClues()}
+      cols={testData.dimensions.cols}
+      guessGrid={emptyGuessGrid}
+      onCellChange={onCellChange}
+      rawClues={testData.entries}
+      rows={testData.dimensions.rows}
+      setGuessGrid={setGuessGrid}
+    />,
+  );
+
+  // click top left cell again
+  userEvent.click(screen.getByText('1').parentElement!);
+  rerender(
+    <Grid
+      cells={getCells()}
+      clues={getClues()}
+      cols={testData.dimensions.cols}
+      guessGrid={emptyGuessGrid}
+      onCellChange={onCellChange}
+      rawClues={testData.entries}
+      rows={testData.dimensions.rows}
+      setGuessGrid={setGuessGrid}
+    />,
+  );
+
+  // type 'A' again and check onCellChange doesn't get called for a second time
+  fireEvent.keyDown(grid, { key: 'A', code: 'KeyA' });
+  expect(onCellChange).toHaveBeenCalledTimes(1);
+});

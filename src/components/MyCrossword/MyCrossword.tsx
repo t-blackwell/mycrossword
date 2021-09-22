@@ -8,7 +8,7 @@ import {
   StickyClue,
 } from 'components';
 import { useBreakpoint, useLocalStorage } from 'hooks';
-import type { GuardianCrossword, GuessGrid } from 'interfaces';
+import type { GuardianCrossword, GuessGrid, CellChange } from 'interfaces';
 import * as React from 'react';
 import {
   getCells,
@@ -28,6 +28,7 @@ interface CrosswordProps {
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;
+  onCellChange?: (cellChange: CellChange) => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   theme?: 'yellow' | 'pink' | 'blue' | 'green';
 }
@@ -36,6 +37,7 @@ export default function MyCrossword({
   data,
   id,
   loadGrid,
+  onCellChange,
   saveGrid,
   theme = 'yellow',
 }: CrosswordProps): JSX.Element {
@@ -132,6 +134,7 @@ export default function MyCrossword({
             cols={data.dimensions.cols}
             guessGrid={guessGrid}
             isLoading={cells.length === 0}
+            onCellChange={onCellChange}
             rawClues={data.entries}
             rows={data.dimensions.rows}
             setGuessGrid={saveGrid ?? setGuessGrid}

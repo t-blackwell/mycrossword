@@ -1,4 +1,4 @@
-import { Confirm, DropdownButton } from 'components';
+import { Button, Confirm, DropdownButton } from 'components';
 import { Cell, Clue, GuessGrid } from 'interfaces';
 import * as React from 'react';
 import {
@@ -24,6 +24,7 @@ interface ControlsProps {
   clues: Clue[];
   gridCols: number;
   gridRows: number;
+  onAnagramHelperClick: () => void;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   solutionsAvailable: boolean;
 }
@@ -34,6 +35,7 @@ export default function Controls({
   clues,
   gridCols,
   gridRows,
+  onAnagramHelperClick,
   setGuessGrid,
   solutionsAvailable,
 }: ControlsProps): JSX.Element {
@@ -318,14 +320,13 @@ export default function Controls({
       ) : null}
       <DropdownButton id="clear-control" menu={clearMenu} text="Clear" />
       <div className="Controls__buttonContainer">
-        <button
-          className="Controls__button"
+        <Button
           disabled={selectedClue === undefined}
           id="anagram-control"
-          type="button"
+          onClick={onAnagramHelperClick}
         >
           {breakpoint === 'xs' ? 'Anag.' : 'Anagram helper'}
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -9,21 +9,4 @@
     flex-wrap: wrap;
     min-height: vars.$grid-size * 7;
   }
-  .Controls__button {
-    border: none;
-    border-radius: vars.$border-radius;
-    padding: vars.$button-padding;
-    background-color: vars.$button-background;
-    color: vars.$button-color;
-    font-weight: bold;
-    cursor: pointer;
-    margin: vars.$button-margin;
-  }
-  .Controls__button:disabled {
-    cursor: default;
-    opacity: 0.5;
-  }
-  .Controls__button:not(:disabled):hover {
-    background-color: vars.$button-background-selected;
-  }
 }

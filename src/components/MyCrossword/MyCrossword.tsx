@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import {
+  AnagramHelper,
   cellSize,
   Clues,
   Controls,
@@ -51,6 +52,7 @@ export default function MyCrossword({
   const clues = useAppSelector(getClues);
   const selectedClue = clues.find((clue) => clue.selected);
   const [gridErrorMessage, setGridErrorMessage] = React.useState<string>();
+  const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
 
   // validate overriding guess grid if defined
   if (
@@ -118,27 +120,45 @@ export default function MyCrossword({
               data.dimensions.cols * cellSize + data.dimensions.cols + 1,
           }}
         >
-          {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
-            <StickyClue
-              num={
+          {isAnagramHelperOpen ? (
+            <AnagramHelper
+              // TODO: get first clue in group and use its text and combined length
+              clueNum={
                 selectedClue !== undefined
                   ? `${selectedClue.number} ${selectedClue.direction}`
                   : ''
               }
-              text={selectedClue?.clue ?? ''}
+              clueText={selectedClue?.clue ?? ''}
+              cols={data.dimensions.cols}
+              onClose={() => setIsAnagramHelperOpen(false)}
+              rows={data.dimensions.rows}
+              solutionLength={selectedClue?.length ?? 0}
             />
-          ) : null}
-          <Grid
-            cells={cells}
-            clues={clues}
-            cols={data.dimensions.cols}
-            guessGrid={guessGrid}
-            isLoading={cells.length === 0}
-            onCellChange={onCellChange}
-            rawClues={data.entries}
-            rows={data.dimensions.rows}
-            setGuessGrid={saveGrid ?? setGuessGrid}
-          />
+          ) : (
+            <>
+              {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
+                <StickyClue
+                  num={
+                    selectedClue !== undefined
+                      ? `${selectedClue.number} ${selectedClue.direction}`
+                      : ''
+                  }
+                  text={selectedClue?.clue ?? ''}
+                />
+              ) : null}
+              <Grid
+                cells={cells}
+                clues={clues}
+                cols={data.dimensions.cols}
+                guessGrid={guessGrid}
+                isLoading={cells.length === 0}
+                onCellChange={onCellChange}
+                rawClues={data.entries}
+                rows={data.dimensions.rows}
+                setGuessGrid={saveGrid ?? setGuessGrid}
+              />
+            </>
+          )}
         </div>
         <Controls
           breakpoint={breakpoint ?? ''}
@@ -146,6 +166,7 @@ export default function MyCrossword({
           clues={clues}
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
+          onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
           setGuessGrid={saveGrid ?? setGuessGrid}
           solutionsAvailable={data.solutionAvailable}
         />

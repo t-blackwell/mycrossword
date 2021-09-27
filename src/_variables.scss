@@ -10,6 +10,7 @@ $font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
 $font-size: $grid-size * 1.4;
 $font-size-small: $grid-size;
 $font-size-large: $grid-size * 1.6;
+$font-size-xlarge: $grid-size * 2.4;
 $font-size-caption: $grid-size * 1.2;
 
 /** Colours **/
@@ -24,6 +25,7 @@ $faint-grey1: rgba(0, 0, 0, 0.23);
 $faint-grey2: rgba(0, 0, 0, 0.15);
 $faint-grey3: rgba(0, 0, 0, 0.08);
 $faint-grey4: rgba(0, 0, 0, 0.04);
+$faint-grey5: rgba(0, 0, 0, 0.02);
 
 $button-color: #fff;
 $button-background: #bb3b80;

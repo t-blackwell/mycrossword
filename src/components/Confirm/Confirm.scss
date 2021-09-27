@@ -13,24 +13,9 @@
   .Confirm__button {
     background-color: vars.$confirm-button-background;
     color: vars.$confirm-button-color;
-    padding: vars.$button-padding;
-    margin: vars.$button-margin;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    white-space: nowrap;
-    border-radius: vars.$border-radius;
   }
-  .Confirm__button:hover {
+  .Confirm__button:not(:disabled):hover {
     background-color: vars.$confirm-button-hover;
-  }
-  .Confirm__button--cancel {
-    background-color: vars.$outline-button-background;
-    border: 1px solid vars.$outline-button-border;
-    color: vars.$outline-button-color;
-  }
-  .Confirm__button--cancel:hover {
-    background-color: vars.$outline-button-background-selected;
   }
   .Confirm__timeout {
     font-size: vars.$font-size-caption;

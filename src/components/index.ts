@@ -1,3 +1,5 @@
+export { default as AnagramHelper } from './AnagramHelper/AnagramHelper';
+export { default as Button } from './Button/Button';
 export { default as Clue } from './Clue/Clue';
 export { default as Clues } from './Clues/Clues';
 export { default as Confirm } from './Confirm/Confirm';

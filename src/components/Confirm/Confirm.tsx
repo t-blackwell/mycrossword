@@ -1,3 +1,4 @@
+import { Button } from 'components';
 import * as React from 'react';
 import './Confirm.scss';
 
@@ -38,20 +39,12 @@ export default function Confirm({
   return (
     <div className="Confirm">
       <div className="Confirm__buttonContainer">
-        <button
-          className="Confirm__button Confirm__button--cancel"
-          onClick={onCancel}
-          type="button"
-        >
+        <Button onClick={onCancel} variant="outlined">
           Cancel
-        </button>
-        <button
-          className="Confirm__button Confirm__button--confirm"
-          onClick={onConfirm}
-          type="button"
-        >
+        </Button>
+        <Button className="Confirm__button" onClick={onConfirm}>
           {buttonText}
-        </button>
+        </Button>
       </div>
       <span className="Confirm__timeout">
         This will automatically cancel in {seconds}

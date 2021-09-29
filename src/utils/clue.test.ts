@@ -4,7 +4,12 @@ import {
 } from 'redux/cellsSlice';
 import testData from 'testData/test.valid.1';
 import { initialiseCells } from './cell';
-import { isCluePopulated, getCrossingClueIds, initialiseClues } from './clue';
+import {
+  isCluePopulated,
+  getCrossingClueIds,
+  initialiseClues,
+  getGroupSolutionLength,
+} from './clue';
 import { store } from './rtl';
 import { initialiseStore } from './test';
 
@@ -43,6 +48,33 @@ test('isCluePopulated returns true', () => {
     store.getState().cells.cells,
   );
   expect(cluePopulated).toBeTruthy();
+});
+
+test('getGroupSolutionLength with one element in group', () => {
+  initialiseStore(store, testData);
+  const groupSolutionLength = getGroupSolutionLength(
+    ['1-across'],
+    store.getState().clues.clues,
+  );
+  expect(groupSolutionLength).toBe(4);
+});
+
+test('getGroupSolutionLength with several elements in group', () => {
+  initialiseStore(store, testData);
+  const groupSolutionLength = getGroupSolutionLength(
+    ['2-down', '3-down'],
+    store.getState().clues.clues,
+  );
+  expect(groupSolutionLength).toBe(11);
+});
+
+test('getGroupSolutionLength with no elements in group', () => {
+  initialiseStore(store, testData);
+  const groupSolutionLength = getGroupSolutionLength(
+    [],
+    store.getState().clues.clues,
+  );
+  expect(groupSolutionLength).toBe(0);
 });
 
 test('getCrossingClueIds', () => {

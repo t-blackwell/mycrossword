@@ -21,7 +21,7 @@ import {
 } from 'redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { initialiseCells } from 'utils/cell';
-import { initialiseClues } from 'utils/clue';
+import { getGroupSolutionLength, initialiseClues } from 'utils/clue';
 import { initialiseGuessGrid, validateGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
@@ -51,6 +51,10 @@ export default function MyCrossword({
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
   const selectedClue = clues.find((clue) => clue.selected);
+  const parentClue =
+    selectedClue?.group.length === 1
+      ? selectedClue
+      : clues.find((clue) => clue.id === selectedClue?.group[0]);
   const [gridErrorMessage, setGridErrorMessage] = React.useState<string>();
   const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
 
@@ -122,17 +126,15 @@ export default function MyCrossword({
         >
           {isAnagramHelperOpen ? (
             <AnagramHelper
-              // TODO: get first clue in group and use its text and combined length
-              clueNum={
-                selectedClue !== undefined
-                  ? `${selectedClue.number} ${selectedClue.direction}`
-                  : ''
-              }
-              clueText={selectedClue?.clue ?? ''}
+              clue={parentClue}
               cols={data.dimensions.cols}
               onClose={() => setIsAnagramHelperOpen(false)}
               rows={data.dimensions.rows}
-              solutionLength={selectedClue?.length ?? 0}
+              solutionLength={
+                parentClue !== undefined
+                  ? getGroupSolutionLength(parentClue.group, clues)
+                  : 0
+              }
             />
           ) : (
             <>

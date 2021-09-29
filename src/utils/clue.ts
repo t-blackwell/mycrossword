@@ -14,6 +14,18 @@ function getGroupCells(groupIds: string[], cells: Cell[]) {
   return groupCells;
 }
 
+export function getGroupSolutionLength(groupIds: string[], clues: Clue[]) {
+  let total = 0;
+
+  // get the total solution length for all clues in the group
+  groupIds.forEach((groupId) => {
+    const groupClue = clues.find((clue) => clue.id === groupId);
+    total += groupClue !== undefined ? groupClue.length : 0;
+  });
+
+  return total;
+}
+
 export function isCluePopulated(clue: Clue, cells: Cell[]) {
   const groupCells = getGroupCells(clue.group, cells);
   const populatedCells = groupCells.filter((cell) => cell.guess !== undefined);

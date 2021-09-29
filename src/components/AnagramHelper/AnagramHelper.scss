@@ -11,6 +11,16 @@
     border: 1px solid vars.$faint-grey1;
     text-align: center;
   }
+  .AnagramHelper__top {
+    flex: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .AnagramHelper__bottom {
+    flex: 50%;
+  }
   .AnagramHelper__input {
     font-size: vars.$font-size-xlarge;
     background: none;
@@ -20,6 +30,9 @@
   }
   .AnagramHelper__counter {
     font-size: vars.$font-size-caption;
+  }
+  .AnagramHelper__counter--hidden {
+    visibility: hidden;
   }
   .AnagramHelper__clueNum {
     font-weight: bold;
@@ -31,7 +44,7 @@
     align-items: center;
     justify-content: center;
   }
-  .AnagramHelper__closeButton {
+  .Button.AnagramHelper__closeButton {
     position: absolute;
     top: vars.$grid-size;
     right: vars.$grid-size;

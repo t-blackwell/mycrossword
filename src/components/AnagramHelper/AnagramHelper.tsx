@@ -1,4 +1,6 @@
+import classNames from 'classnames';
 import { Button, cellSize } from 'components';
+import { Clue } from 'interfaces';
 import * as React from 'react';
 import './AnagramHelper.scss';
 
@@ -17,8 +19,7 @@ function CloseIcon({ className }: CloseIconProps): JSX.Element {
 }
 
 interface AnagramHelperProps {
-  clueNum: string;
-  clueText: string;
+  clue?: Clue;
   cols: number;
   onClose: () => void;
   rows: number;
@@ -26,8 +27,7 @@ interface AnagramHelperProps {
 }
 
 export default function AnagramHelper({
-  clueNum,
-  clueText,
+  clue,
   cols,
   onClose,
   rows,
@@ -35,13 +35,26 @@ export default function AnagramHelper({
 }: AnagramHelperProps): JSX.Element {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [letters, setLetters] = React.useState('');
+  const [shuffling, setShuffling] = React.useState(false);
   const width = cols * cellSize + cols + 1;
   const height = rows * cellSize + rows + 1;
+  const enableButtons = letters !== '' || shuffling;
 
   const reset = () => {
     setLetters('');
+    setShuffling(false);
     inputRef.current?.focus();
   };
+
+  const shuffle = () => {
+    if (letters !== '') {
+      setShuffling(true);
+    }
+  };
+
+  React.useEffect(() => {
+    reset();
+  }, [clue?.id]);
 
   return (
     <div
@@ -56,31 +69,52 @@ export default function AnagramHelper({
       >
         <CloseIcon className="AnagramHelper__closeButtonIcon" />
       </Button>
-      <input
-        className="AnagramHelper__input"
-        maxLength={solutionLength}
-        onChange={(event) => setLetters(event.target.value)}
-        placeholder="Enter letters"
-        ref={inputRef}
-        spellCheck="false"
-        value={letters}
-      />
-      <span className="AnagramHelper__counter">
-        {letters.length}/{solutionLength}
-      </span>
-      <div className="AnagramHelper__buttons">
-        <Button disabled={letters === ''} onClick={reset}>
-          Start again
-        </Button>
-        <Button disabled={letters === ''} onClick={() => {}}>
-          Shuffle
-        </Button>
+      <div className="AnagramHelper__top">
+        {shuffling ? (
+          <span>{letters}</span>
+        ) : (
+          <>
+            <input
+              className="AnagramHelper__input"
+              maxLength={solutionLength}
+              onChange={(event) => setLetters(event.target.value)}
+              onKeyPress={(event) => {
+                if (['Enter', 'NumpadEnter'].includes(event.code)) {
+                  shuffle();
+                }
+              }}
+              placeholder="Enter letters"
+              ref={inputRef}
+              spellCheck="false"
+              value={letters}
+            />
+            <span
+              className={classNames(
+                'AnagramHelper__counter',
+                letters === '' ? 'AnagramHelper__counter--hidden' : null,
+              )}
+            >
+              {letters.length}/{solutionLength}
+            </span>
+          </>
+        )}
       </div>
-      <p className="AnagramHelper__clue">
-        <span className="AnagramHelper__clueNum">{clueNum}</span>
-        {clueText}
-      </p>
-      {/* <em>squares go here</em> */}
+
+      <div className="AnagramHelper__bottom">
+        <div className="AnagramHelper__buttons">
+          <Button disabled={!enableButtons} onClick={reset}>
+            Start again
+          </Button>
+          <Button disabled={!enableButtons} onClick={shuffle}>
+            Shuffle
+          </Button>
+        </div>
+        <p className="AnagramHelper__clue">
+          <span className="AnagramHelper__clueNum">{`${clue?.number} ${clue?.direction}`}</span>
+          {clue?.clue}
+        </p>
+        {/* <em>squares go here</em> */}
+      </div>
     </div>
   );
 }

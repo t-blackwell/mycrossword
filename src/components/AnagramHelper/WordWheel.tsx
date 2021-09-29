@@ -46,8 +46,8 @@ export default function WordWheel({ letters }: WordWheelProps): JSX.Element {
           style={
             i === 0 && (letters.length === 1 || letters.length > 4)
               ? {
-                  left: `${diameter}%`,
-                  top: `${diameter}%`,
+                  left: `${diameter - 1}%`,
+                  top: `${diameter - 2}%`,
                 }
               : getPosition(diameter, angle, i)
           }

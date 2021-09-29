@@ -12,25 +12,31 @@ interface ButtonProps {
   variant?: 'filled' | 'outlined';
 }
 
-export default function Button({
-  ariaLabel,
-  children,
-  className,
-  disabled,
-  id,
-  onClick,
-  variant = 'filled',
-}: ButtonProps): JSX.Element {
-  return (
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      ariaLabel,
+      children,
+      className,
+      disabled,
+      id,
+      onClick,
+      variant = 'filled',
+    },
+    ref,
+  ): JSX.Element => (
     <button
       aria-label={ariaLabel}
       className={classNames('Button', `Button--${variant}`, className)}
       disabled={disabled}
       id={id}
       onClick={onClick}
+      ref={ref}
       type="button"
     >
       {children}
     </button>
-  );
-}
+  ),
+);
+
+export default Button;

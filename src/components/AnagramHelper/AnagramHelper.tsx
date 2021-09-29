@@ -35,6 +35,7 @@ export default function AnagramHelper({
   solutionLength,
 }: AnagramHelperProps): JSX.Element {
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [letters, setLetters] = React.useState('');
   const [shuffling, setShuffling] = React.useState(false);
   const width = cols * cellSize + cols + 1;
@@ -55,6 +56,7 @@ export default function AnagramHelper({
         .join('');
       setLetters(shuffledLetters);
       setShuffling(true);
+      buttonRef.current?.focus();
     }
   };
 
@@ -118,7 +120,7 @@ export default function AnagramHelper({
           <Button disabled={!enableButtons} onClick={reset}>
             Start again
           </Button>
-          <Button disabled={!enableButtons} onClick={shuffle}>
+          <Button disabled={!enableButtons} onClick={shuffle} ref={buttonRef}>
             Shuffle
           </Button>
         </div>

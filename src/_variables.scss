@@ -7,11 +7,11 @@ $button-margin: $grid-size * 0.5;
 
 /** Fonts **/
 $font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
-$font-size: $grid-size * 1.4;
+$font-size-caption: $grid-size * 1.2;
 $font-size-small: $grid-size;
+$font-size: $grid-size * 1.4;
 $font-size-large: $grid-size * 1.6;
 $font-size-xlarge: $grid-size * 2.4;
-$font-size-caption: $grid-size * 1.2;
 
 /** Colours **/
 $page-background: #fff;

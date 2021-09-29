@@ -1,0 +1,20 @@
+@use '_variables' as vars;
+
+.MyCrossword {
+  .WordWheel {
+    position: relative;
+    top: 0;
+    left: 5%;
+    width: 50%;
+    height: 100%;
+    margin: 0 auto;
+  }
+  .WordWheel__letter {
+    position: absolute;
+    text-transform: uppercase;
+    font-size: vars.$font-size-large;
+  }
+  .WordWheel__letter--central {
+    font-size: vars.$font-size-xlarge;
+  }
+}

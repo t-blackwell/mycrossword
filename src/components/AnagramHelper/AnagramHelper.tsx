@@ -3,6 +3,7 @@ import { Button, cellSize } from 'components';
 import { Clue } from 'interfaces';
 import * as React from 'react';
 import './AnagramHelper.scss';
+import WordWheel from './WordWheel';
 
 interface CloseIconProps {
   className?: string;
@@ -48,6 +49,11 @@ export default function AnagramHelper({
 
   const shuffle = () => {
     if (letters !== '') {
+      const shuffledLetters = letters
+        .split('')
+        .sort(() => 0.5 - Math.random())
+        .join('');
+      setLetters(shuffledLetters);
       setShuffling(true);
     }
   };
@@ -71,16 +77,23 @@ export default function AnagramHelper({
       </Button>
       <div className="AnagramHelper__top">
         {shuffling ? (
-          <span>{letters}</span>
+          <WordWheel letters={letters} />
         ) : (
           <>
             <input
               className="AnagramHelper__input"
               maxLength={solutionLength}
               onChange={(event) => setLetters(event.target.value)}
-              onKeyPress={(event) => {
+              onKeyDown={(event) => {
                 if (['Enter', 'NumpadEnter'].includes(event.code)) {
                   shuffle();
+                } else if (event.code === 'Escape') {
+                  // on esc, clear or close
+                  if (letters === '') {
+                    onClose();
+                  } else {
+                    reset();
+                  }
                 }
               }}
               placeholder="Enter letters"

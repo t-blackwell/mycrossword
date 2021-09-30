@@ -1,0 +1,24 @@
+@use '_variables' as vars;
+
+.MyCrossword {
+  .SolutionDisplay {
+    display: flex;
+  }
+  .SolutionDisplay__letter {
+    color: vars.$light-grey;
+    border-bottom: 2px solid vars.$light-grey;
+    padding: vars.$grid-size * 0.5;
+    margin: vars.$grid-size * 0.5;
+    width: vars.$grid-size;
+    height: vars.$grid-size * 1.5;
+    text-transform: uppercase;
+  }
+  .SolutionDisplay__letter--populated {
+    color: vars.$grid-color;
+    border-bottom: 2px solid vars.$grid-color;
+  }
+  .SolutionDisplay__letter--missing {
+    color: red;
+    border-bottom: 2px solid red;
+  }
+}

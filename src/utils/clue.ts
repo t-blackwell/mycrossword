@@ -1,13 +1,16 @@
 import { Cell, Clue, GuardianClue } from 'interfaces';
 
-function getGroupCells(groupIds: string[], cells: Cell[]) {
+export function getGroupCells(groupIds: string[], cells: Cell[]) {
   const groupCells: Cell[] = [];
 
   // get cells for each clueId in group array
   groupIds.forEach((groupId) => {
-    const cellsForGroup = cells.filter((cell) =>
-      cell.clueIds.includes(groupId),
-    );
+    const cellsForGroup = cells
+      .filter((cell) => cell.clueIds.includes(groupId))
+      .sort(
+        (a: Cell, b: Cell) => a.pos.col - b.pos.col || a.pos.row - b.pos.row,
+      );
+
     groupCells.push(...cellsForGroup);
   });
 

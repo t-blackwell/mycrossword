@@ -1,8 +1,9 @@
 import classNames from 'classnames';
 import { Button, cellSize } from 'components';
-import { Clue } from 'interfaces';
+import { Cell, Clue } from 'interfaces';
 import * as React from 'react';
 import './AnagramHelper.scss';
+import SolutionDisplay from './SolutionDisplay';
 import WordWheel from './WordWheel';
 
 interface CloseIconProps {
@@ -22,6 +23,7 @@ function CloseIcon({ className }: CloseIconProps): JSX.Element {
 interface AnagramHelperProps {
   clue?: Clue;
   cols: number;
+  groupCells: Cell[];
   onClose: () => void;
   rows: number;
   solutionLength: number;
@@ -30,6 +32,7 @@ interface AnagramHelperProps {
 export default function AnagramHelper({
   clue,
   cols,
+  groupCells,
   onClose,
   rows,
   solutionLength,
@@ -128,7 +131,11 @@ export default function AnagramHelper({
           <span className="AnagramHelper__clueNum">{`${clue?.number} ${clue?.direction}`}</span>
           {clue?.clue}
         </p>
-        {/* <em>squares go here</em> */}
+        <SolutionDisplay
+          cells={groupCells}
+          letters={letters}
+          shuffling={shuffling}
+        />
       </div>
     </div>
   );

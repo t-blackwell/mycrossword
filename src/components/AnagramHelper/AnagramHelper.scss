@@ -10,6 +10,7 @@
     box-sizing: border-box;
     border: 1px solid vars.$faint-grey1;
     text-align: center;
+    overflow: hidden;
   }
   .AnagramHelper__top {
     flex: 50%;
@@ -33,6 +34,9 @@
   }
   .AnagramHelper__counter--hidden {
     visibility: hidden;
+  }
+  .AnagramHelper__clue {
+    line-height: vars.$line-height;
   }
   .AnagramHelper__clueNum {
     font-weight: bold;

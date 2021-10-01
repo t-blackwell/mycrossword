@@ -21,4 +21,14 @@
     color: red;
     border-bottom: 2px solid red;
   }
+  .SolutionDisplay__letter--hasSpace,
+  .SolutionDisplay__letter--hasHyphen {
+    margin-right: vars.$grid-size * 2;
+  }
+  .SolutionDisplay__letter--hasHyphen::after {
+    content: '-';
+    width: vars.$grid-size * 2;
+    // TODO: fix hyphen size and position
+    background-color: blue;
+  }
 }

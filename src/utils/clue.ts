@@ -1,4 +1,4 @@
-import { Cell, Clue, GuardianClue } from 'interfaces';
+import { Cell, Clue, GuardianClue, SeparatorLocations } from 'interfaces';
 
 export function getGroupCells(groupIds: string[], cells: Cell[]) {
   const groupCells: Cell[] = [];
@@ -27,6 +27,32 @@ export function getGroupSolutionLength(groupIds: string[], clues: Clue[]) {
   });
 
   return total;
+}
+
+export function getGroupSeparators(groupIds: string[], clues: Clue[]) {
+  const separators: SeparatorLocations = { ',': [], '-': [] };
+  let total = 0;
+
+  // combine separators for all clues in the group
+  groupIds.forEach((groupId) => {
+    const groupClue = clues.find((clue) => clue.id === groupId);
+
+    if (groupClue !== undefined) {
+      const spaces = groupClue.separatorLocations[',']?.map(
+        (sep) => sep + total,
+      );
+      separators[','] = [...separators[','], ...(spaces ?? [])];
+
+      const hyphens = groupClue.separatorLocations['-']?.map(
+        (sep) => sep + total,
+      );
+      separators['-'] = [...separators['-'], ...(hyphens ?? [])];
+    }
+
+    total += groupClue !== undefined ? groupClue.length : 0;
+  });
+
+  return separators;
 }
 
 export function isCluePopulated(clue: Clue, cells: Cell[]) {

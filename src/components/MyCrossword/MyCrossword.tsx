@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { initialiseCells } from 'utils/cell';
 import {
   getGroupCells,
+  getGroupSeparators,
   getGroupSolutionLength,
   initialiseClues,
 } from 'utils/clue';
@@ -128,33 +129,28 @@ export default function MyCrossword({
               data.dimensions.cols * cellSize + data.dimensions.cols + 1,
           }}
         >
-          {isAnagramHelperOpen ? (
+          {isAnagramHelperOpen && parentClue !== undefined ? (
             <AnagramHelper
               clue={parentClue}
-              cols={data.dimensions.cols}
-              groupCells={
-                parentClue !== undefined
-                  ? getGroupCells(parentClue?.group, cells)
-                  : []
+              groupCells={getGroupCells(parentClue.group, cells)}
+              groupSeparators={getGroupSeparators(parentClue.group, clues)}
+              height={
+                data.dimensions.rows * cellSize + data.dimensions.rows + 1
               }
               onClose={() => setIsAnagramHelperOpen(false)}
-              rows={data.dimensions.rows}
-              solutionLength={
-                parentClue !== undefined
-                  ? getGroupSolutionLength(parentClue.group, clues)
-                  : 0
-              }
+              solutionLength={getGroupSolutionLength(parentClue.group, clues)}
+              width={data.dimensions.cols * cellSize + data.dimensions.cols + 1}
             />
           ) : (
             <>
               {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
                 <StickyClue
                   num={
-                    selectedClue !== undefined
-                      ? `${selectedClue.number} ${selectedClue.direction}`
+                    parentClue !== undefined
+                      ? `${parentClue.number} ${parentClue.direction}`
                       : ''
                   }
-                  text={selectedClue?.clue ?? ''}
+                  text={parentClue?.clue ?? ''}
                 />
               ) : null}
               <Grid

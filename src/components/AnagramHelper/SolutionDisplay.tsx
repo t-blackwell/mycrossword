@@ -1,8 +1,27 @@
 /* eslint-disable no-plusplus */
 import classNames from 'classnames';
-import { Cell } from 'interfaces';
+import { Cell, SeparatorLocations } from 'interfaces';
 import * as React from 'react';
 import './SolutionDisplay.scss';
+
+function getSeparatorClass(
+  separators: SeparatorLocations,
+  letterIndex: number,
+) {
+  const includesLetter = (seps: number[]) => seps.includes(letterIndex);
+
+  const spaces = separators[','];
+  if (includesLetter(spaces)) {
+    return 'SolutionDisplay__letter--hasSpace';
+  }
+
+  const hyphens = separators['-'];
+  if (includesLetter(hyphens)) {
+    return 'SolutionDisplay__letter--hasHyphen';
+  }
+
+  return undefined;
+}
 
 function filterLetters(letters: string, blacklist: string) {
   let filteredLetters = letters;
@@ -17,12 +36,14 @@ function filterLetters(letters: string, blacklist: string) {
 interface SolutionDisplayProps {
   cells: Cell[];
   letters?: string;
+  separators: SeparatorLocations;
   shuffling: boolean;
 }
 
 export default function SolutionDisplay({
   cells,
   letters,
+  separators,
   shuffling,
 }: SolutionDisplayProps): JSX.Element {
   // remove the populated grid cells from the anagram fodder
@@ -45,10 +66,10 @@ export default function SolutionDisplay({
             shuffling &&
               cell.guess !== undefined &&
               letters !== undefined &&
-              letters !== '' &&
               !letters.toUpperCase().includes(cell.guess)
               ? 'SolutionDisplay__letter--missing'
               : null,
+            getSeparatorClass(separators, i + 1),
           )}
           // eslint-disable-next-line react/no-array-index-key
           key={`${cell.val}-${i}`}
@@ -56,7 +77,6 @@ export default function SolutionDisplay({
           {cell.guess ??
             (shuffling &&
             filteredLetters !== undefined &&
-            filteredLetters !== '' &&
             filteredLetters[j] !== undefined
               ? filteredLetters[j++]
               : null)}

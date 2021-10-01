@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import { Button, cellSize } from 'components';
-import { Cell, Clue } from 'interfaces';
+import { Button } from 'components';
+import { Cell, Clue, SeparatorLocations } from 'interfaces';
 import * as React from 'react';
 import './AnagramHelper.scss';
 import SolutionDisplay from './SolutionDisplay';
@@ -22,27 +22,27 @@ function CloseIcon({ className }: CloseIconProps): JSX.Element {
 
 interface AnagramHelperProps {
   clue?: Clue;
-  cols: number;
   groupCells: Cell[];
+  groupSeparators: SeparatorLocations;
+  height: number;
   onClose: () => void;
-  rows: number;
   solutionLength: number;
+  width: number;
 }
 
 export default function AnagramHelper({
   clue,
-  cols,
   groupCells,
+  groupSeparators,
+  height,
   onClose,
-  rows,
   solutionLength,
+  width,
 }: AnagramHelperProps): JSX.Element {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [letters, setLetters] = React.useState('');
   const [shuffling, setShuffling] = React.useState(false);
-  const width = cols * cellSize + cols + 1;
-  const height = rows * cellSize + rows + 1;
   const enableButtons = letters !== '' || shuffling;
 
   const reset = () => {
@@ -134,6 +134,7 @@ export default function AnagramHelper({
         <SolutionDisplay
           cells={groupCells}
           letters={letters}
+          separators={groupSeparators}
           shuffling={shuffling}
         />
       </div>

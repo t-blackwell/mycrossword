@@ -1,4 +1,4 @@
-import { Direction } from 'interfaces';
+import { Direction, SeparatorLocationsOptional } from 'interfaces';
 
 export default interface GuardianClue {
   clue: string;
@@ -9,6 +9,6 @@ export default interface GuardianClue {
   length: number;
   number: number;
   position: { x: number; y: number };
-  separatorLocations: { [key in ',' | '-']?: number[] };
+  separatorLocations: SeparatorLocationsOptional;
   solution?: string;
 }

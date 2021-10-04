@@ -14,7 +14,11 @@
     text-transform: uppercase;
     font-size: vars.$font-size-large;
   }
+  .WordWheel__letter--populated {
+    color: vars.$light-grey;
+  }
   .WordWheel__letter--central {
     font-size: vars.$font-size-xlarge;
+    min-width: vars.$grid-size * 2;
   }
 }

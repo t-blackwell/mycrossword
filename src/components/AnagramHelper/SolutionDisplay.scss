@@ -8,32 +8,36 @@
     justify-content: center;
   }
   .SolutionDisplay__letter {
-    color: vars.$light-grey;
-    border-bottom: 2px solid vars.$light-grey;
-    padding: vars.$grid-size * 0.4 0;
-    margin: vars.$grid-size * 0.4;
+    color: vars.$grid-color;
+    border: 1px solid vars.$light-grey;
+    padding: vars.$grid-size * 0.4;
+    margin-top: vars.$grid-size * 0.4;
+    margin-right: vars.$grid-size * 0.2;
     min-width: vars.$grid-size * 1.5;
     height: vars.$grid-size * 1.5;
     text-transform: uppercase;
   }
   .SolutionDisplay__letter--populated {
-    color: vars.$grid-color;
-    border-bottom: 2px solid vars.$grid-color;
+    background-color: vars.$faint-grey3;
+    border-color: vars.$grid-color;
   }
   .SolutionDisplay__letter--missing {
     color: red;
-    border-bottom: 2px solid red;
+    border-color: red;
+    background-color: rgba(255, 0, 0, 0.1);
   }
   .SolutionDisplay__letter--hasSpace {
-    margin-right: vars.$grid-size * 1.9;
+    margin-right: vars.$grid-size * 1.5;
   }
   .SolutionDisplay__letter--hasHyphen {
     position: relative;
   }
   .SolutionDisplay__letter--hasHyphen::after {
     position: absolute;
-    content: '-';
-    top: vars.$grid-size * 0.2;
-    left: vars.$grid-size * 1.6;
+    content: '—';
+    top: vars.$grid-size * 0.5;
+    left: vars.$grid-size * 2;
+    font-size: vars.$font-size-small;
+    font-weight: bold;
   }
 }

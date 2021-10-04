@@ -3,13 +3,16 @@
 .MyCrossword {
   .SolutionDisplay {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
   }
   .SolutionDisplay__letter {
     color: vars.$light-grey;
     border-bottom: 2px solid vars.$light-grey;
-    padding: vars.$grid-size * 0.5;
-    margin: vars.$grid-size * 0.5;
-    width: vars.$grid-size;
+    padding: vars.$grid-size * 0.4 0;
+    margin: vars.$grid-size * 0.4;
+    min-width: vars.$grid-size * 1.5;
     height: vars.$grid-size * 1.5;
     text-transform: uppercase;
   }
@@ -21,14 +24,16 @@
     color: red;
     border-bottom: 2px solid red;
   }
-  .SolutionDisplay__letter--hasSpace,
+  .SolutionDisplay__letter--hasSpace {
+    margin-right: vars.$grid-size * 1.9;
+  }
   .SolutionDisplay__letter--hasHyphen {
-    margin-right: vars.$grid-size * 2;
+    position: relative;
   }
   .SolutionDisplay__letter--hasHyphen::after {
+    position: absolute;
     content: '-';
-    width: vars.$grid-size * 2;
-    // TODO: fix hyphen size and position
-    background-color: blue;
+    top: vars.$grid-size * 0.2;
+    left: vars.$grid-size * 1.6;
   }
 }

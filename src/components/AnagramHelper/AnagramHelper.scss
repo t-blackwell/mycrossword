@@ -64,3 +64,11 @@
     height: vars.$grid-size * 3;
   }
 }
+
+/** Breakpoints **/
+.MyCrossword--xs {
+  .AnagramHelper[style] {
+    width: auto !important;
+    min-width: auto !important;
+  }
+}

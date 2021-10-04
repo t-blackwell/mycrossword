@@ -52,36 +52,45 @@ export default function SolutionDisplay({
     letters !== undefined
       ? filterLetters(letters?.toUpperCase(), flatCells)
       : undefined;
+  let upperLetters = letters?.toUpperCase();
   let j = 0;
 
   return (
     <div className="SolutionDisplay">
-      {cells.map((cell, i) => (
-        <span
-          className={classNames(
-            'SolutionDisplay__letter',
-            cell.guess !== undefined
-              ? 'SolutionDisplay__letter--populated'
-              : null,
-            shuffling &&
-              cell.guess !== undefined &&
-              letters !== undefined &&
-              !letters.toUpperCase().includes(cell.guess)
-              ? 'SolutionDisplay__letter--missing'
-              : null,
-            getSeparatorClass(separators, i + 1),
-          )}
-          // eslint-disable-next-line react/no-array-index-key
-          key={`${cell.val}-${i}`}
-        >
-          {cell.guess ??
-            (shuffling &&
-            filteredLetters !== undefined &&
-            filteredLetters[j] !== undefined
-              ? filteredLetters[j++]
-              : null)}
-        </span>
-      ))}
+      {cells.map((cell, i) => {
+        const inLetters =
+          cell.guess !== undefined && upperLetters?.includes(cell.guess);
+        if (inLetters) {
+          upperLetters = upperLetters?.replace(cell.guess!, '');
+        }
+
+        return (
+          <span
+            className={classNames(
+              'SolutionDisplay__letter',
+              cell.guess !== undefined
+                ? 'SolutionDisplay__letter--populated'
+                : null,
+              shuffling &&
+                cell.guess !== undefined &&
+                letters !== undefined &&
+                !inLetters
+                ? 'SolutionDisplay__letter--missing'
+                : null,
+              getSeparatorClass(separators, i + 1),
+            )}
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${cell.val}-${i}`}
+          >
+            {cell.guess ??
+              (shuffling &&
+              filteredLetters !== undefined &&
+              filteredLetters[j] !== undefined
+                ? filteredLetters[j++]
+                : null)}
+          </span>
+        );
+      })}
     </div>
   );
 }

@@ -82,7 +82,10 @@ export default function AnagramHelper({
       </Button>
       <div className="AnagramHelper__top">
         {shuffling ? (
-          <WordWheel letters={letters} />
+          <WordWheel
+            letters={letters}
+            populatedLetters={groupCells.map((cell) => cell.guess).join('')}
+          />
         ) : (
           <>
             <input

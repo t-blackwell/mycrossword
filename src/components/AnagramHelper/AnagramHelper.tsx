@@ -3,48 +3,9 @@ import { Button } from 'components';
 import { Cell, Clue, SeparatorLocations } from 'interfaces';
 import * as React from 'react';
 import './AnagramHelper.scss';
+import ClueDisplay from './ClueDisplay';
 import SolutionDisplay from './SolutionDisplay';
 import WordWheel from './WordWheel';
-
-interface SplitClueProps {
-  clue?: string;
-  onClick: (word: string) => void;
-}
-
-function SplitClue({ clue, onClick }: SplitClueProps): JSX.Element {
-  if (clue === undefined) {
-    return <></>;
-  }
-
-  // regex split on word boundaries
-  const parts = clue.split(/\b(\w+)\b/);
-
-  return (
-    <>
-      {parts.map((part, i) => {
-        if (i % 2 === 1) {
-          return (
-            <span
-              className="AnagramHelper__clickableWord"
-              onClick={() => onClick(part)}
-              onKeyPress={(event) => {
-                if (event.key === 'Enter') {
-                  onClick(part);
-                }
-              }}
-              role="button"
-              tabIndex={0}
-            >
-              {part}
-            </span>
-          );
-        }
-
-        return <span>{part}</span>;
-      })}
-    </>
-  );
-}
 
 interface CloseIconProps {
   className?: string;
@@ -178,11 +139,12 @@ export default function AnagramHelper({
         </div>
         <p className="AnagramHelper__clue">
           <span className="AnagramHelper__clueNum">{`${clue?.number} ${clue?.direction}`}</span>
-          {shuffling ? (
-            clue?.clue
-          ) : (
-            <SplitClue clue={clue?.clue} onClick={(word) => appendWord(word)} />
-          )}
+          <ClueDisplay
+            className="AnagramHelper__clickableWord"
+            clue={clue?.clue}
+            onClick={(word) => appendWord(word)}
+            splitWords={!shuffling}
+          />
         </p>
         <SolutionDisplay
           cells={groupCells}

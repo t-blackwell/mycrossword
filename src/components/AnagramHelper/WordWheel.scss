@@ -13,6 +13,7 @@
     position: absolute;
     text-transform: uppercase;
     font-size: vars.$font-size-large;
+    user-select: none;
   }
   .WordWheel__letter--populated {
     color: vars.$light-grey;

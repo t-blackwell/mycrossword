@@ -63,6 +63,13 @@
     width: vars.$grid-size * 3;
     height: vars.$grid-size * 3;
   }
+  .AnagramHelper__clickableWord {
+    cursor: pointer;
+    user-select: none;
+  }
+  .AnagramHelper__clickableWord:hover {
+    text-decoration: underline;
+  }
 }
 
 /** Breakpoints **/

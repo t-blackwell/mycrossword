@@ -9,6 +9,8 @@ import {
   getCrossingClueIds,
   initialiseClues,
   getGroupSolutionLength,
+  getGroupCells,
+  getGroupSeparators,
 } from './clue';
 import { store } from './rtl';
 import { initialiseStore } from './test';
@@ -17,174 +19,177 @@ function getClue(clueId: string) {
   return store.getState().clues.clues.find((clue) => clue.id === clueId);
 }
 
-test('isCluePopulated returns false', () => {
-  initialiseStore(store, testData);
+describe('getGroupCells', () => {
+  test('returns cells in group (1 clue)', () => {
+    initialiseStore(store, testData);
+    const groupCells = getGroupCells(
+      ['1-across'],
+      store.getState().cells.cells,
+    );
+    expect(groupCells.length).toBe(4);
+    expect(groupCells[0].val).toBe('Y');
+    expect(groupCells[1].val).toBe('O');
+    expect(groupCells[2].val).toBe('Y');
+    expect(groupCells[3].val).toBe('O');
+  });
 
-  const oneAcross = getClue('1-across');
-  expect(oneAcross).toBeDefined();
-  if (oneAcross === undefined) {
-    return;
-  }
+  test('returns cells in group (2 clues)', () => {
+    initialiseStore(store, testData);
+    const groupCells = getGroupCells(
+      ['2-down', '3-down'],
+      store.getState().cells.cells,
+    );
+    expect(groupCells.length).toBe(11);
+    expect(groupCells[0].val).toBe('O');
+    expect(groupCells[1].val).toBe('D');
+    expect(groupCells[2].val).toBe('D');
+    expect(groupCells[3].val).toBe('S');
+    expect(groupCells[4].val).toBe('A');
+    expect(groupCells[5].val).toBe('N');
+    expect(groupCells[6].val).toBe('D');
+    expect(groupCells[7].val).toBe('E');
+    expect(groupCells[8].val).toBe('N');
+    expect(groupCells[9].val).toBe('D');
+    expect(groupCells[10].val).toBe('S');
+  });
 
-  const cluePopulated = isCluePopulated(
-    oneAcross,
-    store.getState().cells.cells,
-  );
-  expect(cluePopulated).toBeFalsy();
+  test('returns cells in group (0 clues)', () => {
+    initialiseStore(store, testData);
+    const groupCells = getGroupCells([], store.getState().cells.cells);
+    expect(groupCells.length).toBe(0);
+  });
 });
 
-test('isCluePopulated returns true', () => {
-  initialiseStore(store, testData);
-  store.dispatch(cellsActionRevealGrid());
+describe('getGroupSolutionLength', () => {
+  test('returns length with one element in group', () => {
+    initialiseStore(store, testData);
+    const groupSolutionLength = getGroupSolutionLength(
+      ['1-across'],
+      store.getState().clues.clues,
+    );
+    expect(groupSolutionLength).toBe(4);
+  });
 
-  const oneAcross = getClue('1-across');
-  expect(oneAcross).toBeDefined();
-  if (oneAcross === undefined) {
-    return;
-  }
+  test('returns length with several elements in group', () => {
+    initialiseStore(store, testData);
+    const groupSolutionLength = getGroupSolutionLength(
+      ['2-down', '3-down'],
+      store.getState().clues.clues,
+    );
+    expect(groupSolutionLength).toBe(11);
+  });
 
-  const cluePopulated = isCluePopulated(
-    oneAcross,
-    store.getState().cells.cells,
-  );
-  expect(cluePopulated).toBeTruthy();
+  test('returns length with no elements in group', () => {
+    initialiseStore(store, testData);
+    const groupSolutionLength = getGroupSolutionLength(
+      [],
+      store.getState().clues.clues,
+    );
+    expect(groupSolutionLength).toBe(0);
+  });
 });
 
-test('getGroupSolutionLength with one element in group', () => {
-  initialiseStore(store, testData);
-  const groupSolutionLength = getGroupSolutionLength(
-    ['1-across'],
-    store.getState().clues.clues,
-  );
-  expect(groupSolutionLength).toBe(4);
+describe('getGroupSeparators', () => {
+  test('single clue with no separators', () => {
+    initialiseStore(store, testData);
+    const groupSeparators = getGroupSeparators(
+      ['1-down'],
+      store.getState().clues.clues,
+    );
+    expect(groupSeparators).toEqual({ ',': [], '-': [] });
+  });
+
+  test('single clue with separators', () => {
+    initialiseStore(store, testData);
+    const groupSeparators = getGroupSeparators(
+      ['1-across'],
+      store.getState().clues.clues,
+    );
+    expect(groupSeparators).toEqual({ ',': [], '-': [2] });
+  });
+
+  test('two clues with separator in first', () => {
+    initialiseStore(store, testData);
+    const groupSeparators = getGroupSeparators(
+      ['2-down', '3-down'],
+      store.getState().clues.clues,
+    );
+    expect(groupSeparators).toEqual({ ',': [4], '-': [] });
+  });
+
+  test('three clues with separators in all', () => {
+    initialiseStore(store, testData);
+    const groupSeparators = getGroupSeparators(
+      ['1-across', '4-across', '2-down'],
+      store.getState().clues.clues,
+    );
+    expect(groupSeparators).toEqual({ ',': [7, 15], '-': [2] });
+  });
 });
 
-test('getGroupSolutionLength with several elements in group', () => {
-  initialiseStore(store, testData);
-  const groupSolutionLength = getGroupSolutionLength(
-    ['2-down', '3-down'],
-    store.getState().clues.clues,
-  );
-  expect(groupSolutionLength).toBe(11);
+describe('isCluePopulated', () => {
+  test('returns false', () => {
+    initialiseStore(store, testData);
+
+    const oneAcross = getClue('1-across');
+    expect(oneAcross).toBeDefined();
+    if (oneAcross === undefined) {
+      return;
+    }
+
+    const cluePopulated = isCluePopulated(
+      oneAcross,
+      store.getState().cells.cells,
+    );
+    expect(cluePopulated).toBeFalsy();
+  });
+
+  test('returns true', () => {
+    initialiseStore(store, testData);
+    store.dispatch(cellsActionRevealGrid());
+
+    const oneAcross = getClue('1-across');
+    expect(oneAcross).toBeDefined();
+    if (oneAcross === undefined) {
+      return;
+    }
+
+    const cluePopulated = isCluePopulated(
+      oneAcross,
+      store.getState().cells.cells,
+    );
+    expect(cluePopulated).toBeTruthy();
+  });
 });
 
-test('getGroupSolutionLength with no elements in group', () => {
-  initialiseStore(store, testData);
-  const groupSolutionLength = getGroupSolutionLength(
-    [],
-    store.getState().clues.clues,
-  );
-  expect(groupSolutionLength).toBe(0);
+describe('getCrossingClueIds', () => {
+  test('returns clue ids that cross', () => {
+    initialiseStore(store, testData);
+
+    const fourAcross = getClue('4-across');
+    expect(fourAcross).toBeDefined();
+    if (fourAcross === undefined) {
+      return;
+    }
+
+    const crossingClueIds = getCrossingClueIds(
+      fourAcross,
+      store.getState().cells.cells,
+    );
+    expect(crossingClueIds).toEqual(['4-across', '1-down', '2-down', '3-down']);
+  });
 });
 
-test('getCrossingClueIds', () => {
-  initialiseStore(store, testData);
+describe('initialiseClues', () => {
+  test('clues get initialised', () => {
+    const cells = initialiseCells(
+      testData.dimensions.cols,
+      testData.dimensions.rows,
+      testData.entries,
+    );
 
-  const fourAcross = getClue('4-across');
-  expect(fourAcross).toBeDefined();
-  if (fourAcross === undefined) {
-    return;
-  }
-
-  const crossingClueIds = getCrossingClueIds(
-    fourAcross,
-    store.getState().cells.cells,
-  );
-  expect(crossingClueIds).toEqual(['4-across', '1-down', '2-down', '3-down']);
-});
-
-test('initialiseClues', () => {
-  const cells = initialiseCells(
-    testData.dimensions.cols,
-    testData.dimensions.rows,
-    testData.entries,
-  );
-
-  const clues = initialiseClues(testData.entries, cells);
-  expect(clues).toEqual([
-    {
-      id: '1-across',
-      number: 1,
-      humanNumber: '1',
-      clue: 'Toy on a string (2-2)',
-      direction: 'across',
-      length: 4,
-      group: ['1-across'],
-      position: { x: 0, y: 0 },
-      separatorLocations: { '-': [2] },
-      solution: 'YOYO',
-      answered: false,
-      selected: false,
-    },
-    {
-      id: '4-across',
-      number: 4,
-      humanNumber: '4',
-      clue: 'Have a rest (3,4)',
-      direction: 'across',
-      length: 7,
-      group: ['4-across'],
-      position: { x: 0, y: 2 },
-      separatorLocations: { ',': [3] },
-      solution: 'LIEDOWN',
-      answered: false,
-      selected: false,
-    },
-    {
-      id: '1-down',
-      number: 1,
-      humanNumber: '1',
-      clue: 'Colour (6)',
-      direction: 'down',
-      length: 6,
-      group: ['1-down'],
-      position: { x: 0, y: 0 },
-      separatorLocations: {},
-      solution: 'YELLOW',
-      answered: false,
-      selected: false,
-    },
-    {
-      id: '2-down',
-      number: 2,
-      humanNumber: '2',
-      clue: 'Bits and bobs (4,3,4)',
-      direction: 'down',
-      length: 7,
-      group: ['2-down', '3-down'],
-      position: { x: 3, y: 0 },
-      separatorLocations: { ',': [4] },
-      solution: 'ODDSAND',
-      answered: false,
-      selected: false,
-    },
-    {
-      id: '3-down',
-      number: 3,
-      humanNumber: '3',
-      clue: 'See 2',
-      direction: 'down',
-      length: 4,
-      group: ['2-down', '3-down'],
-      position: { x: 6, y: 1 },
-      separatorLocations: {},
-      solution: 'ENDS',
-      answered: false,
-      selected: false,
-    },
-  ]);
-});
-
-test('initialiseClues with selected clue', () => {
-  const cells = initialiseCells(
-    testData.dimensions.cols,
-    testData.dimensions.rows,
-    testData.entries,
-  );
-
-  const clues = initialiseClues(testData.entries, cells, '1-across');
-  expect(clues).toEqual(
-    expect.arrayContaining([
+    const clues = initialiseClues(testData.entries, cells);
+    expect(clues).toEqual([
       {
         id: '1-across',
         number: 1,
@@ -197,95 +202,182 @@ test('initialiseClues with selected clue', () => {
         separatorLocations: { '-': [2] },
         solution: 'YOYO',
         answered: false,
-        selected: true,
+        selected: false,
       },
-    ]),
-  );
-});
+      {
+        id: '4-across',
+        number: 4,
+        humanNumber: '4',
+        clue: 'Have a rest (3,4)',
+        direction: 'across',
+        length: 7,
+        group: ['4-across'],
+        position: { x: 0, y: 2 },
+        separatorLocations: { ',': [3] },
+        solution: 'LIEDOWN',
+        answered: false,
+        selected: false,
+      },
+      {
+        id: '1-down',
+        number: 1,
+        humanNumber: '1',
+        clue: 'Colour (6)',
+        direction: 'down',
+        length: 6,
+        group: ['1-down'],
+        position: { x: 0, y: 0 },
+        separatorLocations: {},
+        solution: 'YELLOW',
+        answered: false,
+        selected: false,
+      },
+      {
+        id: '2-down',
+        number: 2,
+        humanNumber: '2',
+        clue: 'Bits and bobs (4,3,4)',
+        direction: 'down',
+        length: 7,
+        group: ['2-down', '3-down'],
+        position: { x: 3, y: 0 },
+        separatorLocations: { ',': [4] },
+        solution: 'ODDSAND',
+        answered: false,
+        selected: false,
+      },
+      {
+        id: '3-down',
+        number: 3,
+        humanNumber: '3',
+        clue: 'See 2',
+        direction: 'down',
+        length: 4,
+        group: ['2-down', '3-down'],
+        position: { x: 6, y: 1 },
+        separatorLocations: {},
+        solution: 'ENDS',
+        answered: false,
+        selected: false,
+      },
+    ]);
+  });
 
-test('initialiseClues with answered clues', () => {
-  const cells = initialiseCells(
-    testData.dimensions.cols,
-    testData.dimensions.rows,
-    testData.entries,
-  );
+  test('clues get initialised with selected clue', () => {
+    const cells = initialiseCells(
+      testData.dimensions.cols,
+      testData.dimensions.rows,
+      testData.entries,
+    );
 
-  // reveal all cells
-  store.dispatch(cellsUpdateGrid(cells));
-  store.dispatch(cellsActionRevealGrid());
+    const clues = initialiseClues(testData.entries, cells, '1-across');
+    expect(clues).toEqual(
+      expect.arrayContaining([
+        {
+          id: '1-across',
+          number: 1,
+          humanNumber: '1',
+          clue: 'Toy on a string (2-2)',
+          direction: 'across',
+          length: 4,
+          group: ['1-across'],
+          position: { x: 0, y: 0 },
+          separatorLocations: { '-': [2] },
+          solution: 'YOYO',
+          answered: false,
+          selected: true,
+        },
+      ]),
+    );
+  });
 
-  const clues = initialiseClues(testData.entries, store.getState().cells.cells);
+  test('clues get initialised with answered clues', () => {
+    const cells = initialiseCells(
+      testData.dimensions.cols,
+      testData.dimensions.rows,
+      testData.entries,
+    );
 
-  expect(clues).toEqual([
-    {
-      id: '1-across',
-      number: 1,
-      humanNumber: '1',
-      clue: 'Toy on a string (2-2)',
-      direction: 'across',
-      length: 4,
-      group: ['1-across'],
-      position: { x: 0, y: 0 },
-      separatorLocations: { '-': [2] },
-      solution: 'YOYO',
-      answered: true,
-      selected: false,
-    },
-    {
-      id: '4-across',
-      number: 4,
-      humanNumber: '4',
-      clue: 'Have a rest (3,4)',
-      direction: 'across',
-      length: 7,
-      group: ['4-across'],
-      position: { x: 0, y: 2 },
-      separatorLocations: { ',': [3] },
-      solution: 'LIEDOWN',
-      answered: true,
-      selected: false,
-    },
-    {
-      id: '1-down',
-      number: 1,
-      humanNumber: '1',
-      clue: 'Colour (6)',
-      direction: 'down',
-      length: 6,
-      group: ['1-down'],
-      position: { x: 0, y: 0 },
-      separatorLocations: {},
-      solution: 'YELLOW',
-      answered: true,
-      selected: false,
-    },
-    {
-      id: '2-down',
-      number: 2,
-      humanNumber: '2',
-      clue: 'Bits and bobs (4,3,4)',
-      direction: 'down',
-      length: 7,
-      group: ['2-down', '3-down'],
-      position: { x: 3, y: 0 },
-      separatorLocations: { ',': [4] },
-      solution: 'ODDSAND',
-      answered: true,
-      selected: false,
-    },
-    {
-      id: '3-down',
-      number: 3,
-      humanNumber: '3',
-      clue: 'See 2',
-      direction: 'down',
-      length: 4,
-      group: ['2-down', '3-down'],
-      position: { x: 6, y: 1 },
-      separatorLocations: {},
-      solution: 'ENDS',
-      answered: true,
-      selected: false,
-    },
-  ]);
+    // reveal all cells
+    store.dispatch(cellsUpdateGrid(cells));
+    store.dispatch(cellsActionRevealGrid());
+
+    const clues = initialiseClues(
+      testData.entries,
+      store.getState().cells.cells,
+    );
+
+    expect(clues).toEqual([
+      {
+        id: '1-across',
+        number: 1,
+        humanNumber: '1',
+        clue: 'Toy on a string (2-2)',
+        direction: 'across',
+        length: 4,
+        group: ['1-across'],
+        position: { x: 0, y: 0 },
+        separatorLocations: { '-': [2] },
+        solution: 'YOYO',
+        answered: true,
+        selected: false,
+      },
+      {
+        id: '4-across',
+        number: 4,
+        humanNumber: '4',
+        clue: 'Have a rest (3,4)',
+        direction: 'across',
+        length: 7,
+        group: ['4-across'],
+        position: { x: 0, y: 2 },
+        separatorLocations: { ',': [3] },
+        solution: 'LIEDOWN',
+        answered: true,
+        selected: false,
+      },
+      {
+        id: '1-down',
+        number: 1,
+        humanNumber: '1',
+        clue: 'Colour (6)',
+        direction: 'down',
+        length: 6,
+        group: ['1-down'],
+        position: { x: 0, y: 0 },
+        separatorLocations: {},
+        solution: 'YELLOW',
+        answered: true,
+        selected: false,
+      },
+      {
+        id: '2-down',
+        number: 2,
+        humanNumber: '2',
+        clue: 'Bits and bobs (4,3,4)',
+        direction: 'down',
+        length: 7,
+        group: ['2-down', '3-down'],
+        position: { x: 3, y: 0 },
+        separatorLocations: { ',': [4] },
+        solution: 'ODDSAND',
+        answered: true,
+        selected: false,
+      },
+      {
+        id: '3-down',
+        number: 3,
+        humanNumber: '3',
+        clue: 'See 2',
+        direction: 'down',
+        length: 4,
+        group: ['2-down', '3-down'],
+        position: { x: 6, y: 1 },
+        separatorLocations: {},
+        solution: 'ENDS',
+        answered: true,
+        selected: false,
+      },
+    ]);
+  });
 });

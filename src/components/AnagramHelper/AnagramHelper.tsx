@@ -137,15 +137,17 @@ export default function AnagramHelper({
             Shuffle
           </Button>
         </div>
-        <p className="AnagramHelper__clue">
-          <span className="AnagramHelper__clueNum">{`${clue?.number} ${clue?.direction}`}</span>
-          <ClueDisplay
-            className="AnagramHelper__clickableWord"
-            clue={clue?.clue}
-            onClick={(word) => appendWord(word)}
-            splitWords={!shuffling}
-          />
-        </p>
+        {clue !== undefined ? (
+          <p className="AnagramHelper__clue">
+            <span className="AnagramHelper__clueNum">{`${clue.number} ${clue.direction}`}</span>
+            <ClueDisplay
+              className="AnagramHelper__clickableWord"
+              clue={clue.clue}
+              onClick={(word) => appendWord(word)}
+              splitWords={!shuffling}
+            />
+          </p>
+        ) : null}
         <SolutionDisplay
           cells={groupCells}
           letters={letters}

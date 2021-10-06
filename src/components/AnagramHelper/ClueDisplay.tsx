@@ -3,21 +3,17 @@ import * as React from 'react';
 
 interface ClueDisplayProps {
   className?: string;
-  clue?: string;
+  clue: string;
   onClick: (word: string) => void;
-  splitWords: boolean;
+  splitWords?: boolean;
 }
 
 export default function ClueDisplay({
   className,
   clue,
   onClick,
-  splitWords,
+  splitWords = false,
 }: ClueDisplayProps): JSX.Element {
-  if (clue === undefined) {
-    return <></>;
-  }
-
   if (!splitWords) {
     return <span>{clue}</span>;
   }

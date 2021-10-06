@@ -13,6 +13,11 @@ const getPosition = (diameter: number, angle: number, i: number) => {
   };
 };
 
+const getCentralPosition = (diameter: number) => ({
+  left: `${diameter - 1}%`,
+  top: `${diameter - 2}%`,
+});
+
 const getAngle = (letters: string, minForCentral: number = 5) => {
   if (letters.length === 0) {
     return 0;
@@ -60,10 +65,7 @@ export default function WordWheel({
               )}
               style={
                 i === 0 && (letters.length === 1 || letters.length > 4)
-                  ? {
-                      left: `${diameter - 1}%`,
-                      top: `${diameter - 2}%`,
-                    }
+                  ? getCentralPosition(diameter)
                   : getPosition(diameter, angle, i)
               }
               // eslint-disable-next-line react/no-array-index-key

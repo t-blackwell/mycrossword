@@ -130,8 +130,8 @@ export default function AnagramHelper({
 
       <div className="AnagramHelper__bottom">
         <div className="AnagramHelper__buttons">
-          <Button disabled={!enableButtons} onClick={reset}>
-            Start again
+          <Button disabled={!enableButtons} onClick={reset} variant="outlined">
+            Reset
           </Button>
           <Button disabled={!enableButtons} onClick={shuffle} ref={buttonRef}>
             Shuffle

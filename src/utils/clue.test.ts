@@ -8,7 +8,6 @@ import {
   isCluePopulated,
   getCrossingClueIds,
   initialiseClues,
-  getGroupSolutionLength,
   getGroupCells,
   getGroupSeparators,
 } from './clue';
@@ -57,35 +56,6 @@ describe('getGroupCells', () => {
     initialiseStore(store, testData);
     const groupCells = getGroupCells([], store.getState().cells.cells);
     expect(groupCells.length).toBe(0);
-  });
-});
-
-describe('getGroupSolutionLength', () => {
-  test('returns length with one element in group', () => {
-    initialiseStore(store, testData);
-    const groupSolutionLength = getGroupSolutionLength(
-      ['1-across'],
-      store.getState().clues.clues,
-    );
-    expect(groupSolutionLength).toBe(4);
-  });
-
-  test('returns length with several elements in group', () => {
-    initialiseStore(store, testData);
-    const groupSolutionLength = getGroupSolutionLength(
-      ['2-down', '3-down'],
-      store.getState().clues.clues,
-    );
-    expect(groupSolutionLength).toBe(11);
-  });
-
-  test('returns length with no elements in group', () => {
-    initialiseStore(store, testData);
-    const groupSolutionLength = getGroupSolutionLength(
-      [],
-      store.getState().clues.clues,
-    );
-    expect(groupSolutionLength).toBe(0);
   });
 });
 

@@ -21,12 +21,7 @@ import {
 } from 'redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { initialiseCells } from 'utils/cell';
-import {
-  getGroupCells,
-  getGroupSeparators,
-  getGroupSolutionLength,
-  initialiseClues,
-} from 'utils/clue';
+import { getGroupCells, getGroupSeparators, initialiseClues } from 'utils/clue';
 import { initialiseGuessGrid, validateGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
@@ -138,7 +133,6 @@ export default function MyCrossword({
                 data.dimensions.rows * cellSize + data.dimensions.rows + 1
               }
               onClose={() => setIsAnagramHelperOpen(false)}
-              solutionLength={getGroupSolutionLength(parentClue.group, clues)}
               width={data.dimensions.cols * cellSize + data.dimensions.cols + 1}
             />
           ) : (

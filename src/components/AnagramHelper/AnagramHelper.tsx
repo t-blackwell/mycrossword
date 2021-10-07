@@ -22,12 +22,11 @@ function CloseIcon({ className }: CloseIconProps): JSX.Element {
 }
 
 interface AnagramHelperProps {
-  clue?: Clue;
+  clue: Clue;
   groupCells: Cell[];
   groupSeparators: SeparatorLocations;
   height: number;
   onClose: () => void;
-  solutionLength: number;
   width: number;
 }
 
@@ -37,7 +36,6 @@ export default function AnagramHelper({
   groupSeparators,
   height,
   onClose,
-  solutionLength,
   width,
 }: AnagramHelperProps): JSX.Element {
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -45,6 +43,7 @@ export default function AnagramHelper({
   const [letters, setLetters] = React.useState('');
   const [shuffling, setShuffling] = React.useState(false);
   const enableButtons = letters !== '' || shuffling;
+  const solutionLength = groupCells.length;
 
   React.useEffect(() => {
     if (!shuffling) {
@@ -77,7 +76,7 @@ export default function AnagramHelper({
 
   React.useEffect(() => {
     reset();
-  }, [clue?.id]);
+  }, [clue.id]);
 
   return (
     <div
@@ -152,17 +151,15 @@ export default function AnagramHelper({
             Shuffle
           </Button>
         </div>
-        {clue !== undefined ? (
-          <p className="AnagramHelper__clue">
-            <span className="AnagramHelper__clueNum">{`${clue.number} ${clue.direction}`}</span>
-            <ClueDisplay
-              className="AnagramHelper__clickableWord"
-              clue={clue.clue}
-              onClick={(word) => appendWord(word)}
-              splitWords={!shuffling}
-            />
-          </p>
-        ) : null}
+        <p className="AnagramHelper__clue">
+          <span className="AnagramHelper__clueNum">{`${clue.number} ${clue.direction}`}</span>
+          <ClueDisplay
+            className="AnagramHelper__clickableWord"
+            clue={clue.clue}
+            onClick={(word) => appendWord(word)}
+            splitWords={!shuffling}
+          />
+        </p>
         <SolutionDisplay
           cells={groupCells}
           letters={letters}

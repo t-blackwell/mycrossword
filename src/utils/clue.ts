@@ -17,18 +17,6 @@ export function getGroupCells(groupIds: string[], cells: Cell[]) {
   return groupCells;
 }
 
-export function getGroupSolutionLength(groupIds: string[], clues: Clue[]) {
-  let total = 0;
-
-  // get the total solution length for all clues in the group
-  groupIds.forEach((groupId) => {
-    const groupClue = clues.find((clue) => clue.id === groupId);
-    total += groupClue !== undefined ? groupClue.length : 0;
-  });
-
-  return total;
-}
-
 export function getGroupSeparators(groupIds: string[], clues: Clue[]) {
   const separators: SeparatorLocations = { ',': [], '-': [] };
   let total = 0;

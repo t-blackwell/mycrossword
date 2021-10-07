@@ -25,9 +25,14 @@
   .AnagramHelper__input {
     font-size: vars.$font-size-xlarge;
     background: none;
-    border: 0;
-    outline: none;
+    border: 1px solid vars.$outline-button-color;
+    padding: vars.$grid-size vars.$grid-size * 0.5;
+    margin: vars.$grid-size * 0.5 0;
     text-align: center;
+    border-radius: vars.$border-radius;
+  }
+  .AnagramHelper__input::placeholder {
+    color: vars.$faint-grey1;
   }
   .AnagramHelper__counter {
     font-size: vars.$font-size-caption;

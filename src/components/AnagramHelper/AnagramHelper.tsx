@@ -46,10 +46,15 @@ export default function AnagramHelper({
   const [shuffling, setShuffling] = React.useState(false);
   const enableButtons = letters !== '' || shuffling;
 
+  React.useEffect(() => {
+    if (!shuffling) {
+      inputRef.current?.focus();
+    }
+  }, [shuffling]);
+
   const reset = () => {
     setLetters('');
     setShuffling(false);
-    inputRef.current?.focus();
   };
 
   const shuffle = () => {
@@ -96,6 +101,7 @@ export default function AnagramHelper({
         ) : (
           <>
             <input
+              autoComplete="off"
               className="AnagramHelper__input"
               maxLength={solutionLength}
               onChange={(event) => setLetters(event.target.value)}
@@ -111,7 +117,7 @@ export default function AnagramHelper({
                   }
                 }
               }}
-              placeholder="Enter letters"
+              placeholder="Enter letters..."
               ref={inputRef}
               spellCheck="false"
               value={letters}
@@ -133,7 +139,16 @@ export default function AnagramHelper({
           <Button disabled={!enableButtons} onClick={reset} variant="outlined">
             Reset
           </Button>
-          <Button disabled={!enableButtons} onClick={shuffle} ref={buttonRef}>
+          <Button
+            disabled={!enableButtons}
+            onClick={shuffle}
+            onKeyDown={(event) => {
+              if (event.code === 'Escape') {
+                reset();
+              }
+            }}
+            ref={buttonRef}
+          >
             Shuffle
           </Button>
         </div>

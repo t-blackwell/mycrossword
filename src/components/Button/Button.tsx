@@ -8,7 +8,8 @@ interface ButtonProps {
   className?: string;
   disabled?: boolean;
   id?: string;
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
   variant?: 'filled' | 'outlined';
 }
 
@@ -21,6 +22,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       id,
       onClick,
+      onKeyDown,
       variant = 'filled',
     },
     ref,
@@ -31,6 +33,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled={disabled}
       id={id}
       onClick={onClick}
+      onKeyDown={onKeyDown}
       ref={ref}
       type="button"
     >

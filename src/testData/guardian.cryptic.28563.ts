@@ -29,7 +29,7 @@ const data: GuardianCrossword = {
       length: 5,
       group: ['13-down', '6-across'],
       position: { x: 10, y: 0 },
-      separatorLocations: { ',': [2], '-': [4] },
+      separatorLocations: {},
       solution: 'LOCKS',
     },
     {
@@ -305,7 +305,7 @@ const data: GuardianCrossword = {
       length: 11,
       group: ['13-down', '6-across'],
       position: { x: 10, y: 4 },
-      separatorLocations: { ',': [5, 11] },
+      separatorLocations: { ',': [11] },
       solution: 'COMBINATION',
     },
     {

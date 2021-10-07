@@ -114,7 +114,7 @@ describe('getGroupSeparators', () => {
       ['2-down', '3-down'],
       store.getState().clues.clues,
     );
-    expect(groupSeparators).toEqual({ ',': [4], '-': [] });
+    expect(groupSeparators).toEqual({ ',': [4, 7], '-': [] });
   });
 
   test('three clues with separators in all', () => {
@@ -123,7 +123,7 @@ describe('getGroupSeparators', () => {
       ['1-across', '4-across', '2-down'],
       store.getState().clues.clues,
     );
-    expect(groupSeparators).toEqual({ ',': [7, 15], '-': [2] });
+    expect(groupSeparators).toEqual({ ',': [7, 15, 18], '-': [2] });
   });
 });
 
@@ -241,7 +241,7 @@ describe('initialiseClues', () => {
         length: 7,
         group: ['2-down', '3-down'],
         position: { x: 3, y: 0 },
-        separatorLocations: { ',': [4] },
+        separatorLocations: { ',': [4, 7] },
         solution: 'ODDSAND',
         answered: false,
         selected: false,
@@ -359,7 +359,7 @@ describe('initialiseClues', () => {
         length: 7,
         group: ['2-down', '3-down'],
         position: { x: 3, y: 0 },
-        separatorLocations: { ',': [4] },
+        separatorLocations: { ',': [4, 7] },
         solution: 'ODDSAND',
         answered: true,
         selected: false,

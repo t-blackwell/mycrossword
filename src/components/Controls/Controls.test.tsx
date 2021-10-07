@@ -37,6 +37,7 @@ test('it renders', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={() => {}}
       solutionsAvailable
     />,
@@ -56,6 +57,7 @@ test('it renders without solution controls', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={() => {}}
       solutionsAvailable={false}
     />,
@@ -79,6 +81,7 @@ test('it renders with shorter button text', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={() => {}}
       solutionsAvailable={false}
     />,
@@ -117,6 +120,7 @@ test('it checks incorrect letter', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -172,6 +176,7 @@ test('it checks correct letter', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -222,6 +227,7 @@ test('it checks word', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -271,6 +277,7 @@ test('it checks grid', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -328,6 +335,7 @@ test('it reveals letter', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -379,6 +387,7 @@ test('it reveals word', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -426,6 +435,7 @@ test('it reveals grid', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -475,6 +485,7 @@ test('it clears word', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -527,6 +538,7 @@ test('it clears grid', () => {
       clues={store.getState().clues.clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -552,4 +564,38 @@ test('it clears grid', () => {
     expect(cell.guess).toBeUndefined();
     expect(guessGrid.value[cell.pos.col][cell.pos.row]).toBe('');
   });
+});
+
+test('it calls function on anagram helper button click', () => {
+  const initGrid = initialiseGuessGrid(
+    data.dimensions.cols,
+    data.dimensions.rows,
+  );
+  setLocalStorageGuessGrid(initGrid);
+  initialiseStore(store, data, getLocalStorageGuessGrid());
+
+  const onAnagramHelperClick = jest.fn();
+
+  // mark first cell and clue as selected
+  store.dispatch(cellsActionSelect({ col: 0, row: 0 }));
+  store.dispatch(cluesActionSelect('1-across'));
+
+  render(
+    <Controls
+      breakpoint="md"
+      cells={store.getState().cells.cells}
+      clues={store.getState().clues.clues}
+      gridCols={data.dimensions.cols}
+      gridRows={data.dimensions.rows}
+      onAnagramHelperClick={onAnagramHelperClick}
+      setGuessGrid={setLocalStorageGuessGrid}
+      solutionsAvailable
+    />,
+  );
+
+  const anagramHelperButton = screen.getByRole('button', {
+    name: 'Anagram helper',
+  });
+  userEvent.click(anagramHelperButton);
+  expect(onAnagramHelperClick).toHaveBeenCalledTimes(1);
 });

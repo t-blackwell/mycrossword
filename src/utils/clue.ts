@@ -1,17 +1,46 @@
-import { Cell, Clue, GuardianClue } from 'interfaces';
+import { Cell, Clue, GuardianClue, SeparatorLocations } from 'interfaces';
 
-function getGroupCells(groupIds: string[], cells: Cell[]) {
+export function getGroupCells(groupIds: string[], cells: Cell[]) {
   const groupCells: Cell[] = [];
 
   // get cells for each clueId in group array
   groupIds.forEach((groupId) => {
-    const cellsForGroup = cells.filter((cell) =>
-      cell.clueIds.includes(groupId),
-    );
+    const cellsForGroup = cells
+      .filter((cell) => cell.clueIds.includes(groupId))
+      .sort(
+        (a: Cell, b: Cell) => a.pos.col - b.pos.col || a.pos.row - b.pos.row,
+      );
+
     groupCells.push(...cellsForGroup);
   });
 
   return groupCells;
+}
+
+export function getGroupSeparators(groupIds: string[], clues: Clue[]) {
+  const separators: SeparatorLocations = { ',': [], '-': [] };
+  let total = 0;
+
+  // combine separators for all clues in the group
+  groupIds.forEach((groupId) => {
+    const groupClue = clues.find((clue) => clue.id === groupId);
+
+    if (groupClue !== undefined) {
+      const spaces = groupClue.separatorLocations[',']?.map(
+        (sep) => sep + total,
+      );
+      separators[','] = [...separators[','], ...(spaces ?? [])];
+
+      const hyphens = groupClue.separatorLocations['-']?.map(
+        (sep) => sep + total,
+      );
+      separators['-'] = [...separators['-'], ...(hyphens ?? [])];
+    }
+
+    total += groupClue !== undefined ? groupClue.length : 0;
+  });
+
+  return separators;
 }
 
 export function isCluePopulated(clue: Clue, cells: Cell[]) {

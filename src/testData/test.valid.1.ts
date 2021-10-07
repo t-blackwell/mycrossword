@@ -56,7 +56,7 @@ const data: GuardianCrossword = {
       group: ['2-down', '3-down'],
       position: { x: 3, y: 0 },
       separatorLocations: {
-        ',': [4],
+        ',': [4, 7],
       },
       solution: 'ODDSAND',
     },

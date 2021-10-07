@@ -7,3 +7,5 @@ export type { default as Char } from './Char';
 export type { default as GuardianCrossword } from './GuardianCrossword';
 export type { default as GuardianClue } from './GuardianClue';
 export type { default as GuessGrid } from './GuessGrid';
+
+export * from './SeparatorLocations';

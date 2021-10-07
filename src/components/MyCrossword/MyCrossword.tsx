@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import {
+  AnagramHelper,
   cellSize,
   Clues,
   Controls,
@@ -20,7 +21,7 @@ import {
 } from 'redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { initialiseCells } from 'utils/cell';
-import { initialiseClues } from 'utils/clue';
+import { getGroupCells, getGroupSeparators, initialiseClues } from 'utils/clue';
 import { initialiseGuessGrid, validateGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
@@ -50,7 +51,12 @@ export default function MyCrossword({
   const cells = useAppSelector(getCells);
   const clues = useAppSelector(getClues);
   const selectedClue = clues.find((clue) => clue.selected);
+  const parentClue =
+    selectedClue?.group.length === 1
+      ? selectedClue
+      : clues.find((clue) => clue.id === selectedClue?.group[0]);
   const [gridErrorMessage, setGridErrorMessage] = React.useState<string>();
+  const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
 
   // validate overriding guess grid if defined
   if (
@@ -118,27 +124,42 @@ export default function MyCrossword({
               data.dimensions.cols * cellSize + data.dimensions.cols + 1,
           }}
         >
-          {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
-            <StickyClue
-              num={
-                selectedClue !== undefined
-                  ? `${selectedClue.number} ${selectedClue.direction}`
-                  : ''
+          {isAnagramHelperOpen && parentClue !== undefined ? (
+            <AnagramHelper
+              clue={parentClue}
+              groupCells={getGroupCells(parentClue.group, cells)}
+              groupSeparators={getGroupSeparators(parentClue.group, clues)}
+              height={
+                data.dimensions.rows * cellSize + data.dimensions.rows + 1
               }
-              text={selectedClue?.clue ?? ''}
+              onClose={() => setIsAnagramHelperOpen(false)}
+              width={data.dimensions.cols * cellSize + data.dimensions.cols + 1}
             />
-          ) : null}
-          <Grid
-            cells={cells}
-            clues={clues}
-            cols={data.dimensions.cols}
-            guessGrid={guessGrid}
-            isLoading={cells.length === 0}
-            onCellChange={onCellChange}
-            rawClues={data.entries}
-            rows={data.dimensions.rows}
-            setGuessGrid={saveGrid ?? setGuessGrid}
-          />
+          ) : (
+            <>
+              {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
+                <StickyClue
+                  num={
+                    parentClue !== undefined
+                      ? `${parentClue.number} ${parentClue.direction}`
+                      : ''
+                  }
+                  text={parentClue?.clue ?? ''}
+                />
+              ) : null}
+              <Grid
+                cells={cells}
+                clues={clues}
+                cols={data.dimensions.cols}
+                guessGrid={guessGrid}
+                isLoading={cells.length === 0}
+                onCellChange={onCellChange}
+                rawClues={data.entries}
+                rows={data.dimensions.rows}
+                setGuessGrid={saveGrid ?? setGuessGrid}
+              />
+            </>
+          )}
         </div>
         <Controls
           breakpoint={breakpoint ?? ''}
@@ -146,6 +167,7 @@ export default function MyCrossword({
           clues={clues}
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
+          onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
           setGuessGrid={saveGrid ?? setGuessGrid}
           solutionsAvailable={data.solutionAvailable}
         />

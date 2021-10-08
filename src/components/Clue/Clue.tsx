@@ -3,6 +3,7 @@ import * as React from 'react';
 import { select as cellsActionSelect } from 'redux/cellsSlice';
 import { select as cluesActionSelect } from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
+import { santizeHtml } from 'utils/general';
 import './Clue.scss';
 
 interface ClueProps {
@@ -37,6 +38,8 @@ function Clue({
     }
   }, []);
 
+  const sanitizedText = santizeHtml(text);
+
   return (
     <div
       className={classNames(
@@ -54,9 +57,12 @@ function Clue({
       tabIndex={0}
     >
       <span className="Clue__num">{num}</span>
-      <span className="Clue__text" data-text={text}>
-        {text}
-      </span>
+      <span
+        className="Clue__text"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: sanitizedText }}
+        data-text={sanitizedText}
+      />
     </div>
   );
 }

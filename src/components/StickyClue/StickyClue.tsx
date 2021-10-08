@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { santizeHtml } from 'utils/general';
 import './StickyClue.scss';
 
 interface StickyClueProps {
@@ -15,7 +16,10 @@ export default function StickyClue({
       <div className="StickyClue__inner">
         <span className="StickyClue__text">
           <span className="StickyClue__num">{num}</span>
-          {text}
+          <span
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: santizeHtml(text) }}
+          />
         </span>
       </div>
     </div>

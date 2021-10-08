@@ -25,3 +25,11 @@ describe('isValidChar', () => {
     expect(isValidChar('AB')).toBeFalsy();
   });
 });
+
+describe('santizeHtml', () => {
+  test.todo('only keep allowed tags');
+});
+
+describe('stripHtml', () => {
+  test.todo('all markup removed');
+});

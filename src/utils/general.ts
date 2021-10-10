@@ -25,7 +25,7 @@ export function stripHtml(dirtyHtml: string) {
   });
 }
 
-export function santizeHtml(dirtyHtml: string) {
+export function sanitizeHtml(dirtyHtml: string) {
   return sanitize(dirtyHtml, {
     allowedAttributes: {},
     allowedTags: ['b', 'strong', 'i', 'em', 'u', 'sub', 'sup'],

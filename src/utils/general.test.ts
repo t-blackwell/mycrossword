@@ -1,4 +1,4 @@
-import { isValidChar } from 'utils/general';
+import { isValidChar, sanitizeHtml, stripHtml } from 'utils/general';
 
 describe('isValidChar', () => {
   test('whitelist characters return true', () => {
@@ -26,10 +26,66 @@ describe('isValidChar', () => {
   });
 });
 
-describe('santizeHtml', () => {
-  test.todo('only keep allowed tags');
+describe('sanitizeHtml', () => {
+  test('only keep allowed tags', () => {
+    const dirtyHtml = `
+      <p>p tag disallowed</p>
+      <span>span tag disallowed</span>
+      <div>div tag disallowed</div>
+      <strong>strong tag allowed</strong>
+      <b>b tag allowed</b>
+      <em>em tag allowed</em>
+      <i>i tag allowed</i>
+      <u>u tag allowed</u>
+      <sub>sub tag allowed</sub>
+      <sup>sup tag allowed</sup>
+    `;
+
+    const expectedCleanHtml = `
+      p tag disallowed
+      span tag disallowed
+      div tag disallowed
+      <strong>strong tag allowed</strong>
+      <b>b tag allowed</b>
+      <em>em tag allowed</em>
+      <i>i tag allowed</i>
+      <u>u tag allowed</u>
+      <sub>sub tag allowed</sub>
+      <sup>sup tag allowed</sup>
+    `;
+
+    expect(sanitizeHtml(dirtyHtml)).toBe(expectedCleanHtml);
+  });
 });
 
 describe('stripHtml', () => {
-  test.todo('all markup removed');
+  test('all markup removed', () => {
+    const dirtyHtml = `
+      <p>p tag disallowed</p>
+      <span>span tag disallowed</span>
+      <div>div tag disallowed</div>
+      <strong>strong tag disallowed</strong>
+      <b>b tag disallowed</b>
+      <em>em tag disallowed</em>
+      <i>i tag disallowed</i>
+      <u>u tag disallowed</u>
+      <sub>sub tag disallowed</sub>
+      <sup>sup tag disallowed</sup>
+    `;
+
+    const expectedCleanHtml = `
+      p tag disallowed
+      span tag disallowed
+      div tag disallowed
+      strong tag disallowed
+      b tag disallowed
+      em tag disallowed
+      i tag disallowed
+      u tag disallowed
+      sub tag disallowed
+      sup tag disallowed
+    `;
+
+    expect(stripHtml(dirtyHtml)).toBe(expectedCleanHtml);
+  });
 });

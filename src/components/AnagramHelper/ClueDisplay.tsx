@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
-import { santizeHtml, stripHtml } from 'utils/general';
+import { sanitizeHtml, stripHtml } from 'utils/general';
 
 interface ClueDisplayProps {
   className?: string;
@@ -19,7 +19,7 @@ export default function ClueDisplay({
     return (
       <span
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: santizeHtml(clue) }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(clue) }}
       />
     );
   }

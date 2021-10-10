@@ -1,4 +1,9 @@
-import { isValidChar, sanitizeHtml, stripHtml } from 'utils/general';
+import {
+  decodeHtmlEntities,
+  isValidChar,
+  sanitizeHtml,
+  stripHtml,
+} from 'utils/general';
 
 describe('isValidChar', () => {
   test('whitelist characters return true', () => {
@@ -87,5 +92,13 @@ describe('stripHtml', () => {
     `;
 
     expect(stripHtml(dirtyHtml)).toBe(expectedCleanHtml);
+  });
+});
+
+describe('decodeHtmlEntities', () => {
+  test('all html entities decoded', () => {
+    expect(decodeHtmlEntities('two &amp; three &gt; &radic;sixteen')).toBe(
+      'two & three > √sixteen',
+    );
   });
 });

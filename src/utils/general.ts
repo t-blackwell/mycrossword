@@ -18,6 +18,12 @@ export function isInViewport(rect: DOMRect) {
   );
 }
 
+export function decodeHtmlEntities(html: string) {
+  const textArea = document.createElement('textarea');
+  textArea.innerHTML = html;
+  return textArea.value;
+}
+
 export function stripHtml(dirtyHtml: string) {
   return sanitize(dirtyHtml, {
     allowedAttributes: {},

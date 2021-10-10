@@ -14,12 +14,14 @@ test('it renders', () => {
       isHighlighted={false}
       num="1"
       row={0}
-      text="Clue text"
+      text="Clue text inc <u>markup</u>"
     />,
   );
 
   screen.getByText('1');
-  screen.getByText('Clue text');
+  screen.getByText(/clue text inc/i);
+  const markup = screen.getByText('markup');
+  expect(markup.tagName).toBe('U');
 });
 
 test('it renders answered', () => {

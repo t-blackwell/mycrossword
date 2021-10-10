@@ -5,6 +5,15 @@
   font-family: vars.$font-family;
   font-size: vars.$font-size;
   -webkit-font-smoothing: subpixel-antialiased;
+  sup,
+  sub {
+    vertical-align: baseline;
+    position: relative;
+    top: -0.4em;
+  }
+  sub {
+    top: 0.4em;
+  }
 }
 
 /** Breakpoints **/

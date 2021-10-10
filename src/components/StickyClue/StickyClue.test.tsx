@@ -3,7 +3,9 @@ import * as React from 'react';
 import StickyClue from './StickyClue';
 
 test('it renders', () => {
-  render(<StickyClue num="num" text="text" />);
+  render(<StickyClue num="num" text="one & <strong>two</strong>" />);
   screen.getByText('num');
-  screen.getByText('text');
+  screen.getByText(/one &/i);
+  const two = screen.getByText('two');
+  expect(two.tagName).toBe('STRONG');
 });

@@ -1,5 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
+import { decodeHtmlEntities, sanitizeHtml, stripHtml } from 'utils/general';
 
 interface ClueDisplayProps {
   className?: string;
@@ -15,11 +16,17 @@ export default function ClueDisplay({
   splitWords = false,
 }: ClueDisplayProps): JSX.Element {
   if (!splitWords) {
-    return <span>{clue}</span>;
+    return (
+      <span
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(clue) }}
+      />
+    );
   }
 
   // regex split on word boundaries
-  const words = clue.split(/\b(\w+)\b/);
+  const cleanClue = stripHtml(clue);
+  const words = decodeHtmlEntities(cleanClue).split(/\b(\w+)\b/);
 
   return (
     <>

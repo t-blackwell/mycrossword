@@ -5,6 +5,8 @@ import invalidData2 from 'testData/test.invalid.2';
 import invalidData3 from 'testData/test.invalid.3';
 import invalidData4 from 'testData/test.invalid.4';
 import invalidData5 from 'testData/test.invalid.5';
+import invalidData6 from 'testData/test.invalid.6';
+import invalidData7 from 'testData/test.invalid.7';
 import validData from 'testData/test.valid.1';
 import { mergeCell, blankNeighbours, initialiseCells } from './cell';
 import { initialiseGuessGrid } from './guess';
@@ -143,6 +145,26 @@ test('initialiseCells with invalid data 5', () => {
       invalidData5.entries,
     ),
   ).toThrow('Crossword data error: overlapping down solutions');
+});
+
+test('initialiseCells with invalid data 6', () => {
+  expect(() =>
+    initialiseCells(
+      invalidData6.dimensions.cols,
+      invalidData6.dimensions.rows,
+      invalidData6.entries,
+    ),
+  ).toThrow('Crossword data error: clue id missing from group');
+});
+
+test('initialiseCells with invalid data 7', () => {
+  expect(() =>
+    initialiseCells(
+      invalidData7.dimensions.cols,
+      invalidData7.dimensions.rows,
+      invalidData7.entries,
+    ),
+  ).toThrow('Crossword data error: group clue id not found');
 });
 
 test('initialiseCells with valid data', () => {

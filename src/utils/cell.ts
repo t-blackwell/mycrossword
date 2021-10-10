@@ -47,6 +47,7 @@ export function initialiseCells(
   guessGrid?: GuessGrid,
 ) {
   const cells: Cell[] = [];
+  const entryIds = entries.map((entry) => entry.id);
 
   entries.forEach((entry) => {
     for (let i = 0; i < entry.length; i += 1) {
@@ -62,6 +63,10 @@ export function initialiseCells(
         entry.length !== entry.solution.length
       ) {
         throw new Error('Crossword data error: solution length mismatch');
+      } else if (!entry.group.includes(entry.id)) {
+        throw new Error('Crossword data error: clue id missing from group');
+      } else if (!entry.group.every((clueId) => entryIds.includes(clueId))) {
+        throw new Error('Crossword data error: group clue id not found');
       }
 
       // check if the cell already exists

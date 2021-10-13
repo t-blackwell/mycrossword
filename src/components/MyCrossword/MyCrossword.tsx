@@ -25,7 +25,7 @@ import { getGroupCells, getGroupSeparators, initialiseClues } from 'utils/clue';
 import { initialiseGuessGrid, validateGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
-interface CrosswordProps {
+interface MyCrosswordProps {
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;
@@ -41,7 +41,7 @@ export default function MyCrossword({
   onCellChange,
   saveGrid,
   theme = 'yellow',
-}: CrosswordProps): JSX.Element {
+}: MyCrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
   const breakpoint = useBreakpoint();
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
@@ -168,6 +168,7 @@ export default function MyCrossword({
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
           onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
+          onCellChange={onCellChange}
           setGuessGrid={saveGrid ?? setGuessGrid}
           solutionsAvailable={data.solutionAvailable}
         />

@@ -1,5 +1,5 @@
 import { Button, Confirm, DropdownButton } from 'components';
-import { Cell, Clue, GuessGrid } from 'interfaces';
+import { Cell, CellChange, Char, Clue, GuessGrid } from 'interfaces';
 import * as React from 'react';
 import {
   clearGrid as cellsActionClearGrid,
@@ -25,6 +25,7 @@ interface ControlsProps {
   gridCols: number;
   gridRows: number;
   onAnagramHelperClick: () => void;
+  onCellChange?: (cellChange: CellChange) => void;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   solutionsAvailable: boolean;
 }
@@ -36,6 +37,7 @@ export default function Controls({
   gridCols,
   gridRows,
   onAnagramHelperClick,
+  onCellChange,
   setGuessGrid,
   solutionsAvailable,
 }: ControlsProps): JSX.Element {
@@ -64,6 +66,16 @@ export default function Controls({
         }
       }
     });
+  };
+
+  const cellChange = (cell: Cell, newGuess: Char | undefined) => {
+    if (onCellChange !== undefined && cell.guess !== newGuess) {
+      onCellChange({
+        pos: cell.pos,
+        guess: newGuess,
+        previousGuess: cell.guess,
+      });
+    }
   };
 
   const checkMenu = [
@@ -127,9 +139,14 @@ export default function Controls({
     {
       disabled: selectedCell === undefined,
       onClick: () => {
-        if (selectedCell === undefined) {
+        if (
+          selectedCell === undefined ||
+          selectedCell.guess === selectedCell.val
+        ) {
           return;
         }
+
+        cellChange(selectedCell, selectedCell.val);
 
         // merge in selectedCell with its letter revealed
         const updatedCells = mergeCell(

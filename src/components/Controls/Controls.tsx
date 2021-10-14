@@ -14,7 +14,7 @@ import {
 } from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
 import { blankNeighbours, mergeCell } from 'utils/cell';
-import { getCrossingClueIds, isCluePopulated } from 'utils/clue';
+import { getCrossingClueIds, getGroupCells, isCluePopulated } from 'utils/clue';
 import { getGuessGrid } from 'utils/guess';
 import './Controls.scss';
 
@@ -87,6 +87,8 @@ export default function Controls({
         }
 
         if (selectedCell.guess !== selectedCell.val) {
+          cellChange(selectedCell, undefined);
+
           // merge in selectedCell with its letter cleared
           const updatedCells = mergeCell(
             { ...selectedCell, guess: undefined },
@@ -108,6 +110,16 @@ export default function Controls({
       disabled: selectedClue === undefined,
       onClick: () => {
         if (selectedClue !== undefined) {
+          // handle cell changes
+          if (onCellChange !== undefined) {
+            const groupCells = getGroupCells(selectedClue.group, cells);
+            groupCells.forEach((cell) => {
+              if (cell.guess !== undefined && cell.val !== cell.guess) {
+                cellChange(cell, undefined);
+              }
+            });
+          }
+
           const updatedCells = cells.map((cell) => {
             const intersection = selectedClue.group.filter((clueId) =>
               cell.clueIds.includes(clueId),
@@ -176,6 +188,16 @@ export default function Controls({
       onClick: () => {
         if (selectedClue === undefined) {
           return;
+        }
+
+        // handle cell changes
+        if (onCellChange !== undefined) {
+          const groupCells = getGroupCells(selectedClue.group, cells);
+          groupCells.forEach((cell) => {
+            if (cell.val !== cell.guess) {
+              cellChange(cell, cell.val);
+            }
+          });
         }
 
         const updatedCells = cells.map((cell) => {

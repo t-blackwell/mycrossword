@@ -239,6 +239,8 @@ export default function Controls({
 
             if (intersection.length > 0) {
               if (cell.clueIds.length === 1) {
+                cellChange(cell, undefined);
+
                 // only one direction, can safely clear the cell
                 return {
                   ...cell,
@@ -250,6 +252,8 @@ export default function Controls({
               const clueId = intersection[0];
               const across = clueId.includes('across');
               if (blankNeighbours(cells, cell, across)) {
+                cellChange(cell, undefined);
+
                 return {
                   ...cell,
                   guess: undefined,

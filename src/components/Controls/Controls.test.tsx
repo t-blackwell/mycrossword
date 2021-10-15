@@ -38,7 +38,7 @@ test('it renders', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
-      setGuessGrid={() => {}}
+      setGuessGrid={jest.fn}
       solutionsAvailable
     />,
   );
@@ -58,7 +58,7 @@ test('it renders without solution controls', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
-      setGuessGrid={() => {}}
+      setGuessGrid={jest.fn}
       solutionsAvailable={false}
     />,
   );
@@ -82,7 +82,7 @@ test('it renders with shorter button text', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
-      setGuessGrid={() => {}}
+      setGuessGrid={jest.fn}
       solutionsAvailable={false}
     />,
   );
@@ -113,6 +113,8 @@ test('it checks incorrect letter', () => {
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe(gridChar);
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -122,6 +124,7 @@ test('it checks incorrect letter', () => {
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
+      onCellChange={cellChange}
       solutionsAvailable
     />,
   );
@@ -132,6 +135,8 @@ test('it checks incorrect letter', () => {
   const menuItem = screen.getByText('Check letter');
   expect(menuItem).toBeEnabled();
   userEvent.click(menuItem);
+
+  expect(cellChange).toHaveBeenCalledTimes(1);
 
   // check the incorrect 'X' has been removed from the cells
   const firstCell = store
@@ -169,6 +174,8 @@ test('it checks correct letter', () => {
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe(gridChar);
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -177,6 +184,7 @@ test('it checks correct letter', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -188,6 +196,8 @@ test('it checks correct letter', () => {
   const menuItem = screen.getByText('Check letter');
   expect(menuItem).toBeEnabled();
   userEvent.click(menuItem);
+
+  expect(cellChange).toHaveBeenCalledTimes(0);
 
   // check the correct 'Y' (solution = YO-YO) has been kept in the cells
   const firstCell = store
@@ -220,6 +230,8 @@ test('it checks word', () => {
   store.dispatch(cellsActionSelect({ col: 0, row: 0 }));
   store.dispatch(cluesActionSelect('1-across'));
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -228,6 +240,7 @@ test('it checks word', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -239,6 +252,8 @@ test('it checks word', () => {
   const menuItem = screen.getByText('Check word');
   expect(menuItem).toBeEnabled();
   userEvent.click(menuItem);
+
+  expect(cellChange).toHaveBeenCalledTimes(2);
 
   // check the word YO-YO ... Ys should remain, Os should be undefined
   const solution = 'YOYO';
@@ -270,6 +285,8 @@ test('it checks grid', () => {
   setLocalStorageGuessGrid(initGrid);
   initialiseStore(store, data, getLocalStorageGuessGrid());
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -278,6 +295,7 @@ test('it checks grid', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -296,9 +314,11 @@ test('it checks grid', () => {
   });
   userEvent.click(confirmButton);
 
+  expect(cellChange).toHaveBeenCalledTimes(21); // 23 - 2 (two Ws)
+
   const guessGrid = getLocalStorageGuessGrid();
 
-  // traverse cells and check they've all been cleared exc one (YELLO*W*)
+  // traverse cells and check they've all been cleared exc two (YELLO*W* & LIEDO*W*N)
   store.getState().cells.cells.forEach((cell) => {
     if (cell.guess === gridChar) {
       expect(cell.guess).toBe(gridChar);
@@ -328,6 +348,8 @@ test('it reveals letter', () => {
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe('');
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -336,6 +358,7 @@ test('it reveals letter', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -347,6 +370,8 @@ test('it reveals letter', () => {
   const menuItem = screen.getByText('Reveal letter');
   expect(menuItem).toBeEnabled();
   userEvent.click(menuItem);
+
+  expect(cellChange).toHaveBeenCalledTimes(1);
 
   // check the correct 'Y' (solution = YO-YO) has added
   const expectedChar = 'Y';
@@ -380,6 +405,8 @@ test('it reveals word', () => {
   store.dispatch(cellsActionSelect(firstCellPos));
   store.dispatch(cluesActionSelect('1-across'));
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -388,6 +415,7 @@ test('it reveals word', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -399,6 +427,8 @@ test('it reveals word', () => {
   const menuItem = screen.getByText('Reveal word');
   expect(menuItem).toBeEnabled();
   userEvent.click(menuItem);
+
+  expect(cellChange).toHaveBeenCalledTimes(4);
 
   // check the word YO-YO has been added to the grid
   const solution = 'YOYO';
@@ -428,6 +458,8 @@ test('it reveals grid', () => {
   setLocalStorageGuessGrid(initGrid);
   initialiseStore(store, data, getLocalStorageGuessGrid());
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -436,6 +468,7 @@ test('it reveals grid', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -453,6 +486,8 @@ test('it reveals grid', () => {
     name: 'Confirm reveal grid',
   });
   userEvent.click(confirmButton);
+
+  expect(cellChange).toHaveBeenCalledTimes(23);
 
   const guessGrid = getLocalStorageGuessGrid();
 
@@ -478,6 +513,8 @@ test('it clears word', () => {
   store.dispatch(cellsActionSelect({ col: 0, row: 0 }));
   store.dispatch(cluesActionSelect('1-across'));
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -486,6 +523,7 @@ test('it clears word', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -497,6 +535,8 @@ test('it clears word', () => {
   const menuItem = screen.getByText('Clear word');
   expect(menuItem).toBeEnabled();
   userEvent.click(menuItem);
+
+  expect(cellChange).toHaveBeenCalledTimes(2);
 
   const localStorageGuessGrid = getLocalStorageGuessGrid();
 
@@ -531,6 +571,8 @@ test('it clears grid', () => {
   setLocalStorageGuessGrid(initGrid);
   initialiseStore(store, data, getLocalStorageGuessGrid());
 
+  const cellChange = jest.fn();
+
   render(
     <Controls
       breakpoint="md"
@@ -539,6 +581,7 @@ test('it clears grid', () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
+      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -556,6 +599,8 @@ test('it clears grid', () => {
     name: 'Confirm clear grid',
   });
   userEvent.click(confirmButton);
+
+  expect(cellChange).toHaveBeenCalledTimes(23);
 
   const guessGrid = getLocalStorageGuessGrid();
 

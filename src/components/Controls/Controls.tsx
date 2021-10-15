@@ -281,6 +281,15 @@ export default function Controls({
           buttonText="Confirm check grid"
           onCancel={() => setShowCheckGridConfirm(false)}
           onConfirm={() => {
+            // handle cell changes
+            if (onCellChange !== undefined) {
+              cells.forEach((cell) => {
+                if (cell.guess !== undefined && cell.val !== cell.guess) {
+                  cellChange(cell, undefined);
+                }
+              });
+            }
+
             const updatedCells = cells.map((cell) => ({
               ...cell,
               guess: cell.guess === cell.val ? cell.val : undefined,
@@ -314,6 +323,15 @@ export default function Controls({
           buttonText="Confirm reveal grid"
           onCancel={() => setShowRevealGridConfirm(false)}
           onConfirm={() => {
+            // handle cell changes
+            if (onCellChange !== undefined) {
+              cells.forEach((cell) => {
+                if (cell.val !== cell.guess) {
+                  cellChange(cell, cell.val);
+                }
+              });
+            }
+
             dispatch(cellsActionRevealGrid());
             dispatch(cluesActionAnswerGrid());
             setShowRevealGridConfirm(false);

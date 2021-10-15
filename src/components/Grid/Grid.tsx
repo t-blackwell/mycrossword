@@ -10,6 +10,7 @@ import type {
   GuardianClue,
   GuessGrid,
   CellChange,
+  CellFocus,
 } from 'interfaces';
 import * as React from 'react';
 import {
@@ -48,6 +49,7 @@ interface GridProps {
   guessGrid: GuessGrid;
   isLoading?: boolean;
   onCellChange?: (cellChange: CellChange) => void;
+  onCellFocus?: (cellFocus: CellFocus) => void;
   rawClues: GuardianClue[];
   rows: number;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
@@ -60,6 +62,7 @@ export default function Grid({
   guessGrid,
   isLoading = false,
   onCellChange,
+  onCellFocus,
   rawClues,
   rows,
   setGuessGrid,
@@ -83,6 +86,15 @@ export default function Grid({
         pos: cell.pos,
         guess: newGuess,
         previousGuess: cell.guess,
+      });
+    }
+  };
+
+  const cellFocus = (pos: CellPosition, clueId: string) => {
+    if (onCellFocus !== undefined) {
+      onCellFocus({
+        pos,
+        clueId,
       });
     }
   };
@@ -304,14 +316,15 @@ export default function Grid({
         nextIndex = index < clues.length - 1 ? index + 1 : 0;
       }
       const nextClue = clues[nextIndex];
+      const nextCluePos = {
+        col: nextClue.position.x,
+        row: nextClue.position.y,
+      };
 
       dispatch(cluesActionSelect(nextClue.id));
-      dispatch(
-        cellsActionSelect({
-          col: nextClue.position.x,
-          row: nextClue.position.y,
-        }),
-      );
+      dispatch(cellsActionSelect(nextCluePos));
+
+      cellFocus(nextCluePos, nextClue.id);
     } else if (isValidChar(key)) {
       cellChange(selectedCell, key as Char);
 

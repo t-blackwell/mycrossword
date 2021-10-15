@@ -9,7 +9,12 @@ import {
   StickyClue,
 } from 'components';
 import { useBreakpoint, useLocalStorage } from 'hooks';
-import type { GuardianCrossword, GuessGrid, CellChange } from 'interfaces';
+import type {
+  GuardianCrossword,
+  GuessGrid,
+  CellChange,
+  CellFocus,
+} from 'interfaces';
 import * as React from 'react';
 import {
   getCells,
@@ -30,6 +35,7 @@ interface MyCrosswordProps {
   id: string;
   loadGrid?: GuessGrid;
   onCellChange?: (cellChange: CellChange) => void;
+  onCellFocus?: (cellFocus: CellFocus) => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   theme?: 'yellow' | 'pink' | 'blue' | 'green';
 }
@@ -39,6 +45,7 @@ export default function MyCrossword({
   id,
   loadGrid,
   onCellChange,
+  onCellFocus,
   saveGrid,
   theme = 'yellow',
 }: MyCrosswordProps): JSX.Element {
@@ -154,6 +161,7 @@ export default function MyCrossword({
                 guessGrid={guessGrid}
                 isLoading={cells.length === 0}
                 onCellChange={onCellChange}
+                onCellFocus={onCellFocus}
                 rawClues={data.entries}
                 rows={data.dimensions.rows}
                 setGuessGrid={saveGrid ?? setGuessGrid}

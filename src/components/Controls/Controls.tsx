@@ -359,6 +359,15 @@ export default function Controls({
           buttonText="Confirm clear grid"
           onCancel={() => setShowClearGridConfirm(false)}
           onConfirm={() => {
+            // handle cell changes
+            if (onCellChange !== undefined) {
+              cells.forEach((cell) => {
+                if (cell.guess !== undefined) {
+                  cellChange(cell, undefined);
+                }
+              });
+            }
+
             dispatch(cellsActionClearGrid());
             dispatch(cluesActionUnanswerGrid());
             setShowClearGridConfirm(false);

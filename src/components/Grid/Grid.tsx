@@ -259,6 +259,10 @@ export default function Grid({
       // update the selected clue
       if (!nextCell.clueIds.includes(selectedClue.id)) {
         dispatch(cluesActionSelect(nextCell.clueIds[0]));
+
+        cellFocus(nextCell.pos, nextCell.clueIds[0]);
+      } else {
+        cellFocus(nextCell.pos, selectedClue.id);
       }
     }
   };

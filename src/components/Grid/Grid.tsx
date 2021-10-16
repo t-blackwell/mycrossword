@@ -416,6 +416,7 @@ export default function Grid({
                 isHighlighted={isHighlighted}
                 key={`${pos.col},${pos.row}`}
                 num={num}
+                onCellFocus={onCellFocus}
                 pos={pos}
                 selectedClueIndex={selectedClueIndex}
               />

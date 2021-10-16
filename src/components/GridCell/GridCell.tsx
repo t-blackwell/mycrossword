@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { CellPosition, Char } from 'interfaces';
+import { CellFocus, CellPosition, Char } from 'interfaces';
 import * as React from 'react';
 import { select as cellsActionSelect } from 'redux/cellsSlice';
 import { select as cluesActionSelect } from 'redux/cluesSlice';
@@ -25,6 +25,7 @@ interface GridCellProps {
   isHighlighted: boolean;
   isSelected: boolean;
   num?: number;
+  onCellFocus?: (cellFocus: CellFocus) => void;
   pos: CellPosition;
   selectedClueIndex: number;
 }
@@ -35,6 +36,7 @@ function GridCell({
   isHighlighted,
   isSelected,
   num,
+  onCellFocus,
   pos,
   selectedClueIndex,
 }: GridCellProps): JSX.Element {
@@ -48,19 +50,33 @@ function GridCell({
 
   const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions(pos);
 
+  const cellFocus = (cellPos: CellPosition, clueId: string) => {
+    if (onCellFocus !== undefined) {
+      onCellFocus({
+        pos: cellPos,
+        clueId,
+      });
+    }
+  };
+
   const updateSelectedCell = () => {
+    let index = selectedClueIndex === -1 ? 0 : selectedClueIndex;
+
     // highlight the other direction if clicking the selected cell more than once
     if (clueIds.length === 2 && isSelected) {
-      const otherIndex = selectedClueIndex === 0 ? 1 : 0;
-      dispatch(cluesActionSelect(clueIds[otherIndex]));
-    } else {
-      const index = selectedClueIndex === -1 ? 0 : selectedClueIndex;
-      dispatch(cluesActionSelect(clueIds[index]));
+      index = selectedClueIndex === 0 ? 1 : 0;
     }
 
+    const clueId = clueIds[index];
+    dispatch(cluesActionSelect(clueId));
+
     if (!isSelected) {
-      const cellPos = { col: pos.col, row: pos.row };
-      dispatch(cellsActionSelect(cellPos));
+      dispatch(cellsActionSelect(pos));
+    }
+
+    // cell focus has switched
+    if (!isSelected || clueIds.length === 2) {
+      cellFocus(pos, clueId);
     }
   };
 

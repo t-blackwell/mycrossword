@@ -1,15 +1,17 @@
 import { Clue } from 'components';
-import { Clue as ClueInterface } from 'interfaces';
+import { CellFocus, Clue as ClueInterface } from 'interfaces';
 import * as React from 'react';
 import './Clues.scss';
 
 interface CluesProps {
   entries: ClueInterface[];
+  onCellFocus?: (cellFocus: CellFocus) => void;
   selectedClueId?: string;
 }
 
 export default function Clues({
   entries,
+  onCellFocus,
   selectedClueId,
 }: CluesProps): JSX.Element {
   const across = entries
@@ -34,6 +36,7 @@ export default function Clues({
             }
             key={entry.id}
             num={entry.humanNumber}
+            onCellFocus={onCellFocus}
             row={entry.position.y}
             text={entry.clue}
           />
@@ -52,6 +55,7 @@ export default function Clues({
             }
             key={entry.id}
             num={entry.humanNumber}
+            onCellFocus={onCellFocus}
             row={entry.position.y}
             text={entry.clue}
           />

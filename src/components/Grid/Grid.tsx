@@ -385,7 +385,6 @@ export default function Grid({
             onMouseDown={(event) => {
               event.preventDefault();
 
-              // remove focus from grid (TODO: change to use React.forwardRef?)
               const gridElement =
                 document.querySelectorAll<HTMLElement>('.Grid');
               if (gridElement.length === 1) {

@@ -181,7 +181,11 @@ export default function MyCrossword({
           solutionsAvailable={data.solutionAvailable}
         />
       </div>
-      <Clues selectedClueId={selectedClue?.id} entries={clues} />
+      <Clues
+        entries={clues}
+        onCellFocus={onCellFocus}
+        selectedClueId={selectedClue?.id}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { restoreConsoleError, suppressConsoleError } from 'utils/jest';
+import { restoreConsoleMessage, suppressConsoleMessage } from 'utils/jest';
 import DropdownButton, { DropdownMenuItem } from './DropdownButton';
 
 // TODO: check menu items are shown/hidden rather than using the button `aria-expanded` attribute
@@ -49,7 +49,7 @@ test('it closes menu on outside click', () => {
 });
 
 test('it throws when less than two menu items', () => {
-  suppressConsoleError();
+  suppressConsoleMessage('error');
 
   expect(() => render(<DropdownButton menu={[]} text="Test" />)).toThrow();
   expect(() =>
@@ -61,5 +61,5 @@ test('it throws when less than two menu items', () => {
     ),
   ).toThrow();
 
-  restoreConsoleError();
+  restoreConsoleMessage('error');
 });

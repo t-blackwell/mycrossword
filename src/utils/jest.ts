@@ -1,7 +1,9 @@
-export function suppressConsoleError() {
-  jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+type ConsoleMessageType = 'info' | 'log' | 'debug' | 'warn' | 'error';
+
+export function suppressConsoleMessage(type: ConsoleMessageType) {
+  jest.spyOn(console, type).mockImplementation(() => jest.fn());
 }
 
-export function restoreConsoleError() {
-  jest.spyOn(console, 'error').mockRestore();
+export function restoreConsoleMessage(type: ConsoleMessageType) {
+  jest.spyOn(console, type).mockRestore();
 }

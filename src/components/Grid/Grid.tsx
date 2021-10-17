@@ -10,6 +10,7 @@ import type {
   GuardianClue,
   GuessGrid,
   CellChange,
+  CellFocus,
 } from 'interfaces';
 import * as React from 'react';
 import {
@@ -48,6 +49,7 @@ interface GridProps {
   guessGrid: GuessGrid;
   isLoading?: boolean;
   onCellChange?: (cellChange: CellChange) => void;
+  onCellFocus?: (cellFocus: CellFocus) => void;
   rawClues: GuardianClue[];
   rows: number;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
@@ -60,6 +62,7 @@ export default function Grid({
   guessGrid,
   isLoading = false,
   onCellChange,
+  onCellFocus,
   rawClues,
   rows,
   setGuessGrid,
@@ -83,6 +86,15 @@ export default function Grid({
         pos: cell.pos,
         guess: newGuess,
         previousGuess: cell.guess,
+      });
+    }
+  };
+
+  const cellFocus = (pos: CellPosition, clueId: string) => {
+    if (onCellFocus !== undefined) {
+      onCellFocus({
+        pos,
+        clueId,
       });
     }
   };
@@ -111,18 +123,19 @@ export default function Grid({
         const prevClue = clues.find((clue) => clue.id === prevClueId);
 
         if (prevClue !== undefined) {
-          dispatch(cluesActionSelect(prevClueId));
+          const prevCluePos = {
+            col:
+              prevClue.position.x +
+              (prevClue.direction === 'across' ? prevClue.length - 1 : 0),
+            row:
+              prevClue.position.y +
+              (prevClue.direction === 'down' ? prevClue.length - 1 : 0),
+          };
 
-          dispatch(
-            cellsActionSelect({
-              col:
-                prevClue.position.x +
-                (prevClue.direction === 'across' ? prevClue.length - 1 : 0),
-              row:
-                prevClue.position.y +
-                (prevClue.direction === 'down' ? prevClue.length - 1 : 0),
-            }),
-          );
+          dispatch(cluesActionSelect(prevClueId));
+          dispatch(cellsActionSelect(prevCluePos));
+
+          cellFocus(prevCluePos, prevClueId);
         }
       }
     } else {
@@ -132,6 +145,8 @@ export default function Grid({
           ? { col: selectedCell.pos.col - 1, row: selectedCell.pos.row }
           : { col: selectedCell.pos.col, row: selectedCell.pos.row - 1 };
       dispatch(cellsActionSelect(cellPos));
+
+      cellFocus(cellPos, selectedClue.id);
     }
   };
 
@@ -157,14 +172,15 @@ export default function Grid({
         const nextClue = clues.find((clue) => clue.id === nextClueId);
 
         if (nextClue !== undefined) {
-          dispatch(cluesActionSelect(nextClueId));
+          const nextCluePos = {
+            col: nextClue.position.x,
+            row: nextClue.position.y,
+          };
 
-          dispatch(
-            cellsActionSelect({
-              col: nextClue.position.x,
-              row: nextClue.position.y,
-            }),
-          );
+          dispatch(cluesActionSelect(nextClueId));
+          dispatch(cellsActionSelect(nextCluePos));
+
+          cellFocus(nextCluePos, nextClueId);
         }
       }
     } else {
@@ -174,6 +190,8 @@ export default function Grid({
           ? { col: selectedCell.pos.col + 1, row: selectedCell.pos.row }
           : { col: selectedCell.pos.col, row: selectedCell.pos.row + 1 };
       dispatch(cellsActionSelect(cellPos));
+
+      cellFocus(cellPos, selectedClue.id);
     }
   };
 
@@ -247,6 +265,10 @@ export default function Grid({
       // update the selected clue
       if (!nextCell.clueIds.includes(selectedClue.id)) {
         dispatch(cluesActionSelect(nextCell.clueIds[0]));
+
+        cellFocus(nextCell.pos, nextCell.clueIds[0]);
+      } else {
+        cellFocus(nextCell.pos, selectedClue.id);
       }
     }
   };
@@ -304,14 +326,15 @@ export default function Grid({
         nextIndex = index < clues.length - 1 ? index + 1 : 0;
       }
       const nextClue = clues[nextIndex];
+      const nextCluePos = {
+        col: nextClue.position.x,
+        row: nextClue.position.y,
+      };
 
       dispatch(cluesActionSelect(nextClue.id));
-      dispatch(
-        cellsActionSelect({
-          col: nextClue.position.x,
-          row: nextClue.position.y,
-        }),
-      );
+      dispatch(cellsActionSelect(nextCluePos));
+
+      cellFocus(nextCluePos, nextClue.id);
     } else if (isValidChar(key)) {
       cellChange(selectedCell, key as Char);
 
@@ -362,7 +385,6 @@ export default function Grid({
             onMouseDown={(event) => {
               event.preventDefault();
 
-              // remove focus from grid (TODO: change to use React.forwardRef?)
               const gridElement =
                 document.querySelectorAll<HTMLElement>('.Grid');
               if (gridElement.length === 1) {
@@ -393,6 +415,7 @@ export default function Grid({
                 isHighlighted={isHighlighted}
                 key={`${pos.col},${pos.row}`}
                 num={num}
+                onCellFocus={onCellFocus}
                 pos={pos}
                 selectedClueIndex={selectedClueIndex}
               />

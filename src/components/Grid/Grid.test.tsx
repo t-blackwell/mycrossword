@@ -1,5 +1,6 @@
+/* eslint-disable no-plusplus */
 import userEvent from '@testing-library/user-event';
-import { CellPosition, GuessGrid } from 'interfaces';
+import { CellFocus, CellPosition, GuessGrid } from 'interfaces';
 import * as React from 'react';
 import testData from 'testData/test.valid.1';
 import { initialiseGuessGrid } from 'utils/guess';
@@ -43,12 +44,14 @@ function getSelectedClue() {
  * @param selectedCellPos
  * @param selectedClueId
  * @param setGuessGrid
+ * @param cellFocus
  * @param rerenderFn
  */
 function expectSelectionsAndRerender(
   selectedCellPos: CellPosition,
   selectedClueId: string,
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void,
+  cellFocus: (cellFocus: CellFocus) => void,
   rerenderFn: (
     ui: React.ReactElement<any, string | React.JSXElementConstructor<any>>,
   ) => void,
@@ -62,6 +65,7 @@ function expectSelectionsAndRerender(
       clues={getClues()}
       cols={testData.dimensions.cols}
       guessGrid={emptyGuessGrid}
+      onCellFocus={cellFocus}
       rawClues={testData.entries}
       rows={testData.dimensions.rows}
       setGuessGrid={setGuessGrid}
@@ -113,6 +117,8 @@ test('it renders with loading', () => {
 test('arrows move between cells', async () => {
   initialiseStore(store, testData);
   const setGuessGrid = jest.fn();
+  const cellFocus = jest.fn();
+  let cellFocusCounter = 0;
 
   const { rerender } = render(
     <Grid
@@ -120,6 +126,7 @@ test('arrows move between cells', async () => {
       clues={getClues()}
       cols={testData.dimensions.cols}
       guessGrid={emptyGuessGrid}
+      onCellFocus={cellFocus}
       rawClues={testData.entries}
       rows={testData.dimensions.rows}
       setGuessGrid={setGuessGrid}
@@ -132,118 +139,144 @@ test('arrows move between cells', async () => {
   // click top left cell
   const topLeftCellNum = screen.getByText('1');
   userEvent.click(topLeftCellNum.parentElement!);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move down
   fireEvent.keyDown(grid, Arrows.DOWN);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 1 },
     '1-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move back up to top of 1-down
   fireEvent.keyDown(grid, Arrows.UP);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 0 },
     '1-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move up to cycle to bottom of 1-down
   fireEvent.keyDown(grid, Arrows.UP);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 5 },
     '1-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move up on 1-down
   fireEvent.keyDown(grid, Arrows.UP);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 4 },
     '1-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move right to jump over to 2-down
   fireEvent.keyDown(grid, Arrows.RIGHT);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 4 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move right to jump over to the 3-down
   fireEvent.keyDown(grid, Arrows.RIGHT);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 4 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // cycle back to the top of 3-down
   fireEvent.keyDown(grid, Arrows.DOWN);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 1 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move left to jump back to 2-down
   fireEvent.keyDown(grid, Arrows.LEFT);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 1 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move up to the top of 2-down
   fireEvent.keyDown(grid, Arrows.UP);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 0 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move left onto 1-across
   fireEvent.keyDown(grid, Arrows.LEFT);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 2, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move left again on 1-across
   fireEvent.keyDown(grid, Arrows.LEFT);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 1, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // move left again on 1-across
   fireEvent.keyDown(grid, Arrows.LEFT);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 });
@@ -253,6 +286,9 @@ test('display characters and update cell positions', () => {
 
   initialiseStore(store, testData);
   const setGuessGrid = jest.fn();
+  const cellFocus = jest.fn();
+  let guessGridCounter = 0;
+  let cellFocusCounter = 0;
 
   const { rerender } = render(
     <Grid
@@ -260,31 +296,36 @@ test('display characters and update cell positions', () => {
       clues={getClues()}
       cols={testData.dimensions.cols}
       guessGrid={emptyGuessGrid}
+      onCellFocus={cellFocus}
       rawClues={testData.entries}
       rows={testData.dimensions.rows}
       setGuessGrid={setGuessGrid}
     />,
   );
-  expect(setGuessGrid).toHaveBeenCalledTimes(1);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   const grid = screen.getByRole('textbox');
 
   // click top left cell
   const topLeftCellNum = screen.getByText('1');
   userEvent.click(topLeftCellNum.parentElement!);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // type 'A' and move to next position
   fireEvent.keyDown(grid, { key: 'A', code: 'KeyA' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 1, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('A');
@@ -292,14 +333,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(2);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'B' and move to next position
   fireEvent.keyDown(grid, { key: 'B', code: 'KeyB' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 2, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('B');
@@ -307,14 +350,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(3);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'C' and move to next position
   fireEvent.keyDown(grid, { key: 'C', code: 'KeyC' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('C');
@@ -322,14 +367,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(4);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'D' and stay in the same position
   fireEvent.keyDown(grid, { key: 'D', code: 'KeyD' });
+  expect(cellFocus).toHaveBeenCalledTimes(cellFocusCounter); // no change
   expectSelectionsAndRerender(
     { col: 3, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('D');
@@ -337,23 +384,27 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(5);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // move to 2-down
   fireEvent.keyDown(grid, Arrows.DOWN);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 1 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // type 'E' and move to next position
   fireEvent.keyDown(grid, { key: 'E', code: 'KeyE' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 2 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('E');
@@ -361,14 +412,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(6);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'F' and move to next position
   fireEvent.keyDown(grid, { key: 'F', code: 'KeyF' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 3 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('F');
@@ -376,14 +429,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(7);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'G' and move to next position
   fireEvent.keyDown(grid, { key: 'G', code: 'KeyG' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 4 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('G');
@@ -391,14 +446,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(8);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'H' and move to next position
   fireEvent.keyDown(grid, { key: 'H', code: 'KeyH' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 5 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('H');
@@ -406,14 +463,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(9);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'I' and move to next position
   fireEvent.keyDown(grid, { key: 'I', code: 'KeyI' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 6 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('I');
@@ -421,14 +480,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(10);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'J' and jump to next clue in the group
   fireEvent.keyDown(grid, { key: 'J', code: 'KeyJ' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 1 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('J');
@@ -436,14 +497,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(11);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'K' and move to next position
   fireEvent.keyDown(grid, { key: 'K', code: 'KeyK' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 2 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('K');
@@ -451,14 +514,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(12);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'L' and move to next position
   fireEvent.keyDown(grid, { key: 'L', code: 'KeyL' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 3 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('L');
@@ -466,14 +531,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(13);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'M' and move to next position
   fireEvent.keyDown(grid, { key: 'M', code: 'KeyM' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 4 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('M');
@@ -481,14 +548,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(14);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type 'N' and stay in the same position
   fireEvent.keyDown(grid, { key: 'N', code: 'KeyN' });
+  expect(cellFocus).toHaveBeenCalledTimes(cellFocusCounter); // no change
   expectSelectionsAndRerender(
     { col: 6, row: 4 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   screen.getByText('N');
@@ -496,14 +565,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(15);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type backspace and move back one position
   fireEvent.keyDown(grid, { key: 'Backspace', code: 'Backspace' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 3 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   expect(screen.queryByText('N')).not.toBeInTheDocument();
@@ -511,24 +582,28 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(16);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type invalid character and stay in the same position
   fireEvent.keyDown(grid, { key: '=', code: 'Equal' });
+  expect(cellFocus).toHaveBeenCalledTimes(cellFocusCounter); // no change
   expectSelectionsAndRerender(
     { col: 6, row: 3 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   expect(screen.queryByText('=')).not.toBeInTheDocument();
 
   // type delete and stay in the same position
   fireEvent.keyDown(grid, { key: 'Delete', code: 'Delete' });
+  expect(cellFocus).toHaveBeenCalledTimes(cellFocusCounter); // no change
   expectSelectionsAndRerender(
     { col: 6, row: 3 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   expect(screen.queryByText('M')).not.toBeInTheDocument();
@@ -536,23 +611,27 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(17);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // move up one position
   fireEvent.keyDown(grid, Arrows.UP);
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 2 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // type backspace and move back one position
   fireEvent.keyDown(grid, { key: 'Backspace', code: 'Backspace' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 1 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   expect(screen.queryByText('L')).not.toBeInTheDocument();
@@ -560,14 +639,16 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(18);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type backspace and jump to previous clue in group
   fireEvent.keyDown(grid, { key: 'Backspace', code: 'Backspace' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 3, row: 6 },
     '2-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
   expect(screen.queryByText('K')).not.toBeInTheDocument();
@@ -575,41 +656,49 @@ test('display characters and update cell positions', () => {
   act(() => {
     jest.advanceTimersByTime(debounceTime);
   });
-  expect(setGuessGrid).toHaveBeenCalledTimes(19);
+  expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
 
   // type tab and jump to next clue
   fireEvent.keyDown(grid, { key: 'Tab', code: 'Tab' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 6, row: 1 },
     '3-down',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // type tab and jump to next clue
   fireEvent.keyDown(grid, { key: 'Tab', code: 'Tab' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // type tab and jump to next clue
   fireEvent.keyDown(grid, { key: 'Tab', code: 'Tab' });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 2 },
     '4-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 
   // type shift+tab and jump to previous clue
   fireEvent.keyDown(grid, { key: 'Tab', code: 'Tab', shiftKey: true });
+  expect(cellFocus).toHaveBeenCalledTimes(++cellFocusCounter);
   expectSelectionsAndRerender(
     { col: 0, row: 0 },
     '1-across',
     setGuessGrid,
+    cellFocus,
     rerender,
   );
 

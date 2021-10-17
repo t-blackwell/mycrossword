@@ -1,5 +1,5 @@
 import { Button, Confirm, DropdownButton } from 'components';
-import { Cell, Clue, GuessGrid } from 'interfaces';
+import { Cell, CellChange, Char, Clue, GuessGrid } from 'interfaces';
 import * as React from 'react';
 import {
   clearGrid as cellsActionClearGrid,
@@ -14,7 +14,7 @@ import {
 } from 'redux/cluesSlice';
 import { useAppDispatch } from 'redux/hooks';
 import { blankNeighbours, mergeCell } from 'utils/cell';
-import { getCrossingClueIds, isCluePopulated } from 'utils/clue';
+import { getCrossingClueIds, getGroupCells, isCluePopulated } from 'utils/clue';
 import { getGuessGrid } from 'utils/guess';
 import './Controls.scss';
 
@@ -25,6 +25,7 @@ interface ControlsProps {
   gridCols: number;
   gridRows: number;
   onAnagramHelperClick: () => void;
+  onCellChange?: (cellChange: CellChange) => void;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   solutionsAvailable: boolean;
 }
@@ -36,6 +37,7 @@ export default function Controls({
   gridCols,
   gridRows,
   onAnagramHelperClick,
+  onCellChange,
   setGuessGrid,
   solutionsAvailable,
 }: ControlsProps): JSX.Element {
@@ -66,6 +68,16 @@ export default function Controls({
     });
   };
 
+  const cellChange = (cell: Cell, newGuess: Char | undefined) => {
+    if (onCellChange !== undefined && cell.guess !== newGuess) {
+      onCellChange({
+        pos: cell.pos,
+        guess: newGuess,
+        previousGuess: cell.guess,
+      });
+    }
+  };
+
   const checkMenu = [
     {
       disabled: selectedCell === undefined,
@@ -75,6 +87,8 @@ export default function Controls({
         }
 
         if (selectedCell.guess !== selectedCell.val) {
+          cellChange(selectedCell, undefined);
+
           // merge in selectedCell with its letter cleared
           const updatedCells = mergeCell(
             { ...selectedCell, guess: undefined },
@@ -96,6 +110,16 @@ export default function Controls({
       disabled: selectedClue === undefined,
       onClick: () => {
         if (selectedClue !== undefined) {
+          // handle cell changes
+          if (onCellChange !== undefined) {
+            const groupCells = getGroupCells(selectedClue.group, cells);
+            groupCells.forEach((cell) => {
+              if (cell.guess !== undefined && cell.val !== cell.guess) {
+                cellChange(cell, undefined);
+              }
+            });
+          }
+
           const updatedCells = cells.map((cell) => {
             const intersection = selectedClue.group.filter((clueId) =>
               cell.clueIds.includes(clueId),
@@ -127,9 +151,14 @@ export default function Controls({
     {
       disabled: selectedCell === undefined,
       onClick: () => {
-        if (selectedCell === undefined) {
+        if (
+          selectedCell === undefined ||
+          selectedCell.guess === selectedCell.val
+        ) {
           return;
         }
+
+        cellChange(selectedCell, selectedCell.val);
 
         // merge in selectedCell with its letter revealed
         const updatedCells = mergeCell(
@@ -159,6 +188,16 @@ export default function Controls({
       onClick: () => {
         if (selectedClue === undefined) {
           return;
+        }
+
+        // handle cell changes
+        if (onCellChange !== undefined) {
+          const groupCells = getGroupCells(selectedClue.group, cells);
+          groupCells.forEach((cell) => {
+            if (cell.val !== cell.guess) {
+              cellChange(cell, cell.val);
+            }
+          });
         }
 
         const updatedCells = cells.map((cell) => {
@@ -200,6 +239,8 @@ export default function Controls({
 
             if (intersection.length > 0) {
               if (cell.clueIds.length === 1) {
+                cellChange(cell, undefined);
+
                 // only one direction, can safely clear the cell
                 return {
                   ...cell,
@@ -211,6 +252,8 @@ export default function Controls({
               const clueId = intersection[0];
               const across = clueId.includes('across');
               if (blankNeighbours(cells, cell, across)) {
+                cellChange(cell, undefined);
+
                 return {
                   ...cell,
                   guess: undefined,
@@ -242,6 +285,15 @@ export default function Controls({
           buttonText="Confirm check grid"
           onCancel={() => setShowCheckGridConfirm(false)}
           onConfirm={() => {
+            // handle cell changes
+            if (onCellChange !== undefined) {
+              cells.forEach((cell) => {
+                if (cell.guess !== undefined && cell.val !== cell.guess) {
+                  cellChange(cell, undefined);
+                }
+              });
+            }
+
             const updatedCells = cells.map((cell) => ({
               ...cell,
               guess: cell.guess === cell.val ? cell.val : undefined,
@@ -275,6 +327,15 @@ export default function Controls({
           buttonText="Confirm reveal grid"
           onCancel={() => setShowRevealGridConfirm(false)}
           onConfirm={() => {
+            // handle cell changes
+            if (onCellChange !== undefined) {
+              cells.forEach((cell) => {
+                if (cell.val !== cell.guess) {
+                  cellChange(cell, cell.val);
+                }
+              });
+            }
+
             dispatch(cellsActionRevealGrid());
             dispatch(cluesActionAnswerGrid());
             setShowRevealGridConfirm(false);
@@ -298,6 +359,15 @@ export default function Controls({
           buttonText="Confirm clear grid"
           onCancel={() => setShowClearGridConfirm(false)}
           onConfirm={() => {
+            // handle cell changes
+            if (onCellChange !== undefined) {
+              cells.forEach((cell) => {
+                if (cell.guess !== undefined) {
+                  cellChange(cell, undefined);
+                }
+              });
+            }
+
             dispatch(cellsActionClearGrid());
             dispatch(cluesActionUnanswerGrid());
             setShowClearGridConfirm(false);

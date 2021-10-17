@@ -66,6 +66,7 @@ test('it renders highlighted', () => {
 
 test('it selects clue', () => {
   initialiseStore(store, testData);
+  const cellFocus = jest.fn();
 
   render(
     <Clue
@@ -74,6 +75,7 @@ test('it selects clue', () => {
       id="1-across"
       isHighlighted
       num="1"
+      onCellFocus={cellFocus}
       row={0}
       text="Clue text"
     />,
@@ -81,6 +83,8 @@ test('it selects clue', () => {
 
   const clue = screen.getByRole('button');
   userEvent.click(clue);
+
+  expect(cellFocus).toHaveBeenCalledTimes(1);
 
   const selectedClue = store.getState().clues.clues.find((c) => c.selected);
   expect(selectedClue).toBeDefined();

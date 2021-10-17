@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { CellFocus, CellPosition } from 'interfaces';
 import * as React from 'react';
 import { select as cellsActionSelect } from 'redux/cellsSlice';
 import { select as cluesActionSelect } from 'redux/cluesSlice';
@@ -12,26 +13,40 @@ interface ClueProps {
   id: string;
   isHighlighted: boolean;
   num: string;
+  onCellFocus?: (cellFocus: CellFocus) => void;
   row: number;
   text: string;
 }
 
 function Clue({
   answered,
+  col,
   id,
   isHighlighted,
   num,
-  col,
+  onCellFocus,
   row,
   text,
 }: ClueProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const updateSelectedClue = React.useCallback(() => {
-    dispatch(cluesActionSelect(id));
-    dispatch(cellsActionSelect({ col, row }));
+  const cellFocus = (pos: CellPosition, clueId: string) => {
+    if (onCellFocus !== undefined) {
+      onCellFocus({
+        pos,
+        clueId,
+      });
+    }
+  };
 
-    // move focus back to grid (TODO: change to use React.forwardRef?)
+  const updateSelectedClue = React.useCallback(() => {
+    const pos = { col, row };
+    dispatch(cluesActionSelect(id));
+    dispatch(cellsActionSelect(pos));
+
+    // TODO: don't call if on current clue's first cell
+    cellFocus(pos, id);
+
     const gridElement = document.querySelectorAll<HTMLElement>('.Grid');
     if (gridElement.length === 1) {
       gridElement[0].focus();

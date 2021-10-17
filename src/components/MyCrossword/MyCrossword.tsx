@@ -9,7 +9,12 @@ import {
   StickyClue,
 } from 'components';
 import { useBreakpoint, useLocalStorage } from 'hooks';
-import type { GuardianCrossword, GuessGrid, CellChange } from 'interfaces';
+import type {
+  GuardianCrossword,
+  GuessGrid,
+  CellChange,
+  CellFocus,
+} from 'interfaces';
 import * as React from 'react';
 import {
   getCells,
@@ -25,11 +30,12 @@ import { getGroupCells, getGroupSeparators, initialiseClues } from 'utils/clue';
 import { initialiseGuessGrid, validateGuessGrid } from 'utils/guess';
 import './MyCrossword.scss';
 
-interface CrosswordProps {
+interface MyCrosswordProps {
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;
   onCellChange?: (cellChange: CellChange) => void;
+  onCellFocus?: (cellFocus: CellFocus) => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   theme?: 'yellow' | 'pink' | 'blue' | 'green';
 }
@@ -39,9 +45,10 @@ export default function MyCrossword({
   id,
   loadGrid,
   onCellChange,
+  onCellFocus,
   saveGrid,
   theme = 'yellow',
-}: CrosswordProps): JSX.Element {
+}: MyCrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
   const breakpoint = useBreakpoint();
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
@@ -154,6 +161,7 @@ export default function MyCrossword({
                 guessGrid={guessGrid}
                 isLoading={cells.length === 0}
                 onCellChange={onCellChange}
+                onCellFocus={onCellFocus}
                 rawClues={data.entries}
                 rows={data.dimensions.rows}
                 setGuessGrid={saveGrid ?? setGuessGrid}
@@ -168,11 +176,16 @@ export default function MyCrossword({
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
           onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
+          onCellChange={onCellChange}
           setGuessGrid={saveGrid ?? setGuessGrid}
           solutionsAvailable={data.solutionAvailable}
         />
       </div>
-      <Clues selectedClueId={selectedClue?.id} entries={clues} />
+      <Clues
+        entries={clues}
+        onCellFocus={onCellFocus}
+        selectedClueId={selectedClue?.id}
+      />
     </div>
   );
 }

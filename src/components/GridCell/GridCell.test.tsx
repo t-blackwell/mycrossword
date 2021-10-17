@@ -1,7 +1,8 @@
+import userEvent from '@testing-library/user-event';
 import { CellPosition } from 'interfaces';
 import * as React from 'react';
 import testData from 'testData/test.valid.1';
-import { restoreConsoleError, suppressConsoleError } from 'utils/jest';
+import { restoreConsoleMessage, suppressConsoleMessage } from 'utils/jest';
 import { render, store } from 'utils/rtl';
 import { initialiseStore } from 'utils/test';
 import GridCell, { cellSize, getDimensions } from './GridCell';
@@ -132,8 +133,29 @@ test('it renders selected', () => {
   expect(groups[0]).toHaveClass('GridCell--selected');
 });
 
+test('it calls onCellFocus on click', () => {
+  const cellFocus = jest.fn();
+  const { container } = render(
+    <svg>
+      <GridCell
+        clueIds={['1-across']}
+        isHighlighted={false}
+        isSelected={false}
+        onCellFocus={cellFocus}
+        pos={cellPos}
+        selectedClueIndex={-1}
+      />
+    </svg>,
+  );
+
+  const group = container.querySelector('g');
+  expect(group).not.toBeNull();
+  userEvent.click(group!);
+  expect(cellFocus).toHaveBeenCalledTimes(1);
+});
+
 test('it throws with 0 clueIds', () => {
-  suppressConsoleError();
+  suppressConsoleMessage('error');
 
   expect(() =>
     render(
@@ -149,11 +171,11 @@ test('it throws with 0 clueIds', () => {
     ),
   ).toThrow();
 
-  restoreConsoleError();
+  restoreConsoleMessage('error');
 });
 
 test('it throws with more than 2 clueIds', () => {
-  suppressConsoleError();
+  suppressConsoleMessage('error');
 
   expect(() =>
     render(
@@ -169,7 +191,7 @@ test('it throws with more than 2 clueIds', () => {
     ),
   ).toThrow();
 
-  restoreConsoleError();
+  restoreConsoleMessage('error');
 });
 
 test('it gets correct dimensions', () => {

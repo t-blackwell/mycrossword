@@ -1,7 +1,8 @@
 {
-  "name": "my-crossword-grid",
+  "name": "mycrossword",
   "version": "0.1.0",
-  "private": true,
+  "author": "Tom Blackwell",
+  "private": false,
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.1",
     "@testing-library/jest-dom": "^5.11.4",
@@ -55,5 +56,9 @@
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.3.2",
     "sass": "^1.38.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/t-blackwell/mycrossword.git"
   }
 }

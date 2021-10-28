@@ -1,7 +1,6 @@
 @use '_variables' as vars;
 
 .MyCrossword {
-  display: flex;
   font-family: vars.$font-family;
   font-size: vars.$font-size;
   -webkit-font-smoothing: subpixel-antialiased;
@@ -13,12 +12,5 @@
   }
   sub {
     top: 0.4em;
-  }
-}
-
-/** Breakpoints **/
-.MyCrossword--sm {
-  .MyCrossword__container {
-    margin: 0 auto;
   }
 }

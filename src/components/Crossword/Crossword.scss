@@ -1,0 +1,21 @@
+.MyCrossword {
+  .Crossword {
+    display: flex;
+  }
+}
+
+/** Breakpoints **/
+.MyCrossword--xs {
+  .Crossword {
+    flex-direction: column;
+  }
+}
+
+.MyCrossword--sm {
+  .Crossword {
+    flex-direction: column;
+  }
+  .Crossword__gridAndControls {
+    margin: 0 auto;
+  }
+}

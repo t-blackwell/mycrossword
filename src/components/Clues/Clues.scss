@@ -33,14 +33,12 @@
 }
 
 .MyCrossword--sm {
-  flex-direction: column;
   .Clues {
     margin-top: vars.$grid-size;
   }
 }
 
 .MyCrossword--xs {
-  flex-direction: column;
   .Clues {
     flex-direction: column;
   }

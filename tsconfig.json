@@ -12,10 +12,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "sourceMap": true
   },
   "include": ["src"]
 }

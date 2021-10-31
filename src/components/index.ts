@@ -13,5 +13,6 @@ export { default as GridError } from './GridError/GridError';
 export { default as GridSeparators } from './GridSeparators/GridSeparators';
 export { default as Spinner } from './Spinner/Spinner';
 export { default as StickyClue } from './StickyClue/StickyClue';
-
 export * from './GridCell/GridCell';
+
+export type { MyCrosswordProps } from './MyCrossword/MyCrossword';

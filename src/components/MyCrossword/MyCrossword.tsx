@@ -12,7 +12,7 @@ import { Provider } from 'react-redux';
 import { store } from 'redux/store';
 import './MyCrossword.scss';
 
-interface MyCrosswordProps {
+export interface MyCrosswordProps {
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;

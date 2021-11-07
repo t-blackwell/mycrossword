@@ -1,12 +1,12 @@
 import userEvent from '@testing-library/user-event';
-import { CellPosition, GuessGrid } from 'interfaces';
+import { CellPosition, GuessGrid } from './../../interfaces';
 import * as React from 'react';
-import { select as cellsActionSelect } from 'redux/cellsSlice';
-import { select as cluesActionSelect } from 'redux/cluesSlice';
-import data from 'testData/test.valid.1';
-import { initialiseGuessGrid } from 'utils/guess';
-import { render, screen, store } from 'utils/rtl';
-import { initialiseStore } from 'utils/test';
+import { select as cellsActionSelect } from './../../redux/cellsSlice';
+import { select as cluesActionSelect } from './../../redux/cluesSlice';
+import data from './../../testData/test.valid.1';
+import { initialiseGuessGrid } from './../../utils/guess';
+import { render, screen, store } from './../../utils/rtl';
+import { initialiseStore } from './../../utils/test';
 import Controls from './Controls';
 
 function getLocalStorageGuessGrid(): GuessGrid {

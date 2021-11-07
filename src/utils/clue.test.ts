@@ -1,8 +1,8 @@
 import {
   revealGrid as cellsActionRevealGrid,
   updateGrid as cellsUpdateGrid,
-} from 'redux/cellsSlice';
-import testData from 'testData/test.valid.1';
+} from '../redux/cellsSlice';
+import testData from '../testData/test.valid.1';
 import { initialiseCells } from './cell';
 import {
   isCluePopulated,

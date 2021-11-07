@@ -3,7 +3,7 @@ import {
   isValidChar,
   sanitizeHtml,
   stripHtml,
-} from 'utils/general';
+} from '../utils/general';
 
 describe('isValidChar', () => {
   test('whitelist characters return true', () => {

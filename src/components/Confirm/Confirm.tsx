@@ -1,4 +1,4 @@
-import { Button } from 'components';
+import { Button } from '../../components';
 import * as React from 'react';
 import './Confirm.scss';
 

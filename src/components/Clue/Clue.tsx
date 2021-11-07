@@ -1,10 +1,10 @@
 import classNames from 'classnames';
-import { CellFocus, CellPosition } from 'interfaces';
+import { CellFocus, CellPosition } from './../../interfaces';
 import * as React from 'react';
-import { select as cellsActionSelect } from 'redux/cellsSlice';
-import { select as cluesActionSelect } from 'redux/cluesSlice';
-import { useAppDispatch } from 'redux/hooks';
-import { decodeHtmlEntities, sanitizeHtml, stripHtml } from 'utils/general';
+import { select as cellsActionSelect } from './../../redux/cellsSlice';
+import { select as cluesActionSelect } from './../../redux/cluesSlice';
+import { useAppDispatch } from './../../redux/hooks';
+import { decodeHtmlEntities, sanitizeHtml, stripHtml } from './../../utils/general';
 import './Clue.scss';
 
 interface ClueProps {

@@ -1,4 +1,4 @@
-import { Direction, SeparatorLocationsOptional } from 'interfaces';
+import { Direction, SeparatorLocationsOptional } from '.';
 
 export default interface GuardianClue {
   clue: string;

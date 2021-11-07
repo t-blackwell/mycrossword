@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
-import { decodeHtmlEntities, sanitizeHtml, stripHtml } from 'utils/general';
+import { decodeHtmlEntities, sanitizeHtml, stripHtml } from './../../utils/general';
 
 interface ClueDisplayProps {
   className?: string;

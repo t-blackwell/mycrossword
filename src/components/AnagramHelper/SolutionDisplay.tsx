@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 import classNames from 'classnames';
-import { Cell, SeparatorLocations } from 'interfaces';
+import { Cell, SeparatorLocations } from './../../interfaces';
 import * as React from 'react';
 import './SolutionDisplay.scss';
 

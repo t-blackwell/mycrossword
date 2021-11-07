@@ -1,7 +1,7 @@
 import * as React from 'react';
-import testData from 'testData/test.valid.1';
-import { render, screen, store } from 'utils/rtl';
-import { initialiseStore } from 'utils/test';
+import testData from './../../testData/test.valid.1';
+import { render, screen, store } from './../../utils/rtl';
+import { initialiseStore } from './../../utils/test';
 import Clues from './Clues';
 
 beforeEach(() => {

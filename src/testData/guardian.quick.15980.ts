@@ -1,4 +1,4 @@
-import { GuardianCrossword } from 'interfaces';
+import { GuardianCrossword } from '../interfaces';
 
 const data: GuardianCrossword = {
   id: 'crosswords/quick/15980',

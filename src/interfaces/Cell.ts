@@ -1,4 +1,4 @@
-import { CellPosition, Char } from 'interfaces';
+import { CellPosition, Char } from '.';
 
 export default interface Cell {
   clueIds: string[];

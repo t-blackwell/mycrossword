@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import * as React from 'react';
-import validData from 'testData/test.valid.1';
+import validData from './../../testData/test.valid.1';
 import MyCrossword from './MyCrossword';
 
 test('it renders', () => {

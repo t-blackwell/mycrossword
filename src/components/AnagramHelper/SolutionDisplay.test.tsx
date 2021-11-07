@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import * as React from 'react';
-import data from 'testData/test.valid.1';
-import { getGroupCells } from 'utils/clue';
-import { store } from 'utils/rtl';
-import { initialiseStore } from 'utils/test';
+import data from './../../testData/test.valid.1';
+import { getGroupCells } from './../../utils/clue';
+import { store } from './../../utils/rtl';
+import { initialiseStore } from './../../utils/test';
 import SolutionDisplay from './SolutionDisplay';
 
 const noSeparators = { ',': [], '-': [] };

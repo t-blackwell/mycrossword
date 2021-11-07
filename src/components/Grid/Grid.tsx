@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import { cellSize, GridCell, GridSeparators } from 'components';
-import Spinner from 'components/Spinner/Spinner';
-import { useDebounce } from 'hooks';
+import { cellSize, GridCell, GridSeparators } from '../../components';
+import Spinner from '../Spinner/Spinner';
+import { useDebounce } from './../../hooks';
 import type {
   Cell,
   CellPosition,
@@ -11,22 +11,22 @@ import type {
   GuessGrid,
   CellChange,
   CellFocus,
-} from 'interfaces';
+} from './../../interfaces';
 import * as React from 'react';
 import {
   select as cellsActionSelect,
   updateGrid as cellsActionUpdateGrid,
-} from 'redux/cellsSlice';
+} from './../../redux/cellsSlice';
 import {
   select as cluesActionSelect,
   answerOne as cluesActionAnswerOne,
   unanswerOne as cluesActionUnanswerOne,
-} from 'redux/cluesSlice';
-import { useAppDispatch } from 'redux/hooks';
-import { mergeCell } from 'utils/cell';
-import { isCluePopulated } from 'utils/clue';
-import { isValidChar } from 'utils/general';
-import { getGuessGrid } from 'utils/guess';
+} from './../../redux/cluesSlice';
+import { useAppDispatch } from './../../redux/hooks';
+import { mergeCell } from './../../utils/cell';
+import { isCluePopulated } from './../../utils/clue';
+import { isValidChar } from './../../utils/general';
+import { getGuessGrid } from './../../utils/guess';
 import './Grid.scss';
 
 const appearsInGroup = (clueId: string | undefined, group: string[]) =>

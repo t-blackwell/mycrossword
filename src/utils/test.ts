@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { GuardianCrossword, GuessGrid } from 'interfaces';
-import { updateGrid as cellsUpdateGrid } from 'redux/cellsSlice';
-import { updateGrid as cluesUpdateGrid } from 'redux/cluesSlice';
+import { GuardianCrossword, GuessGrid } from '../interfaces';
+import { updateGrid as cellsUpdateGrid } from '../redux/cellsSlice';
+import { updateGrid as cluesUpdateGrid } from '../redux/cluesSlice';
 import { initialiseCells } from './cell';
 import { initialiseClues } from './clue';
 

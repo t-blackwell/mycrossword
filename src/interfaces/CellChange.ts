@@ -1,4 +1,4 @@
-import type { CellPosition, Char } from 'interfaces';
+import type { CellPosition, Char } from '.';
 
 export default interface CellChange {
   pos: CellPosition;

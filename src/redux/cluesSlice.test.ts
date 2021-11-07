@@ -1,7 +1,7 @@
-import testData from 'testData/test.valid.1';
-import { initialiseCells } from 'utils/cell';
-import { initialiseClues } from 'utils/clue';
-import { initialiseStore } from 'utils/test';
+import testData from '../testData/test.valid.1';
+import { initialiseCells } from '../utils/cell';
+import { initialiseClues } from '../utils/clue';
+import { initialiseStore } from '../utils/test';
 import {
   answerGrid,
   answerOne,

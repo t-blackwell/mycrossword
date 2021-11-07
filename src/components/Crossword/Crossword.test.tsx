@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event';
-import { GuessGrid } from 'interfaces';
+import { GuessGrid } from './../../interfaces';
 import * as React from 'react';
-import invalidData from 'testData/test.invalid.1';
-import validData from 'testData/test.valid.1';
-import { act, fireEvent, render, screen } from 'utils/rtl';
+import invalidData from './../../testData/test.invalid.1';
+import validData from './../../testData/test.valid.1';
+import { act, fireEvent, render, screen } from './../../utils/rtl';
 import Crossword from './Crossword';
 
 const debounceTime = 1000;

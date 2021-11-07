@@ -14,7 +14,6 @@
     "isolatedModules": true,
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "src",
     "sourceMap": true,
     "declaration": true,
     "outDir": "./dist/esm"

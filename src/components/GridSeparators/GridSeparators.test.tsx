@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import * as React from 'react';
-import data from 'testData/test.valid.1';
+import data from './../../testData/test.valid.1';
 import GridSeparators from './GridSeparators';
 
 interface RectProps {

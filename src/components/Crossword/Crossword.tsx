@@ -7,27 +7,27 @@ import {
   Grid,
   GridError,
   StickyClue,
-} from 'components';
-import { useBreakpoint, useLocalStorage } from 'hooks';
+} from '../../components';
+import { useBreakpoint, useLocalStorage } from './../../hooks';
 import type {
   GuardianCrossword,
   GuessGrid,
   CellChange,
   CellFocus,
-} from 'interfaces';
+} from './../../interfaces';
 import * as React from 'react';
 import {
   getCells,
   updateGrid as cellsActionUpdateGrid,
-} from 'redux/cellsSlice';
+} from './../../redux/cellsSlice';
 import {
   getClues,
   updateGrid as cluesActionUpdateGrid,
-} from 'redux/cluesSlice';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
-import { initialiseCells } from 'utils/cell';
-import { getGroupCells, getGroupSeparators, initialiseClues } from 'utils/clue';
-import { initialiseGuessGrid, validateGuessGrid } from 'utils/guess';
+} from './../../redux/cluesSlice';
+import { useAppDispatch, useAppSelector } from './../../redux/hooks';
+import { initialiseCells } from './../../utils/cell';
+import { getGroupCells, getGroupSeparators, initialiseClues } from './../../utils/clue';
+import { initialiseGuessGrid, validateGuessGrid } from './../../utils/guess';
 import './Crossword.scss';
 
 interface CrosswordProps {

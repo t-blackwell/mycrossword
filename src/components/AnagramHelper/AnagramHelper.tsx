@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import { Button } from 'components';
-import { Cell, Clue, SeparatorLocations } from 'interfaces';
+import { Button } from '../../components';
+import { Cell, Clue, SeparatorLocations } from './../../interfaces';
 import * as React from 'react';
 import './AnagramHelper.scss';
 import ClueDisplay from './ClueDisplay';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { MyCrossword, MyCrosswordProps } from 'components';
+import { MyCrossword, MyCrosswordProps } from './components';
 
 export default function App(props: MyCrosswordProps): JSX.Element {
   return (

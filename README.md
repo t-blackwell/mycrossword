@@ -38,6 +38,7 @@ yarn add mycrossword
 ```js
 import React from 'react';
 import MyCrossword from 'mycrossword';
+import 'mycrossword/dist/index.css';
 
 const data = {
   /* ... crossword data (see below) ... */
@@ -158,32 +159,32 @@ This is an example of the JSON data required to create the crossword shown above
 Some functions require or return the state of the crossword grid. This is a 2-dimensional array holding the user's guess for each cell. Incomplete cells or cells that are not part of any answer are represented as the empty string (`""`). Note that it follows the convention of indexing by column first (x) and then row (y) so the printed array is transposed compared to how the crossword grid appears. For example, the following crossword...
 
 <table>
-<tr>
+  <tr>
     <td>■</td>
     <td>D</td>
     <td>■</td>
-</tr>
-<tr>
+  </tr>
+  <tr>
     <td>■</td>
     <td>O</td>
     <td>■</td>
-</tr>
-<tr>
+  </tr>
+  <tr>
     <td>A</td>
     <td>G</td>
     <td>E</td>
-</tr>
+  </tr>
 </table>
 
 ...would be represented as...
 
 ```JSON
 {
-  value: [
+  "value": [
     ["",  "",  "A"],
     ["D", "O", "G"],
-    ["",  "",  "E"],
-  ],
+    ["",  "",  "E"]
+  ]
 }
 ```
 
@@ -199,7 +200,7 @@ While the project has been created from scratch, it should be considered as a co
 - Simplified global state management using RTK
 - More modular component hierarchy
 - Scoped CSS
-- (Nigh on) full unit test coverage
+- Full unit test coverage
 - CI using GitHub actions
 
 ### Functional improvements
@@ -219,6 +220,18 @@ While the project has been created from scratch, it should be considered as a co
 - Fixed HTML display in StickyClue and AnagramHelper
 - Better loading and error state display
 
-### Licence
+## Working with this project
+
+`yarn` to install dependencies
+
+`yarn test` to run unit tests
+
+`yarn build` to package for publishing
+
+`yarn build:watch` to package and watch for changes
+
+`cd example && yarn start` to run the example application
+
+## Licence
 
 [MIT](./LICENSE), © 2021 [Tom Blackwell](https://github.com/t-blackwell)

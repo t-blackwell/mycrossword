@@ -1,8 +1,7 @@
 import classNames from 'classnames';
-import { Button } from 'components';
-import { Cell, Clue, SeparatorLocations } from 'interfaces';
 import * as React from 'react';
-import './AnagramHelper.scss';
+import { Button } from '../../components';
+import { Cell, Clue, SeparatorLocations } from './../../interfaces';
 import ClueDisplay from './ClueDisplay';
 import SolutionDisplay from './SolutionDisplay';
 import WordWheel from './WordWheel';

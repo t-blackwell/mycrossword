@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, screen } from 'utils/rtl';
+import { render, screen } from './../../utils/rtl';
 import GridError from './GridError';
 
 test('it renders', () => {

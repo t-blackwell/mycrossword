@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Clue } from 'interfaces';
+import { Clue } from '../interfaces';
 import { RootState } from './store';
 
 export interface CluesState {

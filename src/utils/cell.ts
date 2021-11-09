@@ -1,4 +1,10 @@
-import { Cell, CellPosition, Char, GuardianClue, GuessGrid } from 'interfaces';
+import {
+  Cell,
+  CellPosition,
+  Char,
+  GuardianClue,
+  GuessGrid,
+} from '../interfaces';
 
 export function mergeCell(newCell: Cell, cells: Cell[]) {
   return cells.map((cell) => {

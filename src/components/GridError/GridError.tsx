@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './GridError.scss';
 
 interface GridErrorProps {
   message: string;

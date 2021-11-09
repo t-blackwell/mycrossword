@@ -1,6 +1,6 @@
-import { GuessGrid } from 'interfaces';
-import { revealGrid as cellsActionRevealGrid } from 'redux/cellsSlice';
-import testData from 'testData/test.valid.1';
+import { GuessGrid } from '../interfaces';
+import { revealGrid as cellsActionRevealGrid } from '../redux/cellsSlice';
+import testData from '../testData/test.valid.1';
 import { getGuessGrid, initialiseGuessGrid, validateGuessGrid } from './guess';
 import { store } from './rtl';
 import { initialiseStore } from './test';

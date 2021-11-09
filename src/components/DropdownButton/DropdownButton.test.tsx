@@ -1,7 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { restoreConsoleMessage, suppressConsoleMessage } from 'utils/jest';
+import {
+  restoreConsoleMessage,
+  suppressConsoleMessage,
+} from './../../utils/jest';
 import DropdownButton, { DropdownMenuItem } from './DropdownButton';
 
 // TODO: check menu items are shown/hidden rather than using the button `aria-expanded` attribute

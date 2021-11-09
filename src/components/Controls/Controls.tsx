@@ -1,22 +1,25 @@
-import { Button, Confirm, DropdownButton } from 'components';
-import { Cell, CellChange, Char, Clue, GuessGrid } from 'interfaces';
 import * as React from 'react';
+import { Button, Confirm, DropdownButton } from '../../components';
+import { Cell, CellChange, Char, Clue, GuessGrid } from './../../interfaces';
 import {
   clearGrid as cellsActionClearGrid,
   revealGrid as cellsActionRevealGrid,
   updateGrid as cellsActionUpdateGrid,
-} from 'redux/cellsSlice';
+} from './../../redux/cellsSlice';
 import {
   answerGrid as cluesActionAnswerGrid,
   answerOne as cluesActionAnswerOne,
   unanswerGrid as cluesActionUnanswerGrid,
   unanswerOne as cluesActionUnanswerOne,
-} from 'redux/cluesSlice';
-import { useAppDispatch } from 'redux/hooks';
-import { blankNeighbours, mergeCell } from 'utils/cell';
-import { getCrossingClueIds, getGroupCells, isCluePopulated } from 'utils/clue';
-import { getGuessGrid } from 'utils/guess';
-import './Controls.scss';
+} from './../../redux/cluesSlice';
+import { useAppDispatch } from './../../redux/hooks';
+import { blankNeighbours, mergeCell } from './../../utils/cell';
+import {
+  getCrossingClueIds,
+  getGroupCells,
+  isCluePopulated,
+} from './../../utils/clue';
+import { getGuessGrid } from './../../utils/guess';
 
 interface ControlsProps {
   breakpoint: string;

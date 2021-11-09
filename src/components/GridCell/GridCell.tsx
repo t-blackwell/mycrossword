@@ -1,10 +1,9 @@
 import classNames from 'classnames';
-import { CellFocus, CellPosition, Char } from 'interfaces';
 import * as React from 'react';
-import { select as cellsActionSelect } from 'redux/cellsSlice';
-import { select as cluesActionSelect } from 'redux/cluesSlice';
-import { useAppDispatch } from 'redux/hooks';
-import './GridCell.scss';
+import { CellFocus, CellPosition, Char } from './../../interfaces';
+import { select as cellsActionSelect } from './../../redux/cellsSlice';
+import { select as cluesActionSelect } from './../../redux/cluesSlice';
+import { useAppDispatch } from './../../redux/hooks';
 
 export const cellSize = 31;
 

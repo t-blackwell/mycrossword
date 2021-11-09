@@ -1,4 +1,4 @@
-import { Cell, GuessGrid } from 'interfaces';
+import { Cell, GuessGrid } from '../interfaces';
 import { isValidChar } from './general';
 
 /**

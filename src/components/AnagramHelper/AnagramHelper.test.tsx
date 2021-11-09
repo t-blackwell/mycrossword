@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { store } from 'redux/store';
-import data from 'testData/test.valid.1';
-import { getGroupCells, getGroupSeparators } from 'utils/clue';
-import { initialiseStore } from 'utils/test';
+import { store } from './../../redux/store';
+import data from './../../testData/test.valid.1';
+import { getGroupCells, getGroupSeparators } from './../../utils/clue';
+import { initialiseStore } from './../../utils/test';
 import AnagramHelper from './AnagramHelper';
 
 test('it renders', () => {

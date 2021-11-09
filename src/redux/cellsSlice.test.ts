@@ -1,7 +1,7 @@
-import { CellPosition } from 'interfaces';
-import testData from 'testData/test.valid.1';
-import { initialiseCells } from 'utils/cell';
-import { initialiseStore } from 'utils/test';
+import { CellPosition } from '../interfaces';
+import testData from '../testData/test.valid.1';
+import { initialiseCells } from '../utils/cell';
+import { initialiseStore } from '../utils/test';
 import { clearGrid, revealGrid, select, updateGrid } from './cellsSlice';
 import { store } from './store';
 

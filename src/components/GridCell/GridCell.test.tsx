@@ -1,10 +1,13 @@
 import userEvent from '@testing-library/user-event';
-import { CellPosition } from 'interfaces';
 import * as React from 'react';
-import testData from 'testData/test.valid.1';
-import { restoreConsoleMessage, suppressConsoleMessage } from 'utils/jest';
-import { render, store } from 'utils/rtl';
-import { initialiseStore } from 'utils/test';
+import { CellPosition } from './../../interfaces';
+import testData from './../../testData/test.valid.1';
+import {
+  restoreConsoleMessage,
+  suppressConsoleMessage,
+} from './../../utils/jest';
+import { render, store } from './../../utils/rtl';
+import { initialiseStore } from './../../utils/test';
 import GridCell, { cellSize, getDimensions } from './GridCell';
 
 const cellPos: CellPosition = { col: 0, row: 0 };

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { sanitizeHtml } from 'utils/general';
-import './StickyClue.scss';
+import { sanitizeHtml } from './../../utils/general';
 
 interface StickyClueProps {
   num: string;

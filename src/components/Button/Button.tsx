@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import * as React from 'react';
-import './Button.scss';
 
 interface ButtonProps {
   ariaLabel?: string;

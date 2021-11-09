@@ -1,18 +1,17 @@
 import classNames from 'classnames';
-import { Crossword } from 'components';
-import { useBreakpoint } from 'hooks';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import { Crossword } from '../../components';
+import { useBreakpoint } from './../../hooks';
 import type {
   GuardianCrossword,
   GuessGrid,
   CellChange,
   CellFocus,
-} from 'interfaces';
-import * as React from 'react';
-import { Provider } from 'react-redux';
-import { store } from 'redux/store';
-import './MyCrossword.scss';
+} from './../../interfaces';
+import { store } from './../../redux/store';
 
-interface MyCrosswordProps {
+export interface MyCrosswordProps {
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;

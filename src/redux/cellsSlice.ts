@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Cell, CellPosition } from 'interfaces';
+import { Cell, CellPosition } from '../interfaces';
 import { RootState } from './store';
 
 export interface CellsState {

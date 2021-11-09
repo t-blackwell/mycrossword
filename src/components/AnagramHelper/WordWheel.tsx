@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import * as React from 'react';
-import './WordWheel.scss';
 
 const round = (val: number) => Math.round(val * 100) / 100;
 

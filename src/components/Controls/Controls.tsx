@@ -16,7 +16,6 @@ import { useAppDispatch } from './../../redux/hooks';
 import { blankNeighbours, mergeCell } from './../../utils/cell';
 import { getCrossingClueIds, getGroupCells, isCluePopulated } from './../../utils/clue';
 import { getGuessGrid } from './../../utils/guess';
-import './Controls.scss';
 
 interface ControlsProps {
   breakpoint: string;

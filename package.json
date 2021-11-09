@@ -41,6 +41,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-redux": "^7.1.18",
     "@types/sanitize-html": "^2.3.2",
+    "concurrently": "^6.3.0",
     "css-loader": "^6.5.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^8.3.0",
@@ -57,7 +58,10 @@
     "typescript": "^4.4.4"
   },
   "scripts": {
-    "build": "yarn build:esm && yarn build:cjs",
+    "build:js": "yarn build:esm && yarn build:cjs",
+    "build:css": "sass --load-path src/ src/index.scss dist/index.css",
+    "build": "yarn run build:js && yarn run build:css",
+    "build:watch": "concurrently \"tsc --watch\" \"yarn run build:css --watch\"",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "test": "jest --config jest.config.js"

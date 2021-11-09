@@ -27,7 +27,6 @@ import { mergeCell } from './../../utils/cell';
 import { isCluePopulated } from './../../utils/clue';
 import { isValidChar } from './../../utils/general';
 import { getGuessGrid } from './../../utils/guess';
-import './Grid.scss';
 
 const appearsInGroup = (clueId: string | undefined, group: string[]) =>
   clueId !== undefined && group.includes(clueId);

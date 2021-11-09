@@ -24,7 +24,6 @@ export default function useBreakpoint() {
 
   React.useEffect(() => {
     window.addEventListener('resize', handleResize);
-    handleResize();
 
     if (windowWidth !== undefined) {
       // set the breakpoint to the first match (smallest first)

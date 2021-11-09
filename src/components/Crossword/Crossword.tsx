@@ -28,7 +28,6 @@ import { useAppDispatch, useAppSelector } from './../../redux/hooks';
 import { initialiseCells } from './../../utils/cell';
 import { getGroupCells, getGroupSeparators, initialiseClues } from './../../utils/clue';
 import { initialiseGuessGrid, validateGuessGrid } from './../../utils/guess';
-import './Crossword.scss';
 
 interface CrosswordProps {
   data: GuardianCrossword;

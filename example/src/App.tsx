@@ -1,5 +1,5 @@
 import React from 'react';
-import MyCrossword from './../..';
+import MyCrossword from 'mycrossword'
 import data from './test.valid.1';
 
 const App = () => {

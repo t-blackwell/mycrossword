@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "./dist/esm",
+    "noEmit": false
+  },
+  "exclude": [
+    "src/testData/**", "src/**/*.test.*"
+  ]
+ }

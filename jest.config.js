@@ -7,5 +7,5 @@ module.exports = {
     '\\.(css|less|scss)$': 'identity-obj-proxy',
   },
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
-  testRegex: '(/__tests__/.*|\\.(test|spec))\\.[jt]sx?$',
+  testRegex: '(/__tests__/.*|src/.*\\.(test|spec))\\.[jt]sx?$',
 };

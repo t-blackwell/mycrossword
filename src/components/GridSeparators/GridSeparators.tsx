@@ -1,6 +1,6 @@
+import * as React from 'react';
 import { cellSize } from '../../components';
 import { Direction, GuardianClue } from './../../interfaces';
-import * as React from 'react';
 
 function getPos(val: number) {
   return val * (cellSize + 1) + 1;

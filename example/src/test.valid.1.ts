@@ -1,6 +1,6 @@
 import { GuardianCrossword } from 'mycrossword';
 
-const data:GuardianCrossword = {
+const data: GuardianCrossword = {
   id: 'test/valid/1',
   number: 1,
   name: 'Valid Test 1',

@@ -1,5 +1,5 @@
-import { Button } from '../../components';
 import * as React from 'react';
+import { Button } from '../../components';
 
 interface ConfirmProps {
   buttonText: string;

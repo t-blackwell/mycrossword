@@ -1,7 +1,7 @@
+import MyCrossword from 'mycrossword';
+import 'mycrossword/dist/index.css';
 import React from 'react';
-import MyCrossword from 'mycrossword'
 import data from './test.valid.1';
-import 'mycrossword/dist/index.css'
 
 const App = () => {
   return (
@@ -11,4 +11,4 @@ const App = () => {
   );
 };
 
-export default App
+export default App;

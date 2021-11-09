@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
-import { GuessGrid } from './../../interfaces';
 import * as React from 'react';
+import { GuessGrid } from './../../interfaces';
 import invalidData from './../../testData/test.invalid.1';
 import validData from './../../testData/test.valid.1';
 import { act, fireEvent, render, screen } from './../../utils/rtl';

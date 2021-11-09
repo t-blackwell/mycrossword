@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import * as React from 'react';
 import { cellSize, GridCell, GridSeparators } from '../../components';
 import Spinner from '../Spinner/Spinner';
 import { useDebounce } from './../../hooks';
@@ -12,7 +13,6 @@ import type {
   CellChange,
   CellFocus,
 } from './../../interfaces';
-import * as React from 'react';
 import {
   select as cellsActionSelect,
   updateGrid as cellsActionUpdateGrid,

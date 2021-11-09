@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
-import { CellPosition, GuessGrid } from './../../interfaces';
 import * as React from 'react';
+import { CellPosition, GuessGrid } from './../../interfaces';
 import { select as cellsActionSelect } from './../../redux/cellsSlice';
 import { select as cluesActionSelect } from './../../redux/cluesSlice';
 import data from './../../testData/test.valid.1';

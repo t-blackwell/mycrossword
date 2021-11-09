@@ -6,7 +6,5 @@
     "outDir": "./dist/esm",
     "noEmit": false
   },
-  "exclude": [
-    "src/testData/**", "src/**/*.test.*"
-  ]
- }
+  "exclude": ["src/testData/**", "src/**/*.test.*"]
+}

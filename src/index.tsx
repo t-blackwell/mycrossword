@@ -7,7 +7,7 @@ export type { GuardianCrossword } from './interfaces';
 export default function App(props: MyCrosswordProps): JSX.Element {
   return (
     <React.StrictMode>
-      <MyCrossword {...props}/>;
+      <MyCrossword {...props} />;
     </React.StrictMode>
-  )
+  );
 }

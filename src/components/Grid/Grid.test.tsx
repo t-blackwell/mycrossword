@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 import userEvent from '@testing-library/user-event';
-import { CellFocus, CellPosition, GuessGrid } from './../../interfaces';
 import * as React from 'react';
+import { CellFocus, CellPosition, GuessGrid } from './../../interfaces';
 import testData from './../../testData/test.valid.1';
 import { initialiseGuessGrid } from './../../utils/guess';
 import { act, fireEvent, render, screen, store } from './../../utils/rtl';

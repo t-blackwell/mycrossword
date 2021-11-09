@@ -1,7 +1,7 @@
 import classNames from 'classnames';
+import * as React from 'react';
 import { Button } from '../../components';
 import { Cell, Clue, SeparatorLocations } from './../../interfaces';
-import * as React from 'react';
 import ClueDisplay from './ClueDisplay';
 import SolutionDisplay from './SolutionDisplay';
 import WordWheel from './WordWheel';

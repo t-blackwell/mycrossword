@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import * as React from 'react';
 import {
   AnagramHelper,
   cellSize,
@@ -15,7 +16,6 @@ import type {
   CellChange,
   CellFocus,
 } from './../../interfaces';
-import * as React from 'react';
 import {
   getCells,
   updateGrid as cellsActionUpdateGrid,
@@ -26,7 +26,11 @@ import {
 } from './../../redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from './../../redux/hooks';
 import { initialiseCells } from './../../utils/cell';
-import { getGroupCells, getGroupSeparators, initialiseClues } from './../../utils/clue';
+import {
+  getGroupCells,
+  getGroupSeparators,
+  initialiseClues,
+} from './../../utils/clue';
 import { initialiseGuessGrid, validateGuessGrid } from './../../utils/guess';
 
 interface CrosswordProps {

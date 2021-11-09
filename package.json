@@ -43,8 +43,6 @@
     "@types/sanitize-html": "^2.3.2",
     "concurrently": "^6.3.0",
     "css-loader": "^6.5.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-config-prettier": "^8.3.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "prettier": "^2.3.2",
@@ -63,13 +61,8 @@
     "build:watch": "concurrently \"tsc -p tsconfig.build.json --watch\" \"yarn run build:css --watch\"",
     "build:esm": "tsc -p tsconfig.build.json",
     "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir dist/cjs",
+    "format": "prettier -w src",
     "test": "jest --config jest.config.js"
-  },
-  "XXeslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

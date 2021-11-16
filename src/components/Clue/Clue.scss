@@ -69,3 +69,10 @@
     border-color: vars.$theme-green;
   }
 }
+
+.MyCrossword--orangeTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-orange-light;
+    border-color: vars.$theme-orange;
+  }
+}

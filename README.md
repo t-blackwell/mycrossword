@@ -36,16 +36,15 @@ yarn add mycrossword
 ## Usage
 
 ```js
-import React from 'react';
 import MyCrossword from 'mycrossword';
 import 'mycrossword/dist/index.css';
+import React from 'react';
 
 const data = {
   /* ... crossword data (see below) ... */
 };
-
 export default function MyPage() {
-  return <MyCrossword id='crossword-1' data={data} />;
+  return <MyCrossword id="crossword-1" data={data} />;
 }
 ```
 
@@ -59,7 +58,7 @@ export default function MyPage() {
 | `onCellChange` | `(cellChange: CellChange) => void \| undefined`<br />Optional function. Called after a grid cell has changed its guess. The object contains the properties `pos`, `guess` and `previousGuess`.                                                                                                          |
 | `onCellFocus`  | `(cellFocus: CellFocus) => void \| undefined`<br />Optional function. Called after the focus switches to a new cell. The object returned contains the properties `pos` and `clueId`.                                                                                                                    |
 | `saveGrid`     | `(value: GuessGrid \| ((val: GuessGrid) => GuessGrid)) => void \| undefined`<br />Optional function to override storage mechanism. Called after the grid has changed with the ID of the crossword and array-based representation of the grid. See [guess grid](#guess-grid) below for more information. |
-| `theme`        | `'yellow' \| 'pink' \| 'blue' \| 'green'` = 'yellow'<br />Optional value to override the main colour applied to the highlighted cells and clues. Defaults to 'yellow'.                                                                                                                                  |
+| `theme`        | `'yellow' \| 'pink' \| 'blue' \| 'green' \| 'orange'` = 'yellow'<br />Optional value to override the main colour applied to the highlighted cells and clues. Defaults to 'yellow'.                                                                                                                      |
 
 For more type information, see [interfaces](./src/interfaces).
 

@@ -18,7 +18,7 @@ export interface MyCrosswordProps {
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
-  theme?: 'yellow' | 'pink' | 'blue' | 'green';
+  theme?: 'yellow' | 'pink' | 'blue' | 'green' | 'orange';
 }
 
 export default function MyCrossword({

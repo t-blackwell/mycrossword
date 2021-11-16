@@ -17,6 +17,7 @@
     height: vars.$grid-size * 1.5;
     text-transform: uppercase;
     user-select: none;
+    box-sizing: content-box;
   }
   .SolutionDisplay__letter--populated {
     background-color: vars.$faint-grey3;

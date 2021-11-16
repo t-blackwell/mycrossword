@@ -3,6 +3,7 @@
 .MyCrossword {
   .DropdownButton {
     position: relative;
+    user-select: none;
   }
   .DropdownButton__button {
     background-color: vars.$button-background;

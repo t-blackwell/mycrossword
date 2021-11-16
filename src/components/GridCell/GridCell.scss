@@ -79,3 +79,12 @@
     fill: vars.$theme-green-light;
   }
 }
+
+.MyCrossword--orangeTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-orange;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-orange-light;
+  }
+}

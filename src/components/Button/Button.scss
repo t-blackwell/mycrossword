@@ -7,6 +7,7 @@
     font-weight: bold;
     cursor: pointer;
     margin: vars.$button-margin;
+    user-select: none;
   }
   .Button--filled {
     background-color: vars.$button-background;

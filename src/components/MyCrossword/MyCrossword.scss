@@ -4,6 +4,7 @@
   font-family: vars.$font-family;
   font-size: vars.$font-size;
   -webkit-font-smoothing: subpixel-antialiased;
+  box-sizing: content-box;
   sup,
   sub {
     vertical-align: baseline;

@@ -65,6 +65,8 @@ export default function Crossword({
       : clues.find((clue) => clue.id === selectedClue?.group[0]);
   const [gridErrorMessage, setGridErrorMessage] = React.useState<string>();
   const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
+  const gridHeight = data.dimensions.rows * cellSize + data.dimensions.rows + 1;
+  const gridWidth = data.dimensions.cols * cellSize + data.dimensions.cols + 1;
 
   // validate overriding guess grid if defined
   if (
@@ -131,11 +133,13 @@ export default function Crossword({
               clue={parentClue}
               groupCells={getGroupCells(parentClue.group, cells)}
               groupSeparators={getGroupSeparators(parentClue.group, clues)}
-              height={
-                data.dimensions.rows * cellSize + data.dimensions.rows + 1
-              }
               onClose={() => setIsAnagramHelperOpen(false)}
-              width={data.dimensions.cols * cellSize + data.dimensions.cols + 1}
+              style={{
+                height: gridHeight,
+                maxHeight: gridHeight,
+                width: gridWidth,
+                maxWidth: gridWidth,
+              }}
             />
           ) : (
             <>
@@ -180,6 +184,7 @@ export default function Crossword({
         entries={clues}
         onCellFocus={onCellFocus}
         selectedClueId={selectedClue?.id}
+        style={{ maxHeight: gridHeight }}
       />
     </div>
   );

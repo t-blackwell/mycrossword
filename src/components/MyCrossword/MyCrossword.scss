@@ -5,6 +5,7 @@
   font-size: vars.$font-size;
   -webkit-font-smoothing: subpixel-antialiased;
   box-sizing: content-box;
+
   sup,
   sub {
     vertical-align: baseline;
@@ -13,5 +14,18 @@
   }
   sub {
     top: 0.4em;
+  }
+
+  ::-webkit-scrollbar {
+    width: vars.$grid-size * 0.9;
+  }
+  ::-webkit-scrollbar-track {
+    background: vars.$scrollbar-track-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: vars.$scrollbar-thumb-background;
+    &:hover {
+      background-color: vars.$scrollbar-thumb-hover;
+    }
   }
 }

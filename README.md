@@ -43,6 +43,7 @@ import React from 'react';
 const data = {
   /* ... crossword data (see below) ... */
 };
+
 export default function MyPage() {
   return <MyCrossword id="crossword-1" data={data} />;
 }

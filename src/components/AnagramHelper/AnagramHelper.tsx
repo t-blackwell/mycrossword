@@ -24,18 +24,16 @@ interface AnagramHelperProps {
   clue: Clue;
   groupCells: Cell[];
   groupSeparators: SeparatorLocations;
-  height: number;
   onClose: () => void;
-  width: number;
+  style?: React.CSSProperties;
 }
 
 export default function AnagramHelper({
   clue,
   groupCells,
   groupSeparators,
-  height,
   onClose,
-  width,
+  style,
 }: AnagramHelperProps): JSX.Element {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
@@ -78,10 +76,7 @@ export default function AnagramHelper({
   }, [clue.id]);
 
   return (
-    <div
-      className="AnagramHelper"
-      style={{ maxWidth: width, maxHeight: height, width, height }}
-    >
+    <div className="AnagramHelper" style={style}>
       <Button
         ariaLabel="Close"
         className="AnagramHelper__closeButton"

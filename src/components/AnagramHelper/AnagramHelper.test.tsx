@@ -24,9 +24,7 @@ test('it renders', () => {
       clue={oneAcross}
       groupCells={groupCells}
       groupSeparators={groupSeparators}
-      height={500}
       onClose={onClose}
-      width={500}
     />,
   );
 

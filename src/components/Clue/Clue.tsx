@@ -14,13 +14,13 @@ import {
 interface ClueProps {
   answered: boolean;
   col: number;
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef?: React.RefObject<HTMLDivElement>;
   id: string;
   isHighlighted: boolean;
   num: string;
   onCellFocus?: (cellFocus: CellFocus) => void;
   row: number;
-  scrollTo: boolean;
+  scrollTo?: boolean;
   text: string;
 }
 
@@ -41,7 +41,12 @@ function Clue({
 
   // scroll to ensure the clue is visible
   React.useEffect(() => {
-    if (scrollTo && ref.current !== null && containerRef.current !== null) {
+    if (
+      scrollTo &&
+      ref.current !== null &&
+      containerRef !== undefined &&
+      containerRef.current !== null
+    ) {
       const rect = ref.current.getBoundingClientRect();
       const perimeterRect = containerRef.current.getBoundingClientRect();
       const inView = isInPerimeterRect(rect, perimeterRect);

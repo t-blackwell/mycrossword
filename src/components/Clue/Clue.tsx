@@ -6,6 +6,7 @@ import { select as cluesActionSelect } from './../../redux/cluesSlice';
 import { useAppDispatch } from './../../redux/hooks';
 import {
   decodeHtmlEntities,
+  isInPerimeterRect,
   sanitizeHtml,
   stripHtml,
 } from './../../utils/general';
@@ -13,25 +14,48 @@ import {
 interface ClueProps {
   answered: boolean;
   col: number;
+  containerRef: React.RefObject<HTMLDivElement>;
   id: string;
   isHighlighted: boolean;
   num: string;
   onCellFocus?: (cellFocus: CellFocus) => void;
   row: number;
+  scrollTo: boolean;
   text: string;
 }
 
 function Clue({
   answered,
   col,
+  containerRef,
   id,
   isHighlighted,
   num,
   onCellFocus,
   row,
+  scrollTo,
   text,
 }: ClueProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  // scroll to ensure the clue is visible
+  React.useEffect(() => {
+    if (scrollTo && ref.current !== null && containerRef.current !== null) {
+      const rect = ref.current.getBoundingClientRect();
+      const perimeterRect = containerRef.current.getBoundingClientRect();
+      const inView = isInPerimeterRect(rect, perimeterRect);
+
+      // prevent scroll if clue is already in view
+      if (!inView) {
+        ref.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+          inline: 'start',
+        });
+      }
+    }
+  }, [scrollTo]);
 
   const cellFocus = (pos: CellPosition, clueId: string) => {
     if (onCellFocus !== undefined) {
@@ -70,6 +94,7 @@ function Clue({
         }
       }}
       role="button"
+      ref={ref}
       tabIndex={0}
     >
       <span className="Clue__num">{num}</span>

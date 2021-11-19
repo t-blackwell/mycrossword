@@ -181,6 +181,7 @@ export default function Crossword({
         />
       </div>
       <Clues
+        breakpoint={breakpoint ?? ''}
         entries={clues}
         onCellFocus={onCellFocus}
         selectedClueId={selectedClue?.id}

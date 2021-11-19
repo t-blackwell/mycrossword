@@ -18,6 +18,15 @@ export function isInViewport(rect: DOMRect) {
   );
 }
 
+export function isInPerimeterRect(rect: DOMRect, perimeterRect: DOMRect) {
+  return (
+    rect.top >= perimeterRect.top &&
+    rect.left >= perimeterRect.left &&
+    rect.right <= perimeterRect.right &&
+    rect.bottom <= perimeterRect.bottom
+  );
+}
+
 export function decodeHtmlEntities(html: string) {
   const textArea = document.createElement('textarea');
   textArea.innerHTML = html;

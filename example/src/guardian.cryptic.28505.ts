@@ -1,4 +1,4 @@
-import type { GuardianCrossword } from '../interfaces';
+import type { GuardianCrossword } from 'mycrossword';
 
 const data: GuardianCrossword = {
   id: 'crosswords/cryptic/28505',

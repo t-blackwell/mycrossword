@@ -41,6 +41,13 @@
   }
 }
 
+/** Breakpoints **/
+.MyCrossword--md {
+  .Clue {
+    scroll-margin-top: vars.$grid-size * 2.3;
+  }
+}
+
 /** Theme styles **/
 .MyCrossword--yellowTheme {
   .Clue--highlighted {

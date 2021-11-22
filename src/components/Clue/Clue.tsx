@@ -13,6 +13,7 @@ import {
 
 interface ClueProps {
   answered: boolean;
+  breakpoint: string;
   col: number;
   containerRef?: React.RefObject<HTMLDivElement>;
   id: string;
@@ -26,6 +27,7 @@ interface ClueProps {
 
 function Clue({
   answered,
+  breakpoint,
   col,
   containerRef,
   id,
@@ -54,9 +56,9 @@ function Clue({
       // prevent scroll if clue is already in view
       if (!inView) {
         ref.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-          inline: 'start',
+          behavior: 'auto',
+          block: 'nearest',
+          inline: 'nearest',
         });
       }
     }
@@ -81,9 +83,11 @@ function Clue({
 
     const gridElement = document.querySelectorAll<HTMLElement>('.Grid');
     if (gridElement.length === 1) {
-      gridElement[0].focus();
+      gridElement[0].focus({
+        preventScroll: ['md', 'lg'].includes(breakpoint),
+      });
     }
-  }, []);
+  }, [breakpoint]);
 
   return (
     <div

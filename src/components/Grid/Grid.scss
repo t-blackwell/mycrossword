@@ -23,4 +23,13 @@
     min-width: auto !important;
     min-height: auto !important;
   }
+  .Grid {
+    scroll-margin-top: vars.$grid-size * 5;
+  }
+}
+
+.MyCrossword--sm {
+  .Grid {
+    scroll-margin-top: vars.$grid-size * 5;
+  }
 }

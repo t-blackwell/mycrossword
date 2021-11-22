@@ -46,6 +46,7 @@ export default function Clues({
           {across.map((entry) => (
             <Clue
               answered={entry.answered}
+              breakpoint={breakpoint}
               col={entry.position.x}
               containerRef={
                 breakpoint === 'md' ? cluesContainerRef : acrossContainerRef
@@ -68,6 +69,7 @@ export default function Clues({
           {down.map((entry) => (
             <Clue
               answered={entry.answered}
+              breakpoint={breakpoint}
               col={entry.position.x}
               containerRef={
                 breakpoint === 'md' ? cluesContainerRef : downContainerRef

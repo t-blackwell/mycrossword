@@ -9,6 +9,7 @@ test('it renders', () => {
   render(
     <Clue
       answered={false}
+      breakpoint="xl"
       col={0}
       id="1-across"
       isHighlighted={false}
@@ -28,6 +29,7 @@ test('it renders answered', () => {
   render(
     <Clue
       answered
+      breakpoint="xl"
       col={0}
       id="1-across"
       isHighlighted={false}
@@ -48,6 +50,7 @@ test('it renders highlighted', () => {
   render(
     <Clue
       answered={false}
+      breakpoint="xl"
       col={0}
       id="1-across"
       isHighlighted
@@ -71,6 +74,7 @@ test('it selects clue', () => {
   render(
     <Clue
       answered={false}
+      breakpoint="xl"
       col={0}
       id="1-across"
       isHighlighted

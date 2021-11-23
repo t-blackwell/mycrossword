@@ -185,7 +185,12 @@ export default function Crossword({
         entries={clues}
         onCellFocus={onCellFocus}
         selectedClueId={selectedClue?.id}
-        style={{ maxHeight: gridHeight }}
+        style={{
+          maxHeight:
+            breakpoint !== undefined && ['md', 'lg'].includes(breakpoint)
+              ? gridHeight
+              : undefined,
+        }}
       />
     </div>
   );

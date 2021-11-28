@@ -67,6 +67,7 @@ export default function Crossword({
   const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
   const gridHeight = data.dimensions.rows * cellSize + data.dimensions.rows + 1;
   const gridWidth = data.dimensions.cols * cellSize + data.dimensions.cols + 1;
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   // validate overriding guess grid if defined
   if (
@@ -158,6 +159,7 @@ export default function Crossword({
                 clues={clues}
                 cols={data.dimensions.cols}
                 guessGrid={guessGrid}
+                inputRef={inputRef}
                 isLoading={cells.length === 0}
                 onCellChange={onCellChange}
                 onCellFocus={onCellFocus}
@@ -183,6 +185,7 @@ export default function Crossword({
       <Clues
         breakpoint={breakpoint ?? ''}
         entries={clues}
+        inputRef={inputRef}
         onCellFocus={onCellFocus}
         selectedClueId={selectedClue?.id}
         style={{

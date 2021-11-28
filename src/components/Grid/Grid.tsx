@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import * as React from 'react';
 import { cellSize, GridCell, GridSeparators } from '../../components';
+import { getDimensions } from '../GridCell/GridCell';
 import Spinner from '../Spinner/Spinner';
 import { useDebounce } from './../../hooks';
 import type {
@@ -46,6 +47,7 @@ interface GridProps {
   clues: Clue[];
   cols: number;
   guessGrid: GuessGrid;
+  inputRef?: React.RefObject<HTMLInputElement>;
   isLoading?: boolean;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
@@ -59,6 +61,7 @@ export default function Grid({
   clues,
   cols,
   guessGrid,
+  inputRef,
   isLoading = false,
   onCellChange,
   onCellFocus,
@@ -272,7 +275,7 @@ export default function Grid({
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (selectedClue === undefined || selectedCell === undefined) {
       return;
     }
@@ -363,17 +366,13 @@ export default function Grid({
     }
   };
 
+  const dimensions =
+    selectedCell !== undefined ? getDimensions(selectedCell?.pos) : undefined;
+
   return (
     <div
       className={classNames('Grid', isLoading ? 'Grid--loading' : null)}
-      onKeyDown={(event) => {
-        // prevent keys scrolling page
-        event.preventDefault();
-        handleKeyPress(event);
-      }}
-      role="textbox"
       style={{ minWidth: width, minHeight: height, width, height }}
-      tabIndex={0}
     >
       {isLoading ? (
         <Spinner size="standard" />
@@ -410,6 +409,7 @@ export default function Grid({
               <GridCell
                 clueIds={clueIds}
                 guess={guess}
+                inputRef={inputRef}
                 isSelected={isSelected}
                 isHighlighted={isHighlighted}
                 key={`${pos.col},${pos.row}`}
@@ -421,6 +421,34 @@ export default function Grid({
             );
           })}
           <GridSeparators clues={rawClues} />
+          <foreignObject
+            className="Grid__inputContainer"
+            x={dimensions?.xRect}
+            y={dimensions?.yRect}
+            width={cellSize}
+            height={cellSize}
+          >
+            <input
+              autoComplete="off"
+              autoCorrect="off"
+              className={classNames(
+                'Grid__input',
+                selectedCell === undefined
+                  ? 'Grid__input--inclusivelyHidden'
+                  : null,
+              )}
+              maxLength={1}
+              onKeyDown={(event) => {
+                // prevent keys scrolling page
+                event.preventDefault();
+                handleKeyPress(event);
+              }}
+              defaultValue=""
+              ref={inputRef}
+              spellCheck="false"
+              type="text"
+            />
+          </foreignObject>
         </svg>
       )}
     </div>

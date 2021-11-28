@@ -21,6 +21,7 @@ export const getDimensions = (cellPos: CellPosition) => {
 interface GridCellProps {
   clueIds: string[];
   guess?: Char;
+  inputRef?: React.RefObject<HTMLInputElement>;
   isHighlighted: boolean;
   isSelected: boolean;
   num?: number;
@@ -32,6 +33,7 @@ interface GridCellProps {
 function GridCell({
   clueIds,
   guess,
+  inputRef,
   isHighlighted,
   isSelected,
   num,
@@ -77,6 +79,8 @@ function GridCell({
     if (!isSelected || clueIds.length === 2) {
       cellFocus(pos, clueId);
     }
+
+    inputRef?.current?.focus({ preventScroll: true });
   };
 
   return (
@@ -103,16 +107,6 @@ function GridCell({
       <text className="GridCell__text" textAnchor="middle" x={xText} y={yText}>
         {guess}
       </text>
-      {isSelected ? (
-        <text
-          className="GridCell__fakeCursor"
-          textAnchor="middle"
-          x={xText}
-          y={yText}
-        >
-          |
-        </text>
-      ) : null}
     </g>
   );
 }

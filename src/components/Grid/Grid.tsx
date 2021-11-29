@@ -275,18 +275,37 @@ export default function Grid({
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (selectedClue === undefined || selectedCell === undefined) {
       return;
     }
+
+    // whitelist keys
+    if (
+      ![
+        'ArrowUp',
+        'ArrowDown',
+        'ArrowLeft',
+        'ArrowRight',
+        'Backspace',
+        'Delete',
+        'Tab',
+      ].includes(event.key)
+    ) {
+      return;
+    }
+
+    // prevent keys scrolling page
+    event.preventDefault();
+
     const key = event.key.toUpperCase();
 
     if (
-      ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)
+      ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
     ) {
       // move to the next cell
-      moveDirection(event.code.replace('Arrow', ''));
-    } else if (['Backspace', 'Delete'].includes(event.code)) {
+      moveDirection(event.key.replace('Arrow', ''));
+    } else if (['Backspace', 'Delete'].includes(event.key)) {
       cellChange(selectedCell, undefined);
 
       // clear the cell's value
@@ -311,12 +330,12 @@ export default function Grid({
         }
       });
 
-      if (event.code === 'Backspace') {
+      if (event.key === 'Backspace') {
         movePrev();
       }
 
       updateGuesses(updatedCells);
-    } else if (event.code === 'Tab') {
+    } else if (event.key === 'Tab') {
       // cycle through the clues
       const index = clues.findIndex((clue) => clue.selected);
       let nextIndex = 0;
@@ -337,7 +356,17 @@ export default function Grid({
       dispatch(cellsActionSelect(nextCluePos));
 
       cellFocus(nextCluePos, nextClue.id);
-    } else if (isValidChar(key)) {
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (selectedClue === undefined || selectedCell === undefined) {
+      return;
+    }
+
+    const key = event.target.value.toUpperCase();
+
+    if (isValidChar(key)) {
       cellChange(selectedCell, key as Char);
 
       const updatedCell: Cell = {
@@ -363,6 +392,9 @@ export default function Grid({
       moveNext();
 
       updateGuesses(updatedCells);
+    } else {
+      // prevent keys scrolling page
+      event.preventDefault();
     }
   };
 
@@ -438,15 +470,12 @@ export default function Grid({
                   : null,
               )}
               maxLength={1}
-              onKeyDown={(event) => {
-                // prevent keys scrolling page
-                event.preventDefault();
-                handleKeyPress(event);
-              }}
-              defaultValue=""
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
               ref={inputRef}
               spellCheck="false"
               type="text"
+              value=""
             />
           </foreignObject>
         </svg>

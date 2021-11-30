@@ -17,29 +17,8 @@
     cursor: text;
     font-size: vars.$font-size-large;
   }
-  .Grid:focus .GridCell--selected .GridCell__rect {
-    outline: vars.$grid-size * 0.5 auto Highlight;
-    outline: vars.$grid-size * 0.5 auto -webkit-focus-ring-color;
-  }
   .GridCell--selected .GridCell__text {
     font-weight: bold;
-  }
-  .GridCell__fakeCursor {
-    font-size: vars.$font-size-large * 1.3;
-    fill: transparent;
-  }
-  .Grid:focus .GridCell--selected .GridCell__fakeCursor {
-    fill: vars.$grid-color;
-    animation: 1.2s blink step-end infinite;
-  }
-  @keyframes blink {
-    from,
-    to {
-      fill: vars.$grid-color;
-    }
-    50% {
-      fill: transparent;
-    }
   }
 }
 

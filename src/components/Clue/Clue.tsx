@@ -17,6 +17,7 @@ interface ClueProps {
   col: number;
   containerRef?: React.RefObject<HTMLDivElement>;
   id: string;
+  inputRef?: React.RefObject<HTMLInputElement>;
   isHighlighted: boolean;
   num: string;
   onCellFocus?: (cellFocus: CellFocus) => void;
@@ -31,6 +32,7 @@ function Clue({
   col,
   containerRef,
   id,
+  inputRef,
   isHighlighted,
   num,
   onCellFocus,
@@ -81,13 +83,10 @@ function Clue({
     // TODO: don't call if on current clue's first cell
     cellFocus(pos, id);
 
-    const gridElement = document.querySelectorAll<HTMLElement>('.Grid');
-    if (gridElement.length === 1) {
-      gridElement[0].focus({
-        preventScroll: ['md', 'lg'].includes(breakpoint),
-      });
-    }
-  }, [breakpoint]);
+    inputRef?.current?.focus({
+      preventScroll: ['md', 'lg'].includes(breakpoint),
+    });
+  }, [breakpoint, inputRef]);
 
   return (
     <div

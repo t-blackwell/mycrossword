@@ -5,6 +5,7 @@ import { CellFocus, Clue as ClueInterface } from './../../interfaces';
 interface CluesProps {
   breakpoint: string;
   entries: ClueInterface[];
+  inputRef?: React.RefObject<HTMLInputElement>;
   onCellFocus?: (cellFocus: CellFocus) => void;
   selectedClueId?: string;
   style?: React.CSSProperties;
@@ -13,6 +14,7 @@ interface CluesProps {
 export default function Clues({
   breakpoint,
   entries,
+  inputRef,
   onCellFocus,
   selectedClueId,
   style,
@@ -52,6 +54,7 @@ export default function Clues({
                 breakpoint === 'md' ? cluesContainerRef : acrossContainerRef
               }
               id={entry.id}
+              inputRef={inputRef}
               isHighlighted={isHighlighted(entry)}
               key={entry.id}
               num={entry.humanNumber}
@@ -75,6 +78,7 @@ export default function Clues({
                 breakpoint === 'md' ? cluesContainerRef : downContainerRef
               }
               id={entry.id}
+              inputRef={inputRef}
               isHighlighted={isHighlighted(entry)}
               key={entry.id}
               num={entry.humanNumber}

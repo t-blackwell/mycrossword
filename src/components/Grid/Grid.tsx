@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import * as React from 'react';
 import { cellSize, GridCell, GridSeparators } from '../../components';
+import { getDimensions } from '../GridCell/GridCell';
 import Spinner from '../Spinner/Spinner';
 import { useDebounce } from './../../hooks';
 import type {
@@ -46,6 +47,7 @@ interface GridProps {
   clues: Clue[];
   cols: number;
   guessGrid: GuessGrid;
+  inputRef?: React.RefObject<HTMLInputElement>;
   isLoading?: boolean;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
@@ -59,6 +61,7 @@ export default function Grid({
   clues,
   cols,
   guessGrid,
+  inputRef,
   isLoading = false,
   onCellChange,
   onCellFocus,
@@ -272,18 +275,37 @@ export default function Grid({
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (selectedClue === undefined || selectedCell === undefined) {
       return;
     }
+
+    // whitelist keys
+    if (
+      ![
+        'ArrowUp',
+        'ArrowDown',
+        'ArrowLeft',
+        'ArrowRight',
+        'Backspace',
+        'Delete',
+        'Tab',
+      ].includes(event.key)
+    ) {
+      return;
+    }
+
+    // prevent keys scrolling page
+    event.preventDefault();
+
     const key = event.key.toUpperCase();
 
     if (
-      ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)
+      ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
     ) {
       // move to the next cell
-      moveDirection(event.code.replace('Arrow', ''));
-    } else if (['Backspace', 'Delete'].includes(event.code)) {
+      moveDirection(event.key.replace('Arrow', ''));
+    } else if (['Backspace', 'Delete'].includes(event.key)) {
       cellChange(selectedCell, undefined);
 
       // clear the cell's value
@@ -308,12 +330,12 @@ export default function Grid({
         }
       });
 
-      if (event.code === 'Backspace') {
+      if (event.key === 'Backspace') {
         movePrev();
       }
 
       updateGuesses(updatedCells);
-    } else if (event.code === 'Tab') {
+    } else if (event.key === 'Tab') {
       // cycle through the clues
       const index = clues.findIndex((clue) => clue.selected);
       let nextIndex = 0;
@@ -334,7 +356,17 @@ export default function Grid({
       dispatch(cellsActionSelect(nextCluePos));
 
       cellFocus(nextCluePos, nextClue.id);
-    } else if (isValidChar(key)) {
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (selectedClue === undefined || selectedCell === undefined) {
+      return;
+    }
+
+    const key = event.target.value.toUpperCase();
+
+    if (isValidChar(key)) {
       cellChange(selectedCell, key as Char);
 
       const updatedCell: Cell = {
@@ -360,20 +392,20 @@ export default function Grid({
       moveNext();
 
       updateGuesses(updatedCells);
+    } else {
+      // prevent keys scrolling page
+      event.preventDefault();
     }
   };
+
+  const dimensions =
+    selectedCell !== undefined ? getDimensions(selectedCell?.pos) : undefined;
 
   return (
     <div
       className={classNames('Grid', isLoading ? 'Grid--loading' : null)}
-      onKeyDown={(event) => {
-        // prevent keys scrolling page
-        event.preventDefault();
-        handleKeyPress(event);
-      }}
-      role="textbox"
+      data-testid="grid"
       style={{ minWidth: width, minHeight: height, width, height }}
-      tabIndex={0}
     >
       {isLoading ? (
         <Spinner size="standard" />
@@ -410,6 +442,7 @@ export default function Grid({
               <GridCell
                 clueIds={clueIds}
                 guess={guess}
+                inputRef={inputRef}
                 isSelected={isSelected}
                 isHighlighted={isHighlighted}
                 key={`${pos.col},${pos.row}`}
@@ -421,6 +454,31 @@ export default function Grid({
             );
           })}
           <GridSeparators clues={rawClues} />
+          <foreignObject
+            className="Grid__inputContainer"
+            x={dimensions?.xRect}
+            y={dimensions?.yRect}
+            width={cellSize}
+            height={cellSize}
+          >
+            <input
+              autoComplete="off"
+              autoCorrect="off"
+              className={classNames(
+                'Grid__input',
+                selectedCell === undefined
+                  ? 'Grid__input--inclusivelyHidden'
+                  : null,
+              )}
+              maxLength={1}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              ref={inputRef}
+              spellCheck="false"
+              type="text"
+              value=""
+            />
+          </foreignObject>
         </svg>
       )}
     </div>

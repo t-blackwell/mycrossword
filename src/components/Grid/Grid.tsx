@@ -404,6 +404,7 @@ export default function Grid({
   return (
     <div
       className={classNames('Grid', isLoading ? 'Grid--loading' : null)}
+      data-testid="grid"
       style={{ minWidth: width, minHeight: height, width, height }}
     >
       {isLoading ? (

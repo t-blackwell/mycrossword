@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { MyCrossword, MyCrosswordProps } from './components';
 
 export type { GuardianCrossword } from './interfaces';

@@ -67,7 +67,6 @@ export default function WordWheel({
                   ? getCentralPosition(diameter)
                   : getPosition(diameter, angle, i)
               }
-              // eslint-disable-next-line react/no-array-index-key
               key={`${letter}-${i}`}
             >
               {letter}

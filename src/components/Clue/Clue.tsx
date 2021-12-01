@@ -108,7 +108,6 @@ function Clue({
       <span className="Clue__num">{num}</span>
       <span
         className="Clue__text"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }}
         data-text={decodeHtmlEntities(stripHtml(text))}
       />

@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import testData from './../../testData/test.valid.1';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen, store } from './../../utils/rtl';
 import { initialiseStore } from './../../utils/test';
 import Clue from './Clue';

@@ -16,5 +16,10 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+    "./.eslintrc.js",
+    "./jest.config.js",
+    "./setupTests.ts"
+  ]
 }

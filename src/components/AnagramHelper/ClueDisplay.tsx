@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import {
   decodeHtmlEntities,
@@ -20,12 +19,7 @@ export default function ClueDisplay({
   splitWords = false,
 }: ClueDisplayProps): JSX.Element {
   if (!splitWords) {
-    return (
-      <span
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: sanitizeHtml(clue) }}
-      />
-    );
+    return <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(clue) }} />;
   }
 
   // regex split on word boundaries

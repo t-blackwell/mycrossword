@@ -3,6 +3,7 @@ import * as React from 'react';
 import { GuessGrid } from './../../interfaces';
 import invalidData from './../../testData/test.invalid.1';
 import validData from './../../testData/test.valid.1';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { act, fireEvent, render, screen } from './../../utils/rtl';
 import Crossword from './Crossword';
 

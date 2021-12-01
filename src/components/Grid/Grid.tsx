@@ -298,8 +298,6 @@ export default function Grid({
     // prevent keys scrolling page
     event.preventDefault();
 
-    const key = event.key.toUpperCase();
-
     if (
       ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
     ) {

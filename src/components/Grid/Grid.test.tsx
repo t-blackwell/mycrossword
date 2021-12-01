@@ -1,9 +1,10 @@
-/* eslint-disable no-plusplus */
+// eslint-disable no-plusplus
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { CellFocus, CellPosition, GuessGrid } from './../../interfaces';
 import testData from './../../testData/test.valid.1';
 import { initialiseGuessGrid } from './../../utils/guess';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { act, fireEvent, render, screen, store } from './../../utils/rtl';
 import { initialiseStore } from './../../utils/test';
 import Grid from './Grid';

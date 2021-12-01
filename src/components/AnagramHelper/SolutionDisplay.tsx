@@ -78,7 +78,6 @@ export default function SolutionDisplay({
                 : null,
               getSeparatorClass(separators, i + 1),
             )}
-            // eslint-disable-next-line react/no-array-index-key
             key={`${cell.val}-${i}`}
           >
             {cell.guess ??

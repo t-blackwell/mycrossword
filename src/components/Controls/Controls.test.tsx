@@ -5,6 +5,7 @@ import { select as cellsActionSelect } from './../../redux/cellsSlice';
 import { select as cluesActionSelect } from './../../redux/cluesSlice';
 import data from './../../testData/test.valid.1';
 import { initialiseGuessGrid } from './../../utils/guess';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen, store } from './../../utils/rtl';
 import { initialiseStore } from './../../utils/test';
 import Controls from './Controls';

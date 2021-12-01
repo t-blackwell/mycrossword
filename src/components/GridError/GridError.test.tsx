@@ -1,4 +1,5 @@
 import * as React from 'react';
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen } from './../../utils/rtl';
 import GridError from './GridError';
 

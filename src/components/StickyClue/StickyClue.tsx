@@ -15,10 +15,7 @@ export default function StickyClue({
       <div className="StickyClue__inner">
         <span className="StickyClue__text">
           <span className="StickyClue__num">{num}</span>
-          <span
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }}
-          />
+          <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }} />
         </span>
       </div>
     </div>

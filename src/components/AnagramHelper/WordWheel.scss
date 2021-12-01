@@ -8,6 +8,7 @@
     width: 50%;
     height: 100%;
     margin: 0 auto;
+    min-width: 20 * vars.$grid-size;
   }
   .WordWheel__letter {
     position: absolute;

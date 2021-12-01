@@ -30,6 +30,7 @@
     margin: vars.$grid-size * 0.5 0;
     text-align: center;
     border-radius: vars.$border-radius;
+    max-width: 100%;
   }
   .AnagramHelper__input::placeholder {
     color: vars.$faint-grey1;
@@ -66,6 +67,7 @@
     width: vars.$grid-size * 3.5;
     height: vars.$grid-size * 3.5;
     padding: 0;
+    z-index: 1;
   }
   .AnagramHelper__closeButtonIcon {
     width: vars.$grid-size * 3;

@@ -2,6 +2,9 @@
 
 .MyCrossword {
   .Controls {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
     display: flex;
     margin-left: vars.$grid-size * -0.5;
     margin-right: vars.$grid-size * -0.5;

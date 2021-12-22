@@ -84,7 +84,7 @@ function Clue({
     cellFocus(pos, id);
 
     inputRef?.current?.focus({
-      preventScroll: ['md', 'lg'].includes(breakpoint),
+      preventScroll: ['md', 'lg', 'xl'].includes(breakpoint),
     });
   }, [breakpoint, inputRef]);
 

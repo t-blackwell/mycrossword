@@ -298,6 +298,9 @@ export default function Grid({
     // prevent keys scrolling page
     event.preventDefault();
 
+    // prevent arrow keys propagating to window
+    event.stopPropagation();
+
     if (
       ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
     ) {

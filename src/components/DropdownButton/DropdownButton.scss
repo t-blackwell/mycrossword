@@ -26,6 +26,9 @@
   }
   .DropdownButton__menu {
     visibility: hidden;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -43,6 +46,9 @@
     visibility: visible;
   }
   .DropdownButton__menuItem {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
     display: flex;
     background-color: transparent;
     border: none;

@@ -3,9 +3,6 @@
 .MyCrossword {
   .AnagramHelper {
     position: relative;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     flex-direction: column;
     padding: vars.$grid-size * 2;
@@ -16,22 +13,13 @@
     overflow: hidden;
   }
   .AnagramHelper__top {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-flex: 50%;
-    -webkit-flex: 50%;
-    -ms-flex: 50%;
     flex: 50%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
   .AnagramHelper__bottom {
-    -webkit-box-flex: 50%;
-    -webkit-flex: 50%;
-    -ms-flex: 50%;
     flex: 50%;
   }
   .AnagramHelper__input {
@@ -62,9 +50,6 @@
     text-transform: capitalize;
   }
   .AnagramHelper__buttons {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,9 +61,7 @@
     position: absolute;
     top: vars.$grid-size;
     right: vars.$grid-size;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
+
     display: flex;
     align-items: center;
     justify-content: center;

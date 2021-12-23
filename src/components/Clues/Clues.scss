@@ -2,23 +2,13 @@
 
 .MyCrossword {
   .Clues {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     flex-grow: 1;
   }
   .Clues__list {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     flex-direction: column;
     margin: 0 vars.$grid-size;
-    -webkit-box-flex: 50%;
-    -webkit-flex: 50%;
-    -ms-flex: 50%;
-    flex: 50%;
   }
   .Clues__listHeader {
     border-bottom: 1px dotted vars.$light-grey;
@@ -49,10 +39,6 @@
     scrollbar-width: thin;
   }
   .Clues__list {
-    -webkit-box-flex: initial;
-    -webkit-flex: initial;
-    -ms-flex: initial;
-    flex: initial;
     margin: 0;
   }
   .Clues__list--down {

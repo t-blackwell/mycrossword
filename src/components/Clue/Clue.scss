@@ -3,9 +3,6 @@
 .MyCrossword {
   .Clue {
     cursor: pointer;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     align-items: baseline;
     line-height: vars.$line-height;
@@ -29,9 +26,6 @@
     background-color: vars.$faint-grey4;
   }
   .Clue__num {
-    -webkit-box-flex: 0 0 vars.$grid-size * 2;
-    -webkit-flex: 0 0 vars.$grid-size * 2;
-    -ms-flex: 0 0 vars.$grid-size * 2;
     flex: 0 0 vars.$grid-size * 2;
     font-weight: bold;
     margin-right: vars.$grid-size * 2;

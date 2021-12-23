@@ -2,6 +2,9 @@
   .Crossword {
     display: flex;
   }
+  .Crossword__gridAndControls {
+    flex-shrink: 0;
+  }
 }
 
 /** Breakpoints **/

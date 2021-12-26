@@ -153,6 +153,8 @@ export default function Crossword({
     dispatch(cellsActionSelect(nextCluePos));
 
     cellFocus(nextCluePos, nextClue.id);
+
+    inputRef?.current?.focus();
   };
 
   return (
@@ -183,13 +185,13 @@ export default function Crossword({
               {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
                 <StickyClue
                   num={
-                    parentClue !== undefined
+                    parentClue?.group.length === 1
                       ? `${parentClue.number}${parentClue.direction.charAt(0)}`
-                      : ''
+                      : parentClue?.humanNumber
                   }
                   onMoveNext={() => moveToNextClue(true)}
                   onMovePrev={() => moveToNextClue(false)}
-                  text={parentClue?.clue ?? ''}
+                  text={parentClue?.clue}
                 />
               ) : null}
               <Grid

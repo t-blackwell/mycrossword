@@ -19,20 +19,23 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     flex-grow: 1;
-    padding: 0 vars.$grid-size * 0.3;
+    padding: 0 vars.$grid-size * 0.5;
   }
   .StickyClue__num {
     font-weight: bold;
     margin-right: vars.$grid-size;
-    text-transform: uppercase;
   }
   .StickyClue__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 100%;
     background: none;
     border: none;
     cursor: pointer;
-    font-family: monospace;
-    font-size: 1.3rem;
+    margin: 0;
+    padding: 0 vars.$grid-size * 0.5;
+    border-radius: vars.$border-radius;
   }
   .StickyClue__button:hover {
     background: rgba(0, 0, 0, 0.08);

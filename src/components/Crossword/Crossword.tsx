@@ -15,15 +15,18 @@ import type {
   GuessGrid,
   CellChange,
   CellFocus,
+  CellPosition,
 } from './../../interfaces';
 import {
   getCells,
   updateGrid as cellsActionUpdateGrid,
 } from './../../redux/cellsSlice';
+import { select as cellsActionSelect } from './../../redux/cellsSlice';
 import {
   getClues,
   updateGrid as cluesActionUpdateGrid,
 } from './../../redux/cluesSlice';
+import { select as cluesActionSelect } from './../../redux/cluesSlice';
 import { useAppDispatch, useAppSelector } from './../../redux/hooks';
 import { initialiseCells } from './../../utils/cell';
 import {
@@ -119,6 +122,39 @@ export default function Crossword({
     );
   }
 
+  const cellFocus = (pos: CellPosition, clueId: string) => {
+    if (onCellFocus !== undefined) {
+      onCellFocus({
+        pos,
+        clueId,
+      });
+    }
+  };
+
+  const moveToNextClue = (forwards: boolean) => {
+    // cycle through the clues
+    const index = clues.findIndex((clue) => clue.selected);
+    let nextIndex = 0;
+
+    // direction
+    if (forwards) {
+      nextIndex = index < clues.length - 1 ? index + 1 : 0;
+    } else {
+      nextIndex = index > 0 ? index - 1 : clues.length - 1;
+    }
+
+    const nextClue = clues[nextIndex];
+    const nextCluePos = {
+      col: nextClue.position.x,
+      row: nextClue.position.y,
+    };
+
+    dispatch(cluesActionSelect(nextClue.id));
+    dispatch(cellsActionSelect(nextCluePos));
+
+    cellFocus(nextCluePos, nextClue.id);
+  };
+
   return (
     <div className="Crossword">
       <div className="Crossword__gridAndControls">
@@ -148,9 +184,11 @@ export default function Crossword({
                 <StickyClue
                   num={
                     parentClue !== undefined
-                      ? `${parentClue.number} ${parentClue.direction}`
+                      ? `${parentClue.number}${parentClue.direction.charAt(0)}`
                       : ''
                   }
+                  onMoveNext={() => moveToNextClue(true)}
+                  onMovePrev={() => moveToNextClue(false)}
                   text={parentClue?.clue ?? ''}
                 />
               ) : null}

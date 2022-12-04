@@ -4,7 +4,6 @@
   .Clue {
     cursor: pointer;
     display: flex;
-    align-items: baseline;
     line-height: vars.$line-height;
     padding: vars.$grid-size * 0.4 vars.$grid-size * 1.2 vars.$grid-size * 0.4
       vars.$grid-size * 0.4;

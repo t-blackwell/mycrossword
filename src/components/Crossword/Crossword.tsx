@@ -230,7 +230,8 @@ export default function Crossword({
         selectedClueId={selectedClue?.id}
         style={{
           maxHeight:
-            breakpoint !== undefined && ['md', 'lg'].includes(breakpoint)
+            breakpoint !== undefined &&
+            ['md', 'lg', 'xl', 'xxl'].includes(breakpoint)
               ? gridHeight
               : undefined,
         }}

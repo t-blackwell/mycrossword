@@ -33,9 +33,9 @@ export default function Clues({
   const isHighlighted = (entry: ClueInterface) =>
     selectedClueId !== undefined && entry.group.includes(selectedClueId);
 
-  // only scroll to clue when container height is fixed (md & lg breakpoints)
+  // only scroll to clue when container height is fixed
   const scrollTo = (entry: ClueInterface) =>
-    ['md', 'lg'].includes(breakpoint) &&
+    ['md', 'lg', 'xl', 'xxl'].includes(breakpoint) &&
     selectedClueId !== undefined &&
     entry.group.includes(selectedClueId) &&
     entry.id === entry.group[0];

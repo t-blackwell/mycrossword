@@ -99,7 +99,7 @@ test('validateGuessGrid returns true with valid size and characters', () => {
     ],
   };
 
-  expect(validateGuessGrid(guessGrid, 13, 13)).toBeTruthy();
+  expect(validateGuessGrid(guessGrid, 13, 13, /[A-Z]/)).toBeTruthy();
 });
 
 test('validateGuessGrid returns false with wrong size', () => {
@@ -113,7 +113,7 @@ test('validateGuessGrid returns false with wrong size', () => {
     ],
   };
 
-  expect(validateGuessGrid(guessGrid, 10, 10)).toBeFalsy();
+  expect(validateGuessGrid(guessGrid, 10, 10, /[A-Z]/)).toBeFalsy();
 });
 
 test('validateGuessGrid returns false with special character', () => {
@@ -128,7 +128,7 @@ test('validateGuessGrid returns false with special character', () => {
     ],
   };
 
-  expect(validateGuessGrid(guessGrid, 5, 5)).toBeFalsy();
+  expect(validateGuessGrid(guessGrid, 5, 5, /[A-Z]/)).toBeFalsy();
 });
 
 test('validateGuessGrid returns false with double character', () => {
@@ -143,5 +143,20 @@ test('validateGuessGrid returns false with double character', () => {
     ],
   };
 
-  expect(validateGuessGrid(guessGrid, 5, 5)).toBeFalsy();
+  expect(validateGuessGrid(guessGrid, 5, 5, /[A-Z]/)).toBeFalsy();
+});
+
+test('validateGuessGrid returns false with number', () => {
+  const guessGrid: GuessGrid = {
+    value: [
+      // @ts-ignore: invalid type
+      ['1', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+      ['', '', '', '', ''],
+    ],
+  };
+
+  expect(validateGuessGrid(guessGrid, 5, 5, /[A-Z]/)).toBeFalsy();
 });

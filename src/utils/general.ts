@@ -1,12 +1,11 @@
 import sanitize from 'sanitize-html';
 
-export function isValidChar(char: string) {
+export function isValidChar(char: string, matcher: RegExp) {
   if (char.length !== 1) {
     return false;
   }
 
-  const whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return whitelist.includes(char);
+  return char.match(matcher);
 }
 
 export function isInViewport(rect: DOMRect) {

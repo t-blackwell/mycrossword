@@ -7,27 +7,28 @@ import {
 
 describe('isValidChar', () => {
   test('whitelist characters return true', () => {
-    const whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     whitelist.split('').forEach((char) => {
-      expect(isValidChar(char)).toBeTruthy();
+      expect(isValidChar(char, /[A-Z]/)).toBeTruthy();
     });
   });
 
   test('blacklist characters return false', () => {
-    const blacklist = 'abcdefghijklmnopqrstuvwxyz!"£$%^&*(){}[]:@~;#,./<>?';
+    const blacklist =
+      'abcdefghijklmnopqrstuvwxyz0123456789!"£$%^&*(){}[]:@~;#,./<>?';
 
     blacklist.split('').forEach((char) => {
-      expect(isValidChar(char)).toBeFalsy();
+      expect(isValidChar(char, /[A-Z]/)).toBeFalsy();
     });
   });
 
   test('empty string returns false', () => {
-    expect(isValidChar('')).toBeFalsy();
+    expect(isValidChar('', /[A-Z]/)).toBeFalsy();
   });
 
   test('more than one character returns false', () => {
-    expect(isValidChar('AB')).toBeFalsy();
+    expect(isValidChar('AB', /[A-Z]/)).toBeFalsy();
   });
 });
 

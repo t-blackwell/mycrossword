@@ -37,6 +37,7 @@ import {
 import { initialiseGuessGrid, validateGuessGrid } from './../../utils/guess';
 
 interface CrosswordProps {
+  cellMatcher?: RegExp;
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;
@@ -46,6 +47,7 @@ interface CrosswordProps {
 }
 
 export default function Crossword({
+  cellMatcher = /[A-Z]/,
   data,
   id,
   loadGrid,
@@ -75,7 +77,12 @@ export default function Crossword({
   // validate overriding guess grid if defined
   if (
     loadGrid !== undefined &&
-    !validateGuessGrid(loadGrid, data.dimensions.cols, data.dimensions.rows)
+    !validateGuessGrid(
+      loadGrid,
+      data.dimensions.cols,
+      data.dimensions.rows,
+      cellMatcher,
+    )
   ) {
     return (
       <div className={classNames('MyCrossword', `MyCrossword--${breakpoint}`)}>
@@ -195,6 +202,7 @@ export default function Crossword({
                 />
               ) : null}
               <Grid
+                cellMatcher={cellMatcher}
                 cells={cells}
                 clues={clues}
                 cols={data.dimensions.cols}

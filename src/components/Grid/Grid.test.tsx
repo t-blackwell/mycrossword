@@ -9,6 +9,8 @@ import { act, fireEvent, render, screen, store } from './../../utils/rtl';
 import { initialiseStore } from './../../utils/test';
 import Grid from './Grid';
 
+const cellMatcher = /[A-Z]/;
+
 const debounceTime = 1000;
 
 const emptyGuessGrid = initialiseGuessGrid(
@@ -62,6 +64,7 @@ function expectSelectionsAndRerender(
 
   rerenderFn(
     <Grid
+      cellMatcher={cellMatcher}
       cells={getCells()}
       clues={getClues()}
       cols={testData.dimensions.cols}
@@ -81,6 +84,7 @@ describe.skip('all tests', () => {
 
     render(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -103,6 +107,7 @@ describe.skip('all tests', () => {
 
     render(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -125,6 +130,7 @@ describe.skip('all tests', () => {
 
     const { rerender } = render(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -295,6 +301,7 @@ describe.skip('all tests', () => {
 
     const { rerender } = render(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -715,6 +722,7 @@ describe.skip('all tests', () => {
 
     const { rerender } = render(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -732,6 +740,7 @@ describe.skip('all tests', () => {
     userEvent.click(screen.getByText('1').parentElement!);
     rerender(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -748,6 +757,7 @@ describe.skip('all tests', () => {
     expect(onCellChange).toHaveBeenCalledTimes(1);
     rerender(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -763,6 +773,7 @@ describe.skip('all tests', () => {
     userEvent.click(screen.getByText('1').parentElement!);
     rerender(
       <Grid
+        cellMatcher={cellMatcher}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}

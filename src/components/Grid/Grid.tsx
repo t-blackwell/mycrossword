@@ -43,6 +43,7 @@ const cellPositionMatches = (
 };
 
 interface GridProps {
+  cellMatcher: RegExp;
   cells: Cell[];
   clues: Clue[];
   cols: number;
@@ -57,6 +58,7 @@ interface GridProps {
 }
 
 export default function Grid({
+  cellMatcher,
   cells,
   clues,
   cols,
@@ -367,7 +369,7 @@ export default function Grid({
 
     const key = event.target.value.toUpperCase();
 
-    if (isValidChar(key)) {
+    if (isValidChar(key, cellMatcher)) {
       cellChange(selectedCell, key as Char);
 
       const updatedCell: Cell = {

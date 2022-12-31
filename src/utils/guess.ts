@@ -41,6 +41,7 @@ export function validateGuessGrid(
   guessGrid: GuessGrid,
   cols: number,
   rows: number,
+  cellMatcher: RegExp,
 ) {
   // check grid has correct total
   const total = guessGrid.value.reduce((count, row) => count + row.length, 0);
@@ -52,7 +53,7 @@ export function validateGuessGrid(
   for (let i = 0; i < cols; i += 1) {
     for (let j = 0; j < rows; j += 1) {
       const cell = guessGrid.value[i][j];
-      if (cell !== '' && !isValidChar(cell)) {
+      if (cell !== '' && !isValidChar(cell, cellMatcher)) {
         return false;
       }
     }

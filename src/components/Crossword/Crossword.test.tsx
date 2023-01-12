@@ -10,7 +10,7 @@ import Crossword from './Crossword';
 const debounceTime = 1000;
 
 test('it renders', () => {
-  render(<Crossword data={validData} id="test" />);
+  render(<Crossword data={validData} id="test" stickyClue="auto" />);
 
   screen.getByText('Across');
   screen.getByText('Down');
@@ -29,7 +29,7 @@ test('it renders', () => {
 });
 
 test('it displays error with invalid data', () => {
-  render(<Crossword data={invalidData} id="test" />);
+  render(<Crossword data={invalidData} id="test" stickyClue="auto" />);
 
   screen.getByText('Something went wrong');
   screen.getByText('Crossword data error: solution length mismatch');
@@ -54,13 +54,27 @@ test('it displays valid guess grid', () => {
     ],
   };
 
-  render(<Crossword data={validData} id="test" loadGrid={guessGrid} />);
+  render(
+    <Crossword
+      data={validData}
+      id="test"
+      loadGrid={guessGrid}
+      stickyClue="auto"
+    />,
+  );
 
   expect(screen.getAllByText('X').length).toBe(23);
 });
 
 test('it displays error with invalid guess grid', () => {
-  render(<Crossword data={validData} id="test" loadGrid={{ value: [] }} />);
+  render(
+    <Crossword
+      data={validData}
+      id="test"
+      loadGrid={{ value: [] }}
+      stickyClue="auto"
+    />,
+  );
 
   screen.getByText('Something went wrong');
   screen.getByText('Error loading grid');
@@ -71,7 +85,14 @@ test.skip('it calls saveGrid', () => {
   jest.useFakeTimers();
 
   const saveGrid = jest.fn();
-  render(<Crossword data={validData} id="test" saveGrid={saveGrid} />);
+  render(
+    <Crossword
+      data={validData}
+      id="test"
+      saveGrid={saveGrid}
+      stickyClue="auto"
+    />,
+  );
   expect(saveGrid).toHaveBeenCalledTimes(1);
 
   const grid = screen.getByTestId('grid');
@@ -87,4 +108,54 @@ test.skip('it calls saveGrid', () => {
   expect(saveGrid).toHaveBeenCalledTimes(2);
 
   jest.useRealTimers();
+});
+
+test('it always shows sticky clue', async () => {
+  act(() => {
+    global.innerWidth = 1200;
+    global.dispatchEvent(new Event('resize'));
+  });
+
+  render(<Crossword data={validData} id="test" stickyClue="always" />);
+
+  const stickyClue = document.querySelector('.StickyClue');
+  expect(stickyClue).not.toBeNull();
+});
+
+test('it never shows sticky clue', async () => {
+  act(() => {
+    global.innerWidth = 500;
+    global.dispatchEvent(new Event('resize'));
+  });
+
+  render(<Crossword data={validData} id="test" stickyClue="never" />);
+
+  const stickyClue = document.querySelector('.StickyClue');
+  expect(stickyClue).toBeNull();
+});
+
+test('it conditionally shows sticky clue', async () => {
+  // show on xs viewport
+  act(() => {
+    global.innerWidth = 500;
+    global.dispatchEvent(new Event('resize'));
+  });
+
+  const { rerender } = render(
+    <Crossword data={validData} id="test" stickyClue="auto" />,
+  );
+
+  const xsStickyClue = document.querySelector('.StickyClue');
+  expect(xsStickyClue).not.toBeNull();
+
+  // don't show on lg viewport
+  act(() => {
+    global.innerWidth = 1100;
+    global.dispatchEvent(new Event('resize'));
+  });
+
+  rerender(<Crossword data={validData} id="test" stickyClue="auto" />);
+
+  const lgStickyClue = document.querySelector('.StickyClue');
+  expect(lgStickyClue).toBeNull();
 });

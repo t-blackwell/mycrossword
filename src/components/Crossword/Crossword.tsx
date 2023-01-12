@@ -44,6 +44,7 @@ interface CrosswordProps {
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
+  stickyClue: 'always' | 'never' | 'auto';
 }
 
 export default function Crossword({
@@ -54,6 +55,7 @@ export default function Crossword({
   onCellChange,
   onCellFocus,
   saveGrid,
+  stickyClue,
 }: CrosswordProps): JSX.Element {
   const dispatch = useAppDispatch();
   const breakpoint = useBreakpoint();
@@ -189,7 +191,10 @@ export default function Crossword({
             />
           ) : (
             <>
-              {breakpoint !== undefined && ['xs', 'sm'].includes(breakpoint) ? (
+              {stickyClue === 'always' ||
+              (stickyClue === 'auto' &&
+                breakpoint !== undefined &&
+                ['xs', 'sm'].includes(breakpoint)) ? (
                 <StickyClue
                   num={
                     parentClue?.group.length === 1

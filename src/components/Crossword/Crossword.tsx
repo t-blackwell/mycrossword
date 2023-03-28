@@ -163,7 +163,7 @@ export default function Crossword({
 
     cellFocus(nextCluePos, nextClue.id);
 
-    inputRef?.current?.focus();
+    inputRef?.current?.focus({ preventScroll: true });
   };
 
   return (

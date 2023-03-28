@@ -44,7 +44,7 @@ export default function AnagramHelper({
 
   React.useEffect(() => {
     if (!shuffling) {
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
     }
   }, [shuffling]);
 
@@ -61,14 +61,14 @@ export default function AnagramHelper({
         .join('');
       setLetters(shuffledLetters);
       setShuffling(true);
-      buttonRef.current?.focus();
+      buttonRef.current?.focus({ preventScroll: true });
     }
   };
 
   const appendWord = (word: string) => {
     const newLetters = letters + word;
     setLetters(newLetters.substr(0, solutionLength));
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   };
 
   React.useEffect(() => {

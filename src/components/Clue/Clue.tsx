@@ -83,9 +83,7 @@ function Clue({
     // TODO: don't call if on current clue's first cell
     cellFocus(pos, id);
 
-    inputRef?.current?.focus({
-      preventScroll: ['md', 'lg', 'xl', 'xxl'].includes(breakpoint),
-    });
+    inputRef?.current?.focus({ preventScroll: true });
   }, [breakpoint, inputRef]);
 
   return (

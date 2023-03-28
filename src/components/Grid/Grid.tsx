@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import * as React from 'react';
 import { cellSize, GridCell, GridSeparators } from '../../components';
 import { getDimensions } from '../GridCell/GridCell';
+import GridInput from '../GridInput/GridInput';
 import Spinner from '../Spinner/Spinner';
 import { useDebounce } from './../../hooks';
 import type {
@@ -78,6 +79,29 @@ export default function Grid({
   const height = rows * cellSize + rows + 1;
   const [guesses, setGuesses] = React.useState<GuessGrid>(guessGrid);
   const debouncedGuesses: GuessGrid = useDebounce<GuessGrid>(guesses, 1000);
+  const svgRef = React.useRef<SVGSVGElement>(null);
+  const [viewBoxScale, setViewBoxScale] = React.useState<number>(1);
+
+  const updateViewBoxScale = React.useCallback(() => {
+    if (svgRef.current !== null) {
+      const svgWidth = svgRef.current.clientWidth;
+      const svgHeight = svgRef.current.clientHeight;
+      const scaleX = svgWidth / width;
+      const scaleY = svgHeight / height;
+      const minScale = Math.min(scaleX, scaleY);
+
+      setViewBoxScale(minScale);
+    }
+  }, [svgRef.current]);
+
+  React.useEffect(() => {
+    window.addEventListener('resize', updateViewBoxScale);
+    updateViewBoxScale();
+
+    return function cleanup() {
+      window.removeEventListener('resize', updateViewBoxScale);
+    };
+  }, [updateViewBoxScale]);
 
   React.useEffect(() => {
     // only update local storage after debounce delay
@@ -413,76 +437,87 @@ export default function Grid({
       {isLoading ? (
         <Spinner size="standard" />
       ) : (
-        <svg preserveAspectRatio="xMinYMin" viewBox={`0 0 ${width} ${height}`}>
-          <rect
-            className="Grid__background"
-            onMouseDown={(event) => {
-              event.preventDefault();
-
-              const gridElement =
-                document.querySelectorAll<HTMLElement>('.Grid');
-              if (gridElement.length === 1) {
-                gridElement[0].blur();
-              }
-            }}
-            width={width}
-            height={height}
-            x="0"
-            y="0"
-          />
-          {cells.map(({ clueIds, groupAcross, groupDown, guess, num, pos }) => {
-            const isSelected = cellPositionMatches(pos, selectedCell?.pos);
-            const isHighlighted = appearsInGroup(selectedClue?.id, [
-              ...(groupAcross !== undefined ? groupAcross : []),
-              ...(groupDown !== undefined ? groupDown : []),
-            ]);
-            const selectedClueIndex =
-              selectedClue !== undefined
-                ? clueIds.indexOf(selectedClue.id)
-                : -1;
-
-            return (
-              <GridCell
-                clueIds={clueIds}
-                guess={guess}
-                inputRef={inputRef}
-                isSelected={isSelected}
-                isHighlighted={isHighlighted}
-                key={`${pos.col},${pos.row}`}
-                num={num}
-                onCellFocus={onCellFocus}
-                pos={pos}
-                selectedClueIndex={selectedClueIndex}
-              />
-            );
-          })}
-          <GridSeparators clues={rawClues} />
-          <foreignObject
-            className="Grid__inputContainer"
-            x={dimensions?.xRect}
-            y={dimensions?.yRect}
-            width={cellSize}
-            height={cellSize}
+        <>
+          <svg
+            preserveAspectRatio="xMinYMin"
+            ref={svgRef}
+            viewBox={`0 0 ${width} ${height}`}
           >
-            <input
-              autoComplete="off"
-              autoCorrect="off"
-              className={classNames(
-                'Grid__input',
-                selectedCell === undefined
-                  ? 'Grid__input--inclusivelyHidden'
-                  : null,
-              )}
-              maxLength={1}
+            <rect
+              className="Grid__background"
+              onMouseDown={(event) => {
+                event.preventDefault();
+
+                const gridElement =
+                  document.querySelectorAll<HTMLElement>('.Grid');
+                if (gridElement.length === 1) {
+                  gridElement[0].blur();
+                }
+              }}
+              width={width}
+              height={height}
+              x="0"
+              y="0"
+            />
+            {cells.map(
+              ({ clueIds, groupAcross, groupDown, guess, num, pos }) => {
+                const isSelected = cellPositionMatches(pos, selectedCell?.pos);
+                const isHighlighted = appearsInGroup(selectedClue?.id, [
+                  ...(groupAcross !== undefined ? groupAcross : []),
+                  ...(groupDown !== undefined ? groupDown : []),
+                ]);
+                const selectedClueIndex =
+                  selectedClue !== undefined
+                    ? clueIds.indexOf(selectedClue.id)
+                    : -1;
+
+                return (
+                  <GridCell
+                    clueIds={clueIds}
+                    guess={guess}
+                    inputRef={inputRef}
+                    isHighlighted={isHighlighted}
+                    isSelected={isSelected}
+                    key={`${pos.col},${pos.row}`}
+                    num={num}
+                    onCellFocus={onCellFocus}
+                    pos={pos}
+                    selectedClueIndex={selectedClueIndex}
+                  />
+                );
+              },
+            )}
+            <GridSeparators clues={rawClues} />
+          </svg>
+          <div
+            className="Grid__inputContainer"
+            style={{
+              width:
+                selectedCell !== undefined
+                  ? cellSize * viewBoxScale
+                  : undefined,
+              height:
+                selectedCell !== undefined
+                  ? cellSize * viewBoxScale
+                  : undefined,
+              top:
+                dimensions?.yRect !== undefined
+                  ? dimensions.yRect * viewBoxScale
+                  : undefined,
+              left:
+                dimensions?.xRect !== undefined
+                  ? dimensions.xRect * viewBoxScale
+                  : undefined,
+            }}
+          >
+            <GridInput
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               ref={inputRef}
-              spellCheck="false"
-              type="text"
-              value=""
+              visible={selectedCell !== undefined}
             />
-          </foreignObject>
-        </svg>
+          </div>
+        </>
       )}
     </div>
   );

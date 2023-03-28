@@ -12,6 +12,7 @@
     height: vars.$grid-size * 3;
     max-height: vars.$grid-size * 3;
     line-height: 1.3;
+    z-index: 1;
   }
   .StickyClue__inner {
     overflow: hidden;

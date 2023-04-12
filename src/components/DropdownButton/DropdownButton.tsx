@@ -6,7 +6,7 @@ interface CaretDownIconProps {
   className?: string;
 }
 
-function CaretDownIcon({ className }: CaretDownIconProps): JSX.Element {
+function CaretDownIcon({ className }: CaretDownIconProps) {
   return (
     <svg
       className={className}
@@ -36,12 +36,7 @@ interface DropdownButtonProps {
   text: string;
 }
 
-function DropdownButton({
-  className,
-  id,
-  menu,
-  text,
-}: DropdownButtonProps): JSX.Element {
+function DropdownButton({ className, id, menu, text }: DropdownButtonProps) {
   if (menu.length < 2) {
     throw new Error('DropdownButton should have at least 2 menu items');
   }

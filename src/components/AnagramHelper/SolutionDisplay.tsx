@@ -44,7 +44,7 @@ export default function SolutionDisplay({
   letters,
   separators,
   shuffling,
-}: SolutionDisplayProps): JSX.Element {
+}: SolutionDisplayProps) {
   // remove the populated grid cells from the anagram fodder
   const flatCells = cells.map((cell) => cell.guess).join('');
   const filteredLetters =

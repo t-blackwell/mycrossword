@@ -5,7 +5,7 @@ interface ChevronIconProps {
   className?: string;
 }
 
-function ChevronLeftIcon({ className }: ChevronIconProps): JSX.Element {
+function ChevronLeftIcon({ className }: ChevronIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ function ChevronLeftIcon({ className }: ChevronIconProps): JSX.Element {
   );
 }
 
-function ChevronRightIcon({ className }: ChevronIconProps): JSX.Element {
+function ChevronRightIcon({ className }: ChevronIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@ export default function StickyClue({
   onMoveNext,
   onMovePrev,
   text,
-}: StickyClueProps): JSX.Element {
+}: StickyClueProps) {
   return (
     <div className="StickyClue">
       {text !== undefined && num !== undefined ? (

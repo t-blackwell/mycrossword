@@ -4,7 +4,7 @@ interface GridErrorProps {
   message: string;
 }
 
-export default function GridError({ message }: GridErrorProps): JSX.Element {
+export default function GridError({ message }: GridErrorProps) {
   return (
     <div className="GridError">
       <div role="alert">

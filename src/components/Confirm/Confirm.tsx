@@ -15,7 +15,7 @@ export default function Confirm({
   onCancel,
   onConfirm,
   timeout = defaultTimeout,
-}: ConfirmProps): JSX.Element {
+}: ConfirmProps) {
   if (timeout <= 0) {
     throw new Error('Confirm should have a timeout greater than zero');
   }

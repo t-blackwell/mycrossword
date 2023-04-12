@@ -40,7 +40,7 @@ function GridCell({
   onCellFocus,
   pos,
   selectedClueIndex,
-}: GridCellProps): JSX.Element {
+}: GridCellProps) {
   if (clueIds.length !== 1 && clueIds.length !== 2) {
     throw new Error(
       'Crossword data error: cell does not have 1 or 2 directions',

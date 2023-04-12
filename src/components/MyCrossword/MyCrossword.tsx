@@ -33,7 +33,7 @@ export default function MyCrossword({
   saveGrid,
   stickyClue = 'auto',
   theme = 'blue',
-}: MyCrosswordProps): JSX.Element {
+}: MyCrosswordProps) {
   const breakpoint = useBreakpoint();
 
   return (

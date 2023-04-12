@@ -39,7 +39,7 @@ function Clue({
   row,
   scrollTo,
   text,
-}: ClueProps): JSX.Element {
+}: ClueProps) {
   const dispatch = useAppDispatch();
   const ref = React.useRef<HTMLDivElement>(null);
 

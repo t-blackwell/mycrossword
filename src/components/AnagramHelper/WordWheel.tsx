@@ -37,7 +37,7 @@ interface WordWheelProps {
 export default function WordWheel({
   letters,
   populatedLetters,
-}: WordWheelProps): JSX.Element {
+}: WordWheelProps) {
   const angle = getAngle(letters);
   const diameter = 40;
   let populated = populatedLetters.toUpperCase();

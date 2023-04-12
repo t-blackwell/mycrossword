@@ -10,7 +10,7 @@ interface CloseIconProps {
   className?: string;
 }
 
-function CloseIcon({ className }: CloseIconProps): JSX.Element {
+function CloseIcon({ className }: CloseIconProps) {
   return (
     <svg className={className}>
       <g>
@@ -34,7 +34,7 @@ export default function AnagramHelper({
   groupSeparators,
   onClose,
   style,
-}: AnagramHelperProps): JSX.Element {
+}: AnagramHelperProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [letters, setLetters] = React.useState('');

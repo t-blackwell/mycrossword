@@ -19,51 +19,55 @@
   }
   .GridCell--selected .GridCell__text {
     font-weight: bold;
+    fill: #fff;
+  }
+  .GridCell--selected .GridCell__num {
+    fill: #fff;
   }
 }
 
 /** Theme styles **/
 .MyCrossword--yellowTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-yellow;
+    fill: vars.$theme-yellow-light;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-yellow-light;
+    fill: vars.$theme-yellow;
   }
 }
 
 .MyCrossword--pinkTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-pink;
+    fill: vars.$theme-pink-light;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-pink-light;
+    fill: vars.$theme-pink;
   }
 }
 
 .MyCrossword--blueTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-blue;
+    fill: vars.$theme-blue-light;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-blue-light;
+    fill: vars.$theme-blue;
   }
 }
 
 .MyCrossword--greenTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-green;
+    fill: vars.$theme-green-light;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-green-light;
+    fill: vars.$theme-green;
   }
 }
 
 .MyCrossword--orangeTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-orange;
+    fill: vars.$theme-orange-light;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-orange-light;
+    fill: vars.$theme-orange;
   }
 }

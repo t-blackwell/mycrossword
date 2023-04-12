@@ -5,10 +5,9 @@
     cursor: pointer;
     display: flex;
     line-height: vars.$line-height;
-    padding: vars.$grid-size * 0.4 vars.$grid-size * 1.2 vars.$grid-size * 0.4
-      vars.$grid-size * 0.4;
     color: vars.$grid-color;
-    border-left: 3px solid transparent;
+    padding: vars.$grid-size * 0.4 vars.$grid-size * 1.2 vars.$grid-size * 0.4
+      vars.$grid-size * 0.7;
     user-select: none;
   }
   .Clue--answered {
@@ -51,34 +50,29 @@
 .MyCrossword--yellowTheme {
   .Clue--highlighted {
     background-color: vars.$theme-yellow-light;
-    border-color: vars.$theme-yellow;
   }
 }
 
 .MyCrossword--pinkTheme {
   .Clue--highlighted {
     background-color: vars.$theme-pink-light;
-    border-color: vars.$theme-pink;
   }
 }
 
 .MyCrossword--blueTheme {
   .Clue--highlighted {
     background-color: vars.$theme-blue-light;
-    border-color: vars.$theme-blue;
   }
 }
 
 .MyCrossword--greenTheme {
   .Clue--highlighted {
     background-color: vars.$theme-green-light;
-    border-color: vars.$theme-green;
   }
 }
 
 .MyCrossword--orangeTheme {
   .Clue--highlighted {
     background-color: vars.$theme-orange-light;
-    border-color: vars.$theme-orange;
   }
 }

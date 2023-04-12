@@ -11,11 +11,7 @@
     user-select: none;
   }
   .Clue--answered {
-    color: vars.$grey;
-  }
-  .Clue--highlighted {
-    font-weight: bold;
-    color: vars.$grid-color;
+    opacity: 0.6;
   }
   .Clue--highlighted strong {
     font-weight: 800;

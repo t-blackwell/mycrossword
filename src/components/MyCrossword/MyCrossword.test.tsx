@@ -7,7 +7,7 @@ test('it renders', () => {
   const { container } = render(<MyCrossword data={validData} id="test" />);
 
   expect(container.firstChild).toHaveClass(
-    'MyCrossword MyCrossword--yellowTheme',
+    'MyCrossword MyCrossword--blueTheme',
   );
 });
 

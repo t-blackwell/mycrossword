@@ -28,9 +28,8 @@ $faint-grey4: rgba(0, 0, 0, 0.04);
 $faint-grey5: rgba(0, 0, 0, 0.02);
 
 $button-color: #fff;
-$button-background: #bb3b80;
-$button-background-selected: #942f65;
-$button-background-disabled: #8f5d78;
+$button-background: #1976d2;
+$button-background-selected: #115293;
 
 $dropdown-background: #fff;
 $dropdown-border: $faint-grey2;
@@ -50,17 +49,38 @@ $scrollbar-thumb-background: #c1c1c1;
 $scrollbar-thumb-hover: #a8a8a8;
 
 /** Theme styles **/
-$theme-yellow: #ffe500;
-$theme-yellow-light: #fff7b2;
+$theme-red-700: #d32f2f;
+$theme-red-100: #ffcdd2;
 
-$theme-pink: #fdbebe;
-$theme-pink-light: #fdd;
+$theme-pink-700: #c2185b;
+$theme-pink-100: #f8bbd0;
 
-$theme-blue: #a1cdfe;
-$theme-blue-light: #dbebfe;
+$theme-purple-700: #7b1fa2;
+$theme-purple-100: #e1bee7;
 
-$theme-green: #10ffa4;
-$theme-green-light: #aafadb;
+$theme-deep-purple-700: #512da8;
+$theme-deep-purple-100: #d1c4e9;
 
-$theme-orange: #ff9800;
-$theme-orange-light: #ffcc80;
+$theme-indigo-700: #303f9f;
+$theme-indigo-100: #c5cae9;
+
+$theme-blue-700: #1976d2;
+$theme-blue-100: #bbdefb;
+
+$theme-light-blue-700: #0288d1;
+$theme-light-blue-100: #b3e5fc;
+
+$theme-cyan-700: #0097a7;
+$theme-cyan-100: #b2ebf2;
+
+$theme-teal-700: #00796b;
+$theme-teal-100: #b2dfdb;
+
+$theme-green-700: #388e3c;
+$theme-green-100: #c8e6c9;
+
+$theme-deep-orange-700: #e64a19;
+$theme-deep-orange-100: #ffccbc;
+
+$theme-blue-grey-700: #455a64;
+$theme-blue-grey-100: #cfd8dc;

@@ -56,7 +56,7 @@ export default function Crossword({
   onCellFocus,
   saveGrid,
   stickyClue,
-}: CrosswordProps): JSX.Element {
+}: CrosswordProps) {
   const dispatch = useAppDispatch();
   const breakpoint = useBreakpoint();
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(

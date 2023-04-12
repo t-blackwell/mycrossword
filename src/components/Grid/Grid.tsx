@@ -71,7 +71,7 @@ export default function Grid({
   rawClues,
   rows,
   setGuessGrid,
-}: GridProps): JSX.Element {
+}: GridProps) {
   const dispatch = useAppDispatch();
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);

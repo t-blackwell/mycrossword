@@ -5,7 +5,7 @@ interface SpinnerProps {
   size: 'small' | 'standard' | 'large';
 }
 
-export default function Spinner({ size }: SpinnerProps): JSX.Element {
+export default function Spinner({ size }: SpinnerProps) {
   return (
     <div className={classNames('Spinner', `Spinner--${size}`)} role="status" />
   );

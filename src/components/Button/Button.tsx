@@ -25,7 +25,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'filled',
     },
     ref,
-  ): JSX.Element => (
+  ) => (
     <button
       aria-label={ariaLabel}
       className={classNames('Button', `Button--${variant}`, className)}

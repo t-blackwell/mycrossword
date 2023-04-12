@@ -62,7 +62,7 @@ export default function MyPage() {
 | `onCellFocus`  | `(cellFocus: CellFocus) => void \| undefined`<br />Optional function. Called after the focus switches to a new cell. The object returned contains the properties `pos` and `clueId`.                                                                                                                    |
 | `saveGrid`     | `(value: GuessGrid \| ((val: GuessGrid) => GuessGrid)) => void \| undefined`<br />Optional function to override storage mechanism. Called after the grid has changed with the ID of the crossword and array-based representation of the grid. See [guess grid](#guess-grid) below for more information. |
 | `stickyClue`   | `'always' \| 'never' \| 'auto'` = 'auto'<br />Optional value to define when to show the sticky clue above the grid. Defaults to `'auto'` (shown on `xs` and `sm` breakpoints).                                                                                                                          |
-| `theme`        | `'yellow' \| 'pink' \| 'blue' \| 'green' \| 'orange'` = 'yellow'<br />Optional value to override the main colour applied to the highlighted cells and clues. Defaults to `'yellow'`.                                                                                                                    |
+| `theme`        | `'red' \| 'pink' \| 'purple' \| 'deepPurple' \| 'indigo' \| 'blue' \| 'lightBlue' \| 'cyan' \| 'teal' \| 'green' \| 'deepOrange' \| 'blueGrey'` = 'blue'<br />Optional value to override the main colour applied to the highlighted cells and clues. Defaults to `'blue'`.                              |
 
 For more type information, see [interfaces](./src/interfaces).
 

@@ -17,7 +17,7 @@ export default function ClueDisplay({
   clue,
   onClick,
   splitWords = false,
-}: ClueDisplayProps): JSX.Element {
+}: ClueDisplayProps) {
   if (!splitWords) {
     return <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(clue) }} />;
   }

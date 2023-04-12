@@ -13,12 +13,7 @@ interface GridSeparatorProps {
   direction: Direction;
 }
 
-function GridSeparator({
-  char,
-  col,
-  row,
-  direction,
-}: GridSeparatorProps): JSX.Element {
+function GridSeparator({ char, col, row, direction }: GridSeparatorProps) {
   const top = getPos(row);
   const left = getPos(col);
   const across = direction === 'across';
@@ -71,7 +66,7 @@ interface GridSeparatorsProps {
   clues: GuardianClue[];
 }
 
-function GridSeparators({ clues }: GridSeparatorsProps): JSX.Element {
+function GridSeparators({ clues }: GridSeparatorsProps) {
   return (
     <svg className="GridSeparators">
       {clues

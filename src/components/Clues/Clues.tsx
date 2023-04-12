@@ -18,7 +18,7 @@ export default function Clues({
   onCellFocus,
   selectedClueId,
   style,
-}: CluesProps): JSX.Element {
+}: CluesProps) {
   const cluesContainerRef = React.useRef<HTMLDivElement>(null);
   const acrossContainerRef = React.useRef<HTMLDivElement>(null);
   const downContainerRef = React.useRef<HTMLDivElement>(null);

@@ -8,14 +8,14 @@ interface ConfirmProps {
   timeout?: number;
 }
 
-export const defaultTimeout = 5;
+export const defaultTimeout = 10;
 
 export default function Confirm({
   buttonText,
   onCancel,
   onConfirm,
   timeout = defaultTimeout,
-}: ConfirmProps): JSX.Element {
+}: ConfirmProps) {
   if (timeout <= 0) {
     throw new Error('Confirm should have a timeout greater than zero');
   }

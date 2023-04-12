@@ -5,18 +5,13 @@
     cursor: pointer;
     display: flex;
     line-height: vars.$line-height;
-    padding: vars.$grid-size * 0.4 vars.$grid-size * 1.2 vars.$grid-size * 0.4
-      vars.$grid-size * 0.4;
     color: vars.$grid-color;
-    border-left: 3px solid transparent;
+    padding: vars.$grid-size * 0.4 vars.$grid-size * 1.2 vars.$grid-size * 0.4
+      vars.$grid-size * 0.7;
     user-select: none;
   }
   .Clue--answered {
-    color: vars.$grey;
-  }
-  .Clue--highlighted {
-    font-weight: bold;
-    color: vars.$grid-color;
+    opacity: 0.6;
   }
   .Clue--highlighted strong {
     font-weight: 800;
@@ -48,37 +43,63 @@
 }
 
 /** Theme styles **/
-.MyCrossword--yellowTheme {
+.MyCrossword--redTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-yellow-light;
-    border-color: vars.$theme-yellow;
+    background-color: vars.$theme-red-100;
   }
 }
-
 .MyCrossword--pinkTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-pink-light;
-    border-color: vars.$theme-pink;
+    background-color: vars.$theme-pink-100;
   }
 }
-
+.MyCrossword--purpleTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-purple-100;
+  }
+}
+.MyCrossword--deepPurpleTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-deep-purple-100;
+  }
+}
+.MyCrossword--indigoTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-indigo-100;
+  }
+}
 .MyCrossword--blueTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-blue-light;
-    border-color: vars.$theme-blue;
+    background-color: vars.$theme-blue-100;
   }
 }
-
+.MyCrossword--lightBlueTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-light-blue-100;
+  }
+}
+.MyCrossword--cyanTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-cyan-100;
+  }
+}
+.MyCrossword--tealTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-teal-100;
+  }
+}
 .MyCrossword--greenTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-green-light;
-    border-color: vars.$theme-green;
+    background-color: vars.$theme-green-100;
   }
 }
-
-.MyCrossword--orangeTheme {
+.MyCrossword--deepOrangeTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-orange-light;
-    border-color: vars.$theme-orange;
+    background-color: vars.$theme-deep-orange-100;
+  }
+}
+.MyCrossword--blueGreyTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-blue-grey-100;
   }
 }

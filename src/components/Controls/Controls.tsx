@@ -43,7 +43,7 @@ export default function Controls({
   onCellChange,
   setGuessGrid,
   solutionsAvailable,
-}: ControlsProps): JSX.Element {
+}: ControlsProps) {
   const dispatch = useAppDispatch();
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);

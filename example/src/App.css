@@ -29,3 +29,9 @@ main {
   font-weight: 400;
   margin: 0;
 }
+.theme-selector {
+  margin-bottom: 0.5rem;
+}
+.theme-selector label {
+  margin-right: 0.5rem;
+}

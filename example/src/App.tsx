@@ -1,10 +1,29 @@
 import MyCrossword from 'mycrossword';
 import 'mycrossword/dist/index.css';
-import React from 'react';
+import * as React from 'react';
 import './App.css';
 import data from './guardian.cryptic.28505';
 
-const App = () => {
+// TODO: import from MyCrossword
+const themeColors = [
+  'red',
+  'pink',
+  'purple',
+  'deepPurple',
+  'indigo',
+  'blue',
+  'lightBlue',
+  'cyan',
+  'teal',
+  'green',
+  'deepOrange',
+  'blueGrey',
+] as const;
+type Theme = typeof themeColors[number];
+
+export default function App() {
+  const [theme, setTheme] = React.useState<Theme>('blue');
+
   return (
     <>
       <header>
@@ -25,10 +44,22 @@ const App = () => {
               : null}
           </span>
         </div>
-        <MyCrossword id={data.id} data={data} />
+        <div className="theme-selector">
+          <label htmlFor="theme">Theme</label>
+          <select
+            id="theme"
+            value={theme}
+            onChange={(e) => setTheme(e.target.value as Theme)}
+          >
+            {themeColors.map((color) => (
+              <option key={color} value={color}>
+                {color}
+              </option>
+            ))}
+          </select>
+        </div>
+        <MyCrossword id={data.id} data={data} theme={theme} />
       </main>
     </>
   );
-};
-
-export default App;
+}

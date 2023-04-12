@@ -27,47 +27,99 @@
 }
 
 /** Theme styles **/
-.MyCrossword--yellowTheme {
+.MyCrossword--redTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-yellow-light;
+    fill: vars.$theme-red-100;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-yellow;
+    fill: vars.$theme-red-700;
   }
 }
-
 .MyCrossword--pinkTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-pink-light;
+    fill: vars.$theme-pink-100;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-pink;
+    fill: vars.$theme-pink-700;
   }
 }
-
+.MyCrossword--purpleTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-purple-100;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-purple-700;
+  }
+}
+.MyCrossword--deepPurpleTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-deep-purple-100;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-deep-purple-700;
+  }
+}
+.MyCrossword--indigoTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-indigo-100;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-indigo-700;
+  }
+}
 .MyCrossword--blueTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-blue-light;
+    fill: vars.$theme-blue-100;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-blue;
+    fill: vars.$theme-blue-700;
   }
 }
-
+.MyCrossword--lightBlueTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-light-blue-100;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-light-blue-700;
+  }
+}
+.MyCrossword--cyanTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-cyan-100;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-cyan-700;
+  }
+}
+.MyCrossword--tealTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-teal-100;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-teal-700;
+  }
+}
 .MyCrossword--greenTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-green-light;
+    fill: vars.$theme-green-100;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-green;
+    fill: vars.$theme-green-700;
   }
 }
-
-.MyCrossword--orangeTheme {
+.MyCrossword--deepOrangeTheme {
   .GridCell--highlighted .GridCell__rect {
-    fill: vars.$theme-orange-light;
+    fill: vars.$theme-deep-orange-100;
   }
   .GridCell--selected .GridCell__rect {
-    fill: vars.$theme-orange;
+    fill: vars.$theme-deep-orange-700;
+  }
+}
+.MyCrossword--blueGreyTheme {
+  .GridCell--highlighted .GridCell__rect {
+    fill: vars.$theme-blue-grey-100;
+  }
+  .GridCell--selected .GridCell__rect {
+    fill: vars.$theme-blue-grey-700;
   }
 }

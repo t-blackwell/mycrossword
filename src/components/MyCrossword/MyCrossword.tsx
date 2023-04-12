@@ -11,6 +11,20 @@ import type {
 } from './../../interfaces';
 import { store } from './../../redux/store';
 
+type Theme =
+  | 'red'
+  | 'pink'
+  | 'purple'
+  | 'deepPurple'
+  | 'indigo'
+  | 'blue'
+  | 'lightBlue'
+  | 'cyan'
+  | 'teal'
+  | 'green'
+  | 'deepOrange'
+  | 'blueGrey';
+
 export interface MyCrosswordProps {
   className?: string;
   data: GuardianCrossword;
@@ -20,7 +34,7 @@ export interface MyCrosswordProps {
   onCellFocus?: (cellFocus: CellFocus) => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   stickyClue?: 'always' | 'never' | 'auto';
-  theme?: 'yellow' | 'pink' | 'blue' | 'green' | 'orange';
+  theme?: Theme;
 }
 
 export default function MyCrossword({

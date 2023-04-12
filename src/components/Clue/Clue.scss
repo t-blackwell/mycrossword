@@ -47,32 +47,63 @@
 }
 
 /** Theme styles **/
-.MyCrossword--yellowTheme {
+.MyCrossword--redTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-yellow-light;
+    background-color: vars.$theme-red-100;
   }
 }
-
 .MyCrossword--pinkTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-pink-light;
+    background-color: vars.$theme-pink-100;
   }
 }
-
+.MyCrossword--purpleTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-purple-100;
+  }
+}
+.MyCrossword--deepPurpleTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-deep-purple-100;
+  }
+}
+.MyCrossword--indigoTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-indigo-100;
+  }
+}
 .MyCrossword--blueTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-blue-light;
+    background-color: vars.$theme-blue-100;
   }
 }
-
+.MyCrossword--lightBlueTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-light-blue-100;
+  }
+}
+.MyCrossword--cyanTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-cyan-100;
+  }
+}
+.MyCrossword--tealTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-teal-100;
+  }
+}
 .MyCrossword--greenTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-green-light;
+    background-color: vars.$theme-green-100;
   }
 }
-
-.MyCrossword--orangeTheme {
+.MyCrossword--deepOrangeTheme {
   .Clue--highlighted {
-    background-color: vars.$theme-orange-light;
+    background-color: vars.$theme-deep-orange-100;
+  }
+}
+.MyCrossword--blueGreyTheme {
+  .Clue--highlighted {
+    background-color: vars.$theme-blue-grey-100;
   }
 }

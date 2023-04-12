@@ -32,7 +32,7 @@ export default function MyCrossword({
   onCellFocus,
   saveGrid,
   stickyClue = 'auto',
-  theme = 'yellow',
+  theme = 'blue',
 }: MyCrosswordProps): JSX.Element {
   const breakpoint = useBreakpoint();
 

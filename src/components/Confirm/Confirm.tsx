@@ -8,7 +8,7 @@ interface ConfirmProps {
   timeout?: number;
 }
 
-export const defaultTimeout = 5;
+export const defaultTimeout = 10;
 
 export default function Confirm({
   buttonText,

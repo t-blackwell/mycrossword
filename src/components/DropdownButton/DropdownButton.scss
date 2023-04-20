@@ -32,7 +32,7 @@
     position: absolute;
     background-color: vars.$dropdown-background;
     border: 1px solid vars.$dropdown-border;
-    z-index: 1;
+    z-index: 2;
     margin: 0 vars.$grid-size * 0.5;
     border-radius: vars.$border-radius;
     min-width: calc(100% - #{vars.$grid-size});

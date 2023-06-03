@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
+import { DEFAULT_CELL_MATCHER, DEFAULT_HTML_TAGS } from '../../utils/general';
 import { GuessGrid } from './../../interfaces';
 import invalidData from './../../testData/test.invalid.1';
 import validData from './../../testData/test.valid.1';
@@ -10,7 +11,15 @@ import Crossword from './Crossword';
 const debounceTime = 1000;
 
 test('it renders', () => {
-  render(<Crossword data={validData} id="test" stickyClue="auto" />);
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      data={validData}
+      id="test"
+      stickyClue="auto"
+    />,
+  );
 
   screen.getByText('Across');
   screen.getByText('Down');
@@ -29,7 +38,15 @@ test('it renders', () => {
 });
 
 test('it displays error with invalid data', () => {
-  render(<Crossword data={invalidData} id="test" stickyClue="auto" />);
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      data={invalidData}
+      id="test"
+      stickyClue="auto"
+    />,
+  );
 
   screen.getByText('Something went wrong');
   screen.getByText('Crossword data error: solution length mismatch');
@@ -56,6 +73,8 @@ test('it displays valid guess grid', () => {
 
   render(
     <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
       loadGrid={guessGrid}
@@ -69,6 +88,8 @@ test('it displays valid guess grid', () => {
 test('it displays error with invalid guess grid', () => {
   render(
     <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
       loadGrid={{ value: [] }}
@@ -87,6 +108,8 @@ test.skip('it calls saveGrid', () => {
   const saveGrid = jest.fn();
   render(
     <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
       saveGrid={saveGrid}
@@ -116,7 +139,15 @@ test('it always shows sticky clue', async () => {
     global.dispatchEvent(new Event('resize'));
   });
 
-  render(<Crossword data={validData} id="test" stickyClue="always" />);
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      data={validData}
+      id="test"
+      stickyClue="always"
+    />,
+  );
 
   const stickyClue = document.querySelector('.StickyClue');
   expect(stickyClue).not.toBeNull();
@@ -128,7 +159,15 @@ test('it never shows sticky clue', async () => {
     global.dispatchEvent(new Event('resize'));
   });
 
-  render(<Crossword data={validData} id="test" stickyClue="never" />);
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      data={validData}
+      id="test"
+      stickyClue="never"
+    />,
+  );
 
   const stickyClue = document.querySelector('.StickyClue');
   expect(stickyClue).toBeNull();
@@ -142,7 +181,13 @@ test('it conditionally shows sticky clue', async () => {
   });
 
   const { rerender } = render(
-    <Crossword data={validData} id="test" stickyClue="auto" />,
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      data={validData}
+      id="test"
+      stickyClue="auto"
+    />,
   );
 
   const xsStickyClue = document.querySelector('.StickyClue');
@@ -154,7 +199,15 @@ test('it conditionally shows sticky clue', async () => {
     global.dispatchEvent(new Event('resize'));
   });
 
-  rerender(<Crossword data={validData} id="test" stickyClue="auto" />);
+  rerender(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      data={validData}
+      id="test"
+      stickyClue="auto"
+    />,
+  );
 
   const lgStickyClue = document.querySelector('.StickyClue');
   expect(lgStickyClue).toBeNull();

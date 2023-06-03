@@ -2,11 +2,13 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
+import { DEFAULT_HTML_TAGS } from '../../utils/general';
 import StickyClue from './StickyClue';
 
 test('it renders', () => {
   render(
     <StickyClue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       num="num"
       onMoveNext={jest.fn}
       onMovePrev={jest.fn}
@@ -23,7 +25,13 @@ test('it renders', () => {
 });
 
 test('it renders empty', () => {
-  render(<StickyClue onMoveNext={jest.fn} onMovePrev={jest.fn} />);
+  render(
+    <StickyClue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      onMoveNext={jest.fn}
+      onMovePrev={jest.fn}
+    />,
+  );
   const buttons = screen.queryAllByRole('button');
   expect(buttons.length).toBe(0);
 });
@@ -32,6 +40,7 @@ test('it calls onMoveNext', () => {
   const onMove = jest.fn();
   render(
     <StickyClue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       num="num"
       onMoveNext={onMove}
       onMovePrev={jest.fn}
@@ -47,6 +56,7 @@ test('it calls onMovePrev', () => {
   const onMove = jest.fn();
   render(
     <StickyClue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       num="num"
       onMoveNext={jest.fn}
       onMovePrev={onMove}

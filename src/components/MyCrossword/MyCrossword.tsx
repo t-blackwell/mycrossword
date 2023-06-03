@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Crossword } from '../../components';
+import { DEFAULT_CELL_MATCHER, DEFAULT_HTML_TAGS } from '../../utils/general';
 import { useBreakpoint } from './../../hooks';
 import type {
   GuardianCrossword,
@@ -26,6 +27,8 @@ type Theme =
   | 'blueGrey';
 
 export interface MyCrosswordProps {
+  allowedHtmlTags?: string[];
+  cellMatcher?: RegExp;
   className?: string;
   data: GuardianCrossword;
   id: string;
@@ -38,6 +41,8 @@ export interface MyCrosswordProps {
 }
 
 export default function MyCrossword({
+  allowedHtmlTags = DEFAULT_HTML_TAGS,
+  cellMatcher = DEFAULT_CELL_MATCHER,
   className,
   data,
   id,
@@ -61,6 +66,8 @@ export default function MyCrossword({
     >
       <Provider store={store}>
         <Crossword
+          allowedHtmlTags={allowedHtmlTags}
+          cellMatcher={cellMatcher}
           data={data}
           id={id}
           loadGrid={loadGrid}

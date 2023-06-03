@@ -40,6 +40,7 @@ function ChevronRightIcon({ className }: ChevronIconProps) {
 }
 
 interface StickyClueProps {
+  allowedHtmlTags: string[];
   num?: string;
   onMoveNext: () => void;
   onMovePrev: () => void;
@@ -47,6 +48,7 @@ interface StickyClueProps {
 }
 
 export default function StickyClue({
+  allowedHtmlTags,
   num,
   onMoveNext,
   onMovePrev,
@@ -67,7 +69,11 @@ export default function StickyClue({
           <div className="StickyClue__inner">
             <span className="StickyClue__text">
               <span className="StickyClue__num">{num}</span>
-              <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }} />
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeHtml(text, allowedHtmlTags),
+                }}
+              />
             </span>
           </div>
           <button

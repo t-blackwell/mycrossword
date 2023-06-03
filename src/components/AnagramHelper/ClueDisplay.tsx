@@ -6,6 +6,7 @@ import {
 } from './../../utils/general';
 
 interface ClueDisplayProps {
+  allowedHtmlTags: string[];
   className?: string;
   clue: string;
   onClick: (word: string) => void;
@@ -13,13 +14,20 @@ interface ClueDisplayProps {
 }
 
 export default function ClueDisplay({
+  allowedHtmlTags,
   className,
   clue,
   onClick,
   splitWords = false,
 }: ClueDisplayProps) {
   if (!splitWords) {
-    return <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(clue) }} />;
+    return (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: sanitizeHtml(clue, allowedHtmlTags),
+        }}
+      />
+    );
   }
 
   // regex split on word boundaries

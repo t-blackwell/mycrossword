@@ -3,6 +3,7 @@ import { Clue } from '../../components';
 import { CellFocus, Clue as ClueInterface } from './../../interfaces';
 
 interface CluesProps {
+  allowedHtmlTags: string[];
   breakpoint: string;
   entries: ClueInterface[];
   inputRef?: React.RefObject<HTMLInputElement>;
@@ -12,6 +13,7 @@ interface CluesProps {
 }
 
 export default function Clues({
+  allowedHtmlTags,
   breakpoint,
   entries,
   inputRef,
@@ -47,6 +49,7 @@ export default function Clues({
         <div className="Clues__listBody">
           {across.map((entry) => (
             <Clue
+              allowedHtmlTags={allowedHtmlTags}
               answered={entry.answered}
               breakpoint={breakpoint}
               col={entry.position.x}
@@ -71,6 +74,7 @@ export default function Clues({
         <div className="Clues__listBody">
           {down.map((entry) => (
             <Clue
+              allowedHtmlTags={allowedHtmlTags}
               answered={entry.answered}
               breakpoint={breakpoint}
               col={entry.position.x}

@@ -22,7 +22,9 @@ const themeColors = [
 type Theme = typeof themeColors[number];
 
 export default function App() {
+  const allowedHtmlTags = ['b', 'strong', 'i', 'em', 'sub', 'sup'];
   const [theme, setTheme] = React.useState<Theme>('blue');
+  const [showDefinitions, setShowDefinitions] = React.useState(false);
 
   return (
     <>
@@ -44,21 +46,39 @@ export default function App() {
               : null}
           </span>
         </div>
-        <div className="theme-selector">
-          <label htmlFor="theme">Theme</label>
-          <select
-            id="theme"
-            value={theme}
-            onChange={(e) => setTheme(e.target.value as Theme)}
-          >
-            {themeColors.map((color) => (
-              <option key={color} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
+        <div className="toolbar">
+          <div className="theme-selector">
+            <label htmlFor="theme">Theme</label>
+            <select
+              id="theme"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value as Theme)}
+            >
+              {themeColors.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="show-definitions-container">
+            <input
+              checked={showDefinitions}
+              id="show-definitions"
+              onClick={() => setShowDefinitions(!showDefinitions)}
+              type="checkbox"
+            />
+            <label htmlFor="show-definitions">Show definitions</label>
+          </div>
         </div>
-        <MyCrossword id={data.id} data={data} theme={theme} />
+        <MyCrossword
+          allowedHtmlTags={
+            showDefinitions ? [...allowedHtmlTags, 'u'] : allowedHtmlTags
+          }
+          id={data.id}
+          data={data}
+          theme={theme}
+        />
       </main>
     </>
   );

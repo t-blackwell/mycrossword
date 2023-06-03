@@ -1,5 +1,8 @@
 import sanitize from 'sanitize-html';
 
+export const DEFAULT_HTML_TAGS = ['b', 'strong', 'i', 'em', 'sub', 'sup'];
+export const DEFAULT_CELL_MATCHER = /[A-Z]/;
+
 export function isValidChar(char: string, matcher: RegExp) {
   if (char.length !== 1) {
     return false;
@@ -39,9 +42,9 @@ export function stripHtml(dirtyHtml: string) {
   });
 }
 
-export function sanitizeHtml(dirtyHtml: string) {
+export function sanitizeHtml(dirtyHtml: string, allowedTags: string[]) {
   return sanitize(dirtyHtml, {
     allowedAttributes: {},
-    allowedTags: ['b', 'strong', 'i', 'em', 'u', 'sub', 'sup'],
+    allowedTags,
   });
 }

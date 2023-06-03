@@ -12,6 +12,7 @@ import {
 } from './../../utils/general';
 
 interface ClueProps {
+  allowedHtmlTags: string[];
   answered: boolean;
   breakpoint: string;
   col: number;
@@ -27,6 +28,7 @@ interface ClueProps {
 }
 
 function Clue({
+  allowedHtmlTags,
   answered,
   breakpoint,
   col,
@@ -106,7 +108,9 @@ function Clue({
       <span className="Clue__num">{num}</span>
       <span
         className="Clue__text"
-        dangerouslySetInnerHTML={{ __html: sanitizeHtml(text) }}
+        dangerouslySetInnerHTML={{
+          __html: sanitizeHtml(text, allowedHtmlTags),
+        }}
         data-text={decodeHtmlEntities(stripHtml(text))}
       />
     </div>

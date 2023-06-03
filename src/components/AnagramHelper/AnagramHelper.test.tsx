@@ -2,6 +2,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
+import { DEFAULT_HTML_TAGS } from '../../utils/general';
 import { store } from './../../redux/store';
 import data from './../../testData/test.valid.1';
 import { getGroupCells, getGroupSeparators } from './../../utils/clue';
@@ -22,6 +23,7 @@ test('it renders', () => {
 
   render(
     <AnagramHelper
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       clue={oneAcross}
       groupCells={groupCells}
       groupSeparators={groupSeparators}

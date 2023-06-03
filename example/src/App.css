@@ -29,8 +29,13 @@ main {
   font-weight: 400;
   margin: 0;
 }
-.theme-selector {
+.toolbar {
+  display: flex;
+  align-items: center;
   margin-bottom: 0.5rem;
+}
+.show-definitions-container {
+  margin-left: 1rem;
 }
 .theme-selector label {
   margin-right: 0.5rem;

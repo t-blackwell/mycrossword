@@ -37,7 +37,8 @@ import {
 import { initialiseGuessGrid, validateGuessGrid } from './../../utils/guess';
 
 interface CrosswordProps {
-  cellMatcher?: RegExp;
+  allowedHtmlTags: string[];
+  cellMatcher: RegExp;
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;
@@ -48,7 +49,8 @@ interface CrosswordProps {
 }
 
 export default function Crossword({
-  cellMatcher = /[A-Z]/,
+  allowedHtmlTags,
+  cellMatcher,
   data,
   id,
   loadGrid,
@@ -178,6 +180,7 @@ export default function Crossword({
         >
           {isAnagramHelperOpen && parentClue !== undefined ? (
             <AnagramHelper
+              allowedHtmlTags={allowedHtmlTags}
               clue={parentClue}
               groupCells={getGroupCells(parentClue.group, cells)}
               groupSeparators={getGroupSeparators(parentClue.group, clues)}
@@ -196,6 +199,7 @@ export default function Crossword({
                 breakpoint !== undefined &&
                 ['xs', 'sm'].includes(breakpoint)) ? (
                 <StickyClue
+                  allowedHtmlTags={allowedHtmlTags}
                   num={
                     parentClue?.group.length === 1
                       ? `${parentClue.number}${parentClue.direction.charAt(0)}`
@@ -236,6 +240,7 @@ export default function Crossword({
         />
       </div>
       <Clues
+        allowedHtmlTags={allowedHtmlTags}
         breakpoint={breakpoint ?? ''}
         entries={clues}
         inputRef={inputRef}

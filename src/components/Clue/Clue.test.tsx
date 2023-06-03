@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
+import { DEFAULT_HTML_TAGS } from '../../utils/general';
 import testData from './../../testData/test.valid.1';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen, store } from './../../utils/rtl';
@@ -9,6 +10,7 @@ import Clue from './Clue';
 test('it renders', () => {
   render(
     <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       breakpoint="xl"
       col={0}
@@ -16,19 +18,20 @@ test('it renders', () => {
       isHighlighted={false}
       num="1"
       row={0}
-      text="Clue text inc <u>markup</u>"
+      text="Clue text inc <em>markup</em>"
     />,
   );
 
   screen.getByText('1');
   screen.getByText(/clue text inc/i);
   const markup = screen.getByText('markup');
-  expect(markup.tagName).toBe('U');
+  expect(markup.tagName).toBe('EM');
 });
 
 test('it renders answered', () => {
   render(
     <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered
       breakpoint="xl"
       col={0}
@@ -50,6 +53,7 @@ test('it renders answered', () => {
 test('it renders highlighted', () => {
   render(
     <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       breakpoint="xl"
       col={0}
@@ -74,6 +78,7 @@ test('it selects clue', () => {
 
   render(
     <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       breakpoint="xl"
       col={0}

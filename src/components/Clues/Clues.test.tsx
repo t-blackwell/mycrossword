@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { DEFAULT_HTML_TAGS } from '../../utils/general';
 import testData from './../../testData/test.valid.1';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen, store } from './../../utils/rtl';
@@ -12,7 +13,13 @@ beforeEach(() => {
 test('it renders', () => {
   const { clues } = store.getState().clues;
 
-  render(<Clues breakpoint="xl" entries={clues} />);
+  render(
+    <Clues
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      breakpoint="xl"
+      entries={clues}
+    />,
+  );
 
   screen.getByText('Across');
   screen.getByText('Down');
@@ -32,7 +39,14 @@ test('it renders', () => {
 test('it highlights selected clue', () => {
   const { clues } = store.getState().clues;
 
-  render(<Clues breakpoint="xl" entries={clues} selectedClueId="1-across" />);
+  render(
+    <Clues
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      breakpoint="xl"
+      entries={clues}
+      selectedClueId="1-across"
+    />,
+  );
 
   const clueText = screen.getByText('Toy on a string (2-2)');
   expect(clueText.parentElement).toHaveClass('Clue--highlighted');
@@ -41,7 +55,14 @@ test('it highlights selected clue', () => {
 test('it highlights linked clues', () => {
   const { clues } = store.getState().clues;
 
-  render(<Clues breakpoint="xl" entries={clues} selectedClueId="2-down" />);
+  render(
+    <Clues
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      breakpoint="xl"
+      entries={clues}
+      selectedClueId="2-down"
+    />,
+  );
 
   const clueTextOne = screen.getByText('Bits and bobs (4,3,4)');
   expect(clueTextOne.parentElement).toHaveClass('Clue--highlighted');

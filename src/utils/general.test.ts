@@ -33,6 +33,8 @@ describe('isValidChar', () => {
 });
 
 describe('sanitizeHtml', () => {
+  const allowedTags = ['strong', 'b', 'em', 'i', 'u', 'sub', 'sup'];
+
   test('only keep allowed tags', () => {
     const dirtyHtml = `
       <p>p tag disallowed</p>
@@ -60,7 +62,7 @@ describe('sanitizeHtml', () => {
       <sup>sup tag allowed</sup>
     `;
 
-    expect(sanitizeHtml(dirtyHtml)).toBe(expectedCleanHtml);
+    expect(sanitizeHtml(dirtyHtml, allowedTags)).toBe(expectedCleanHtml);
   });
 });
 

@@ -2,7 +2,7 @@
 
 React crossword component built to work with Guardian crossword data.
 
-![image](https://user-images.githubusercontent.com/31444631/138071585-28ccca26-19ff-4942-a498-5e56d281c0cc.png)
+![image](https://github.com/t-blackwell/mycrossword/assets/31444631/bb21604a-deee-4f15-9e66-050d972f9e63)
 
 ## Features
 
@@ -53,7 +53,7 @@ export default function MyPage() {
 
 | Property          | Description                                                                                                                                                                                                                                                                                             |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `allowedHtmlTags` | `string[]` = ['b', 'strong', 'i', 'em', 'sub', 'sup']<br />Optional list of HTML tags allowed within the clues. Set to `[]` to prevent all HTML tags. Defaults to `['b', 'strong', 'i', 'em', 'sub', 'sup']`.                                                                                           |
+| `allowedHtmlTags` | `string[]` = ['b', 'strong', 'i', 'em', 'sub', 'sup']<br />Optional list of HTML tags allowed within the clues. Use `[]` to prevent all HTML tags. Defaults to `['b', 'strong', 'i', 'em', 'sub', 'sup']`.                                                                                           |
 | `cellMatcher`     | `RegExp` = '/[A-Z]/'<br />Optional regular expression to match against entered cell characters. Defaults to `/[A-Z]/`.                                                                                                                                                                                  |
 | `className`       | `string`<br />Optional string to apply a space-delimited list of class names.                                                                                                                                                                                                                           |
 | `data`            | `GuardianCrossword`<br />Required object that contains crossword clues, solutions and other information needed to draw the grid. See [crossword data](#crossword-data) below for more information.                                                                                                      |
@@ -200,7 +200,7 @@ While the project has been created from scratch, it should be considered as a co
 
 - Use of TypeScript
 - Switched to functional components
-- Much better performance (memoization, useCallback etc.)
+- Better performance (memoization, useCallback etc.)
 - Simplified global state management using RTK
 - More modular component hierarchy
 - Scoped CSS

@@ -6,21 +6,25 @@ import { store } from './rtl';
 import { initialiseStore } from './test';
 
 test('it initialises empty guess grid', () => {
-  const gridSize = 13;
-  const guessGrid = initialiseGuessGrid(gridSize, gridSize);
+  const gridSize = {
+    cols: 8,
+    rows: 4,
+  };
+  const guessGrid = initialiseGuessGrid(gridSize.cols, gridSize.rows);
 
   // check row count
   expect(guessGrid.value).toBeDefined();
-  expect(guessGrid.value.length).toBe(gridSize);
+  expect(guessGrid.value.length).toBe(gridSize.cols);
+  expect(guessGrid.value[0].length).toBe(gridSize.rows);
 
   // check cell count
   const total = guessGrid.value.reduce((count, row) => count + row.length, 0);
-  expect(total).toBe(gridSize * gridSize);
+  expect(total).toBe(gridSize.cols * gridSize.rows);
 
   // check all cells are empty strings
   const flatGuessGrid = guessGrid.value.join().split(',');
   const filtered = flatGuessGrid.filter((cell) => cell === '');
-  expect(filtered.length).toBe(gridSize * gridSize);
+  expect(filtered.length).toBe(gridSize.cols * gridSize.rows);
 });
 
 test('it initialises guess grid with char', () => {

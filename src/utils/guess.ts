@@ -14,7 +14,7 @@ export function initialiseGuessGrid(
   char: string = '',
 ) {
   const grid: GuessGrid = {
-    value: new Array(rows).fill(char).map(() => new Array(cols).fill(char)),
+    value: new Array(cols).fill(char).map(() => new Array(rows).fill(char)),
   };
   return grid;
 }

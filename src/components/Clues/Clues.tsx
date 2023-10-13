@@ -32,8 +32,14 @@ export default function Clues({
     .filter((entry) => entry.direction === 'down')
     .sort((a, b) => a.number - b.number);
 
-  const isHighlighted = (entry: ClueInterface) =>
-    selectedClueId !== undefined && entry.group.includes(selectedClueId);
+  const isHighlighted = (thisEntry: ClueInterface): boolean => {
+    return (
+      selectedClueId !== undefined &&
+      !!entries
+        .find((entry) => entry.id === selectedClueId)
+        ?.group.includes(thisEntry.id)
+    );
+  };
 
   // only scroll to clue when container height is fixed
   const scrollTo = (entry: ClueInterface) =>

@@ -11,7 +11,7 @@ module.exports = {
     browser: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', 'dist/**/*'],
+  ignorePatterns: ['.eslintrc.js', 'jest.config.js', 'setupTests.ts', 'dist/**/*'],
   rules: {
     'react/prop-types': 'off',
     'react/require-default-props': 'off',

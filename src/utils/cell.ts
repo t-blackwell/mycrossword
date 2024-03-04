@@ -93,35 +93,24 @@ export function initialiseCells(
           val: entry.solution?.[i] as Char,
         };
 
-        if (across) {
-          newCell.groupAcross = entry.group;
-        } else {
-          newCell.groupDown = entry.group;
-        }
-
         cells.push(newCell);
       } else {
         // merge cell
         if (currentCell.val !== entry.solution?.[i]) {
           throw new Error('Crossword data error: solution character clash');
-        }
-
-        currentCell.clueIds = [...currentCell.clueIds, entry.id];
-        currentCell.num = i === 0 ? entry.number : currentCell.num;
-
-        // add group
-        if (across) {
-          if (currentCell.groupAcross !== undefined) {
-            throw new Error(
-              'Crossword data error: overlapping across solutions',
-            );
-          }
-          currentCell.groupAcross = entry.group;
+        } else if (
+          across &&
+          currentCell.clueIds.some((clueId) => clueId.endsWith('across'))
+        ) {
+          throw new Error('Crossword data error: overlapping across solutions');
+        } else if (
+          !across &&
+          currentCell.clueIds.some((clueId) => clueId.endsWith('down'))
+        ) {
+          throw new Error('Crossword data error: overlapping down solutions');
         } else {
-          if (currentCell.groupDown !== undefined) {
-            throw new Error('Crossword data error: overlapping down solutions');
-          }
-          currentCell.groupDown = entry.group;
+          currentCell.num = i === 0 ? entry.number : currentCell.num;
+          currentCell.clueIds = [...currentCell.clueIds, entry.id];
         }
       }
     }

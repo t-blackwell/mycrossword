@@ -30,9 +30,6 @@ import { isCluePopulated } from './../../utils/clue';
 import { isValidChar } from './../../utils/general';
 import { getGuessGrid } from './../../utils/guess';
 
-const appearsInGroup = (clueId: string | undefined, group: string[]) =>
-  clueId !== undefined && group.includes(clueId);
-
 const cellPositionMatches = (
   cellPosA: CellPosition,
   cellPosB?: CellPosition,
@@ -459,34 +456,32 @@ export default function Grid({
               x="0"
               y="0"
             />
-            {cells.map(
-              ({ clueIds, groupAcross, groupDown, guess, num, pos }) => {
-                const isSelected = cellPositionMatches(pos, selectedCell?.pos);
-                const isHighlighted = appearsInGroup(selectedClue?.id, [
-                  ...(groupAcross !== undefined ? groupAcross : []),
-                  ...(groupDown !== undefined ? groupDown : []),
-                ]);
-                const selectedClueIndex =
-                  selectedClue !== undefined
-                    ? clueIds.indexOf(selectedClue.id)
-                    : -1;
+            {cells.map(({ clueIds, guess, num, pos }) => {
+              const isSelected = cellPositionMatches(pos, selectedCell?.pos);
+              const isHighlighted = clueIds.some((clueId) =>
+                selectedClue?.group.includes(clueId),
+              );
 
-                return (
-                  <GridCell
-                    clueIds={clueIds}
-                    guess={guess}
-                    inputRef={inputRef}
-                    isHighlighted={isHighlighted}
-                    isSelected={isSelected}
-                    key={`${pos.col},${pos.row}`}
-                    num={num}
-                    onCellFocus={onCellFocus}
-                    pos={pos}
-                    selectedClueIndex={selectedClueIndex}
-                  />
-                );
-              },
-            )}
+              const selectedClueIndex =
+                selectedClue !== undefined
+                  ? clueIds.indexOf(selectedClue.id)
+                  : -1;
+
+              return (
+                <GridCell
+                  clueIds={clueIds}
+                  guess={guess}
+                  inputRef={inputRef}
+                  isHighlighted={isHighlighted}
+                  isSelected={isSelected}
+                  key={`${pos.col},${pos.row}`}
+                  num={num}
+                  onCellFocus={onCellFocus}
+                  pos={pos}
+                  selectedClueIndex={selectedClueIndex}
+                />
+              );
+            })}
             <GridSeparators clues={rawClues} />
           </svg>
           <div

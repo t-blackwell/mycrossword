@@ -18,8 +18,6 @@ test('mergeCell', () => {
   const { cells } = store.getState().cells;
   const newCell = {
     clueIds: [],
-    groupAcross: [],
-    groupDown: [],
     guess: undefined,
     num: 1,
     pos: { col: 0, row: 0 },
@@ -35,8 +33,6 @@ test('mergeCell with invalid cell position', () => {
   const { cells } = store.getState().cells;
   const newCell = {
     clueIds: [],
-    groupAcross: [],
-    groupDown: [],
     guess: undefined,
     num: 1,
     pos: { col: 999, row: 999 },
@@ -183,8 +179,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 0, row: 0 },
       selected: false,
       val: 'Y',
-      groupAcross: ['1-across'],
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-across'],
@@ -193,7 +187,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 1, row: 0 },
       selected: false,
       val: 'O',
-      groupAcross: ['1-across'],
     },
     {
       clueIds: ['1-across'],
@@ -202,7 +195,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 2, row: 0 },
       selected: false,
       val: 'Y',
-      groupAcross: ['1-across'],
     },
     {
       clueIds: ['1-across', '2-down'],
@@ -211,8 +203,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 3, row: 0 },
       selected: false,
       val: 'O',
-      groupAcross: ['1-across'],
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['4-across', '1-down'],
@@ -221,8 +211,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 0, row: 2 },
       selected: false,
       val: 'L',
-      groupAcross: ['4-across'],
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['4-across'],
@@ -231,7 +219,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 1, row: 2 },
       selected: false,
       val: 'I',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across'],
@@ -240,7 +227,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 2, row: 2 },
       selected: false,
       val: 'E',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across', '2-down'],
@@ -249,8 +235,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 3, row: 2 },
       selected: false,
       val: 'D',
-      groupAcross: ['4-across'],
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['4-across'],
@@ -259,7 +243,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 4, row: 2 },
       selected: false,
       val: 'O',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across'],
@@ -268,7 +251,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 5, row: 2 },
       selected: false,
       val: 'W',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across', '3-down'],
@@ -277,8 +259,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 6, row: 2 },
       selected: false,
       val: 'N',
-      groupAcross: ['4-across'],
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['1-down'],
@@ -287,7 +267,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 0, row: 1 },
       selected: false,
       val: 'E',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-down'],
@@ -296,7 +275,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 0, row: 3 },
       selected: false,
       val: 'L',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-down'],
@@ -305,7 +283,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 0, row: 4 },
       selected: false,
       val: 'O',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-down'],
@@ -314,7 +291,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 0, row: 5 },
       selected: false,
       val: 'W',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['2-down'],
@@ -323,7 +299,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 3, row: 1 },
       selected: false,
       val: 'D',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -332,7 +307,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 3, row: 3 },
       selected: false,
       val: 'S',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -341,7 +315,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 3, row: 4 },
       selected: false,
       val: 'A',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -350,7 +323,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 3, row: 5 },
       selected: false,
       val: 'N',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -359,7 +331,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 3, row: 6 },
       selected: false,
       val: 'D',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['3-down'],
@@ -368,7 +339,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 6, row: 1 },
       selected: false,
       val: 'E',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['3-down'],
@@ -377,7 +347,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 6, row: 3 },
       selected: false,
       val: 'D',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['3-down'],
@@ -386,7 +355,6 @@ test('initialiseCells with valid data', () => {
       pos: { col: 6, row: 4 },
       selected: false,
       val: 'S',
-      groupDown: ['2-down', '3-down'],
     },
   ]);
 });
@@ -414,8 +382,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 0, row: 0 },
       selected: false,
       val: 'Y',
-      groupAcross: ['1-across'],
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-across'],
@@ -424,7 +390,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 1, row: 0 },
       selected: false,
       val: 'O',
-      groupAcross: ['1-across'],
     },
     {
       clueIds: ['1-across'],
@@ -433,7 +398,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 2, row: 0 },
       selected: false,
       val: 'Y',
-      groupAcross: ['1-across'],
     },
     {
       clueIds: ['1-across', '2-down'],
@@ -442,8 +406,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 3, row: 0 },
       selected: false,
       val: 'O',
-      groupAcross: ['1-across'],
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['4-across', '1-down'],
@@ -452,8 +414,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 0, row: 2 },
       selected: false,
       val: 'L',
-      groupAcross: ['4-across'],
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['4-across'],
@@ -462,7 +422,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 1, row: 2 },
       selected: false,
       val: 'I',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across'],
@@ -471,7 +430,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 2, row: 2 },
       selected: false,
       val: 'E',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across', '2-down'],
@@ -480,8 +438,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 3, row: 2 },
       selected: false,
       val: 'D',
-      groupAcross: ['4-across'],
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['4-across'],
@@ -490,7 +446,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 4, row: 2 },
       selected: false,
       val: 'O',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across'],
@@ -499,7 +454,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 5, row: 2 },
       selected: false,
       val: 'W',
-      groupAcross: ['4-across'],
     },
     {
       clueIds: ['4-across', '3-down'],
@@ -508,8 +462,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 6, row: 2 },
       selected: false,
       val: 'N',
-      groupAcross: ['4-across'],
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['1-down'],
@@ -518,7 +470,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 0, row: 1 },
       selected: false,
       val: 'E',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-down'],
@@ -527,7 +478,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 0, row: 3 },
       selected: false,
       val: 'L',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-down'],
@@ -536,7 +486,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 0, row: 4 },
       selected: false,
       val: 'O',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['1-down'],
@@ -545,7 +494,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 0, row: 5 },
       selected: false,
       val: 'W',
-      groupDown: ['1-down'],
     },
     {
       clueIds: ['2-down'],
@@ -554,7 +502,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 3, row: 1 },
       selected: false,
       val: 'D',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -563,7 +510,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 3, row: 3 },
       selected: false,
       val: 'S',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -572,7 +518,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 3, row: 4 },
       selected: false,
       val: 'A',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -581,7 +526,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 3, row: 5 },
       selected: false,
       val: 'N',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['2-down'],
@@ -590,7 +534,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 3, row: 6 },
       selected: false,
       val: 'D',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['3-down'],
@@ -599,7 +542,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 6, row: 1 },
       selected: false,
       val: 'E',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['3-down'],
@@ -608,7 +550,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 6, row: 3 },
       selected: false,
       val: 'D',
-      groupDown: ['2-down', '3-down'],
     },
     {
       clueIds: ['3-down'],
@@ -617,7 +558,6 @@ test('initialiseCells with valid data and guess grid', () => {
       pos: { col: 6, row: 4 },
       selected: false,
       val: 'S',
-      groupDown: ['2-down', '3-down'],
     },
   ]);
 });

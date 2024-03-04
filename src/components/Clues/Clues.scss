@@ -24,9 +24,7 @@
 }
 
 /** Breakpoints **/
-.MyCrossword--xxl,
-.MyCrossword--xl,
-.MyCrossword--lg {
+@media (width > vars.$breakpoint-md) {
   .Clues__listBody {
     overflow-y: auto;
     border-bottom: 1px dotted vars.$light-grey;

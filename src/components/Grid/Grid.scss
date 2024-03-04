@@ -23,7 +23,7 @@
 }
 
 /** Breakpoints **/
-.MyCrossword--xs {
+@media (width <= vars.$breakpoint-xs) {
   .Grid[style] {
     width: auto !important;
     height: auto !important;

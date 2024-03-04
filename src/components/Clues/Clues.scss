@@ -61,7 +61,7 @@
   }
 }
 
-.MyCrossword--xs {
+@media (width <= vars.$breakpoint-xs) {
   .Clues {
     flex-direction: column;
   }

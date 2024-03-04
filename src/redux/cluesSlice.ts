@@ -35,7 +35,7 @@ export const cluesSlice = createSlice({
     },
     select: (state, action: PayloadAction<string>) => {
       // append clue to URL e.g. #1-across
-      window.location.hash = action.payload;
+      window.history.replaceState(null, '', `#${action.payload}`);
 
       state.clues = state.clues.map((clue) => ({
         ...clue,

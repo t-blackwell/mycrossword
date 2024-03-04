@@ -55,7 +55,8 @@
   }
 }
 
-.MyCrossword--sm {
+
+@media (vars.$breakpoint-xs < width <= vars.$breakpoint-sm) {
   .Clues {
     margin-top: vars.$grid-size;
   }
@@ -65,10 +66,10 @@
   .Clues {
     flex-direction: column;
   }
-  .Clues__list {
+  .Clues .Clues__list {
     width: 100%;
   }
-  .Clues__list--down {
+  .Clues .Clues__list--down {
     margin-top: vars.$grid-size * 2;
   }
 }

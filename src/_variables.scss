@@ -1,3 +1,11 @@
+/** Breakpoints **/
+$breakpoint-xs: 576px;
+$breakpoint-sm: 768px;
+$breakpoint-md: 992px;
+$breakpoint-lg: 1200px;
+$breakpoint-xl: 1400px;
+$breakpoint-xxl: 99999px;
+
 /** Layout **/
 $grid-size: 10px;
 $line-height: $grid-size * 2.2;

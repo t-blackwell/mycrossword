@@ -65,7 +65,7 @@ export default function App() {
             <input
               checked={showDefinitions}
               id="show-definitions"
-              onClick={() => setShowDefinitions(!showDefinitions)}
+              onChange={() => setShowDefinitions(!showDefinitions)}
               type="checkbox"
             />
             <label htmlFor="show-definitions">Show definitions</label>

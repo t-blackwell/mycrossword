@@ -33,7 +33,7 @@
   }
 }
 
-@media (vars.$breakpoint-sm < width <= vars.$breakpoint-md) {
+@media (vars.$breakpoint-sm <= width <= vars.$breakpoint-md) {
   .Clues {
     flex-direction: column;
     overflow-y: auto;
@@ -54,7 +54,7 @@
 }
 
 
-@media (vars.$breakpoint-xs < width <= vars.$breakpoint-sm) {
+@media (vars.$breakpoint-xs <= width <= vars.$breakpoint-sm) {
   .Clues {
     margin-top: vars.$grid-size;
   }

@@ -16,7 +16,7 @@
   }
 }
 
-@media (vars.$breakpoint-xs < width <= vars.$breakpoint-sm) {
+@media (vars.$breakpoint-xs <= width <= vars.$breakpoint-sm) {
   .Crossword {
     flex-direction: column;
   }

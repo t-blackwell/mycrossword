@@ -77,6 +77,9 @@
     "lint:fix": "yarn lint --fix",
     "test": "jest --config jest.config.js"
   },
+  "engines": {
+    "node": "=18.19.1"
+  },
   "browserslist": [
     ">0.01%",
     "not ie 11",

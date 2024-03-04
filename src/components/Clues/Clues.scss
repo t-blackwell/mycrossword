@@ -24,9 +24,7 @@
 }
 
 /** Breakpoints **/
-.MyCrossword--xxl,
-.MyCrossword--xl,
-.MyCrossword--lg {
+@media (width > vars.$breakpoint-md) {
   .Clues__listBody {
     overflow-y: auto;
     border-bottom: 1px dotted vars.$light-grey;
@@ -35,7 +33,7 @@
   }
 }
 
-.MyCrossword--md {
+@media (vars.$breakpoint-sm <= width <= vars.$breakpoint-md) {
   .Clues {
     flex-direction: column;
     overflow-y: auto;
@@ -43,11 +41,11 @@
     margin: 0 vars.$grid-size;
     scrollbar-width: thin;
   }
-  .Clues__list {
+  .Clues .Clues__list {
     width: 100%;
     margin: 0;
   }
-  .Clues__list--down {
+  .Clues .Clues__list--down {
     margin-top: vars.$grid-size * 2;
     .Clues__listHeader {
       top: -1px;
@@ -55,20 +53,21 @@
   }
 }
 
-.MyCrossword--sm {
+
+@media (vars.$breakpoint-xs <= width <= vars.$breakpoint-sm) {
   .Clues {
     margin-top: vars.$grid-size;
   }
 }
 
-.MyCrossword--xs {
+@media (width <= vars.$breakpoint-xs) {
   .Clues {
     flex-direction: column;
   }
-  .Clues__list {
+  .Clues .Clues__list {
     width: 100%;
   }
-  .Clues__list--down {
+  .Clues .Clues__list--down {
     margin-top: vars.$grid-size * 2;
   }
 }

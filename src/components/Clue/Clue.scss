@@ -36,7 +36,7 @@
 }
 
 /** Breakpoints **/
-.MyCrossword--md {
+@media (vars.$breakpoint-sm <= width <= vars.$breakpoint-md) {
   .Clue {
     scroll-margin-top: vars.$grid-size * 2.3;
   }

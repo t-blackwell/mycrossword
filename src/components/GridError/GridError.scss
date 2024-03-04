@@ -22,8 +22,8 @@
 }
 
 /** Breakpoints **/
-.MyCrossword--xs {
-  .GridError {
+@media (width <= vars.$breakpoint-xs) {
+  .MyCrossword .GridError {
     width: auto;
   }
 }

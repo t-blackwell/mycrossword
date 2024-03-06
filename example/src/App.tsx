@@ -2,7 +2,7 @@ import MyCrossword from 'mycrossword';
 import 'mycrossword/dist/index.css';
 import * as React from 'react';
 import './App.css';
-import data from './guardian.cryptic.28505';
+import data from './incomplete.cryptic';
 
 // TODO: import from MyCrossword
 const themeColors = [

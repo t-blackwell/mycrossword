@@ -11,12 +11,12 @@ export function initialiseStore(
   data: GuardianCrossword,
   guessGrid?: GuessGrid,
 ) {
-  const cells = initialiseCells(
-    data.dimensions.cols,
-    data.dimensions.rows,
-    data.entries,
+  const cells = initialiseCells({
+    cols: data.dimensions.cols,
+    rows: data.dimensions.rows,
+    entries: data.entries,
     guessGrid,
-  );
+  });
 
   const clues = initialiseClues(data.entries, cells);
 

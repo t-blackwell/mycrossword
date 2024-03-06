@@ -152,11 +152,11 @@ describe('getCrossingClueIds', () => {
 
 describe('initialiseClues', () => {
   test('clues get initialised', () => {
-    const cells = initialiseCells(
-      testData.dimensions.cols,
-      testData.dimensions.rows,
-      testData.entries,
-    );
+    const cells = initialiseCells({
+      cols: testData.dimensions.cols,
+      rows: testData.dimensions.rows,
+      entries: testData.entries,
+    });
 
     const clues = initialiseClues(testData.entries, cells);
     expect(clues).toEqual([
@@ -234,11 +234,11 @@ describe('initialiseClues', () => {
   });
 
   test('clues get initialised with selected clue', () => {
-    const cells = initialiseCells(
-      testData.dimensions.cols,
-      testData.dimensions.rows,
-      testData.entries,
-    );
+    const cells = initialiseCells({
+      cols: testData.dimensions.cols,
+      rows: testData.dimensions.rows,
+      entries: testData.entries,
+    });
 
     const clues = initialiseClues(testData.entries, cells, '1-across');
     expect(clues).toEqual(
@@ -262,11 +262,11 @@ describe('initialiseClues', () => {
   });
 
   test('clues get initialised with answered clues', () => {
-    const cells = initialiseCells(
-      testData.dimensions.cols,
-      testData.dimensions.rows,
-      testData.entries,
-    );
+    const cells = initialiseCells({
+      cols: testData.dimensions.cols,
+      rows: testData.dimensions.rows,
+      entries: testData.entries,
+    });
 
     // reveal all cells
     store.dispatch(cellsUpdateGrid(cells));

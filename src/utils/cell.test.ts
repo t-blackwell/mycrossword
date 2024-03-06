@@ -95,80 +95,80 @@ test('blankNeighbours without neighbours', () => {
 
 test('initialiseCells with invalid data 1', () => {
   expect(() =>
-    initialiseCells(
-      invalidData1.dimensions.cols,
-      invalidData1.dimensions.rows,
-      invalidData1.entries,
-    ),
+    initialiseCells({
+      cols: invalidData1.dimensions.cols,
+      rows: invalidData1.dimensions.rows,
+      entries: invalidData1.entries,
+    }),
   ).toThrow('Crossword data error: solution length mismatch');
 });
 
 test('initialiseCells with invalid data 2', () => {
   expect(() =>
-    initialiseCells(
-      invalidData2.dimensions.cols,
-      invalidData2.dimensions.rows,
-      invalidData2.entries,
-    ),
+    initialiseCells({
+      cols: invalidData2.dimensions.cols,
+      rows: invalidData2.dimensions.rows,
+      entries: invalidData2.entries,
+    }),
   ).toThrow('Crossword data error: out of bounds');
 });
 
 test('initialiseCells with invalid data 3', () => {
   expect(() =>
-    initialiseCells(
-      invalidData3.dimensions.cols,
-      invalidData3.dimensions.rows,
-      invalidData3.entries,
-    ),
+    initialiseCells({
+      cols: invalidData3.dimensions.cols,
+      rows: invalidData3.dimensions.rows,
+      entries: invalidData3.entries,
+    }),
   ).toThrow('Crossword data error: solution character clash');
 });
 
 test('initialiseCells with invalid data 4', () => {
   expect(() =>
-    initialiseCells(
-      invalidData4.dimensions.cols,
-      invalidData4.dimensions.rows,
-      invalidData4.entries,
-    ),
+    initialiseCells({
+      cols: invalidData4.dimensions.cols,
+      rows: invalidData4.dimensions.rows,
+      entries: invalidData4.entries,
+    }),
   ).toThrow('Crossword data error: overlapping across solutions');
 });
 
 test('initialiseCells with invalid data 5', () => {
   expect(() =>
-    initialiseCells(
-      invalidData5.dimensions.cols,
-      invalidData5.dimensions.rows,
-      invalidData5.entries,
-    ),
+    initialiseCells({
+      cols: invalidData5.dimensions.cols,
+      rows: invalidData5.dimensions.rows,
+      entries: invalidData5.entries,
+    }),
   ).toThrow('Crossword data error: overlapping down solutions');
 });
 
 test('initialiseCells with invalid data 6', () => {
   expect(() =>
-    initialiseCells(
-      invalidData6.dimensions.cols,
-      invalidData6.dimensions.rows,
-      invalidData6.entries,
-    ),
+    initialiseCells({
+      cols: invalidData6.dimensions.cols,
+      rows: invalidData6.dimensions.rows,
+      entries: invalidData6.entries,
+    }),
   ).toThrow('Crossword data error: clue id missing from group');
 });
 
 test('initialiseCells with invalid data 7', () => {
   expect(() =>
-    initialiseCells(
-      invalidData7.dimensions.cols,
-      invalidData7.dimensions.rows,
-      invalidData7.entries,
-    ),
+    initialiseCells({
+      cols: invalidData7.dimensions.cols,
+      rows: invalidData7.dimensions.rows,
+      entries: invalidData7.entries,
+    }),
   ).toThrow('Crossword data error: group clue id not found');
 });
 
 test('initialiseCells with valid data', () => {
-  const cells = initialiseCells(
-    validData.dimensions.cols,
-    validData.dimensions.rows,
-    validData.entries,
-  );
+  const cells = initialiseCells({
+    cols: validData.dimensions.cols,
+    rows: validData.dimensions.rows,
+    entries: validData.entries,
+  });
 
   expect(cells.length).toBe(23);
   expect(cells).toEqual([
@@ -366,12 +366,12 @@ test('initialiseCells with valid data and guess grid', () => {
     validData.dimensions.rows,
     gridChar,
   );
-  const cells = initialiseCells(
-    validData.dimensions.cols,
-    validData.dimensions.rows,
-    validData.entries,
+  const cells = initialiseCells({
+    cols: validData.dimensions.cols,
+    rows: validData.dimensions.rows,
+    entries: validData.entries,
     guessGrid,
-  );
+  });
 
   expect(cells.length).toBe(23);
   expect(cells).toEqual([

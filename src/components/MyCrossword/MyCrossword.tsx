@@ -28,6 +28,7 @@ type Theme =
 
 export interface MyCrosswordProps {
   allowedHtmlTags?: string[];
+  allowMissingSolutions?: boolean;
   cellMatcher?: RegExp;
   className?: string;
   data: GuardianCrossword;
@@ -42,6 +43,7 @@ export interface MyCrosswordProps {
 
 export default function MyCrossword({
   allowedHtmlTags = DEFAULT_HTML_TAGS,
+  allowMissingSolutions = false,
   cellMatcher = DEFAULT_CELL_MATCHER,
   className,
   data,
@@ -67,6 +69,7 @@ export default function MyCrossword({
       <Provider store={store}>
         <Crossword
           allowedHtmlTags={allowedHtmlTags}
+          allowMissingSolutions={allowMissingSolutions}
           cellMatcher={cellMatcher}
           data={data}
           id={id}

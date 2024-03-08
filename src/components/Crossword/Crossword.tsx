@@ -38,6 +38,7 @@ import { initialiseGuessGrid, validateGuessGrid } from './../../utils/guess';
 
 interface CrosswordProps {
   allowedHtmlTags: string[];
+  allowMissingSolutions: boolean;
   cellMatcher: RegExp;
   data: GuardianCrossword;
   id: string;
@@ -50,6 +51,7 @@ interface CrosswordProps {
 
 export default function Crossword({
   allowedHtmlTags,
+  allowMissingSolutions,
   cellMatcher,
   data,
   id,
@@ -103,6 +105,7 @@ export default function Crossword({
         rows: data.dimensions.rows,
         entries: data.entries,
         guessGrid: loadGrid ?? guessGrid,
+        allowMissingSolutions,
       });
       dispatch(cellsActionUpdateGrid(initCells));
 

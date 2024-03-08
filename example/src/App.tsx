@@ -75,6 +75,7 @@ export default function App() {
           allowedHtmlTags={
             showDefinitions ? [...allowedHtmlTags, 'u'] : allowedHtmlTags
           }
+          allowMissingSolutions
           id={data.id}
           data={data}
           theme={theme}

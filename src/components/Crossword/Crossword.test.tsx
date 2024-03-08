@@ -8,12 +8,13 @@ import validData from './../../testData/test.valid.1';
 import { act, fireEvent, render, screen } from './../../utils/rtl';
 import Crossword from './Crossword';
 
-const debounceTime = 1000;
+const DEBOUNCE_TIME = 1000;
 
 test('it renders', () => {
   render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
@@ -41,6 +42,7 @@ test('it displays error with invalid data', () => {
   render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={invalidData}
       id="test"
@@ -74,6 +76,7 @@ test('it displays valid guess grid', () => {
   render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
@@ -89,6 +92,7 @@ test('it displays error with invalid guess grid', () => {
   render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
@@ -109,6 +113,7 @@ test.skip('it calls saveGrid', () => {
   render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
@@ -126,7 +131,7 @@ test.skip('it calls saveGrid', () => {
   fireEvent.keyDown(grid, { key: 'A', code: 'KeyA' });
 
   act(() => {
-    jest.advanceTimersByTime(debounceTime);
+    jest.advanceTimersByTime(DEBOUNCE_TIME);
   });
   expect(saveGrid).toHaveBeenCalledTimes(2);
 
@@ -142,6 +147,7 @@ test('it always shows sticky clue', async () => {
   render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
@@ -162,6 +168,7 @@ test('it never shows sticky clue', async () => {
   render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
@@ -183,6 +190,7 @@ test('it conditionally shows sticky clue', async () => {
   const { rerender } = render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"
@@ -202,6 +210,7 @@ test('it conditionally shows sticky clue', async () => {
   rerender(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
       data={validData}
       id="test"

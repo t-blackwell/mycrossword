@@ -46,12 +46,19 @@ export function blankNeighbours(
  * @param entries
  * @returns
  */
-export function initialiseCells(
-  cols: number,
-  rows: number,
-  entries: GuardianClue[],
-  guessGrid?: GuessGrid,
-) {
+export function initialiseCells({
+  cols,
+  rows,
+  entries,
+  guessGrid,
+  allowMissingSolutions = false,
+}: {
+  cols: number;
+  rows: number;
+  entries: GuardianClue[];
+  guessGrid?: GuessGrid;
+  allowMissingSolutions?: boolean;
+}) {
   const cells: Cell[] = [];
   const entryIds = entries.map((entry) => entry.id);
 
@@ -64,14 +71,21 @@ export function initialiseCells(
       // grid validation
       if (col < 0 || col >= cols || row < 0 || row >= rows) {
         throw new Error('Crossword data error: out of bounds');
-      } else if (
+      }
+
+      if (
+        !allowMissingSolutions &&
         entry.solution !== undefined &&
         entry.length !== entry.solution.length
       ) {
         throw new Error('Crossword data error: solution length mismatch');
-      } else if (!entry.group.includes(entry.id)) {
+      }
+
+      if (!entry.group.includes(entry.id)) {
         throw new Error('Crossword data error: clue id missing from group');
-      } else if (!entry.group.every((clueId) => entryIds.includes(clueId))) {
+      }
+
+      if (!entry.group.every((clueId) => entryIds.includes(clueId))) {
         throw new Error('Crossword data error: group clue id not found');
       }
 
@@ -95,22 +109,33 @@ export function initialiseCells(
 
         cells.push(newCell);
       } else {
-        // merge cell
-        if (currentCell.val !== entry.solution?.[i]) {
-          throw new Error('Crossword data error: solution character clash');
-        } else if (
+        if (
           across &&
           currentCell.clueIds.some((clueId) => clueId.endsWith('across'))
         ) {
           throw new Error('Crossword data error: overlapping across solutions');
-        } else if (
+        }
+
+        if (
           !across &&
           currentCell.clueIds.some((clueId) => clueId.endsWith('down'))
         ) {
           throw new Error('Crossword data error: overlapping down solutions');
-        } else {
-          currentCell.num = i === 0 ? entry.number : currentCell.num;
-          currentCell.clueIds = [...currentCell.clueIds, entry.id];
+        }
+
+        const newChar = entry.solution?.[i];
+
+        if (!allowMissingSolutions && currentCell.val !== newChar) {
+          throw new Error('Crossword data error: solution character clash');
+        }
+
+        // merge cell
+        currentCell.num = i === 0 ? entry.number : currentCell.num;
+        currentCell.clueIds = [...currentCell.clueIds, entry.id];
+
+        // overwrite with new value
+        if (allowMissingSolutions && newChar !== undefined) {
+          currentCell.val = newChar as Char;
         }
       }
     }

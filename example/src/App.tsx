@@ -4,26 +4,27 @@ import * as React from 'react';
 import './App.css';
 import data from './guardian.cryptic.28505';
 
+const ALLOWED_HTML_TAGS = ['b', 'strong', 'i', 'em', 'sub', 'sup'] as const;
+
 // TODO: import from MyCrossword
-const themeColors = [
-  'red',
+const THEME_COLORS = [
+  'blue',
+  'blueGrey',
+  'cyan',
+  'deepOrange',
+  'deepPurple',
+  'green',
+  'indigo',
+  'lightBlue',
   'pink',
   'purple',
-  'deepPurple',
-  'indigo',
-  'blue',
-  'lightBlue',
-  'cyan',
+  'red',
   'teal',
-  'green',
-  'deepOrange',
-  'blueGrey',
 ] as const;
-type Theme = typeof themeColors[number];
+type ThemeColor = typeof THEME_COLORS[number];
 
 export default function App() {
-  const allowedHtmlTags = ['b', 'strong', 'i', 'em', 'sub', 'sup'];
-  const [theme, setTheme] = React.useState<Theme>('blue');
+  const [theme, setTheme] = React.useState<ThemeColor>(THEME_COLORS[0]);
   const [showDefinitions, setShowDefinitions] = React.useState(false);
 
   return (
@@ -52,9 +53,9 @@ export default function App() {
             <select
               id="theme"
               value={theme}
-              onChange={(e) => setTheme(e.target.value as Theme)}
+              onChange={(e) => setTheme(e.target.value as ThemeColor)}
             >
-              {themeColors.map((color) => (
+              {THEME_COLORS.map((color) => (
                 <option key={color} value={color}>
                   {color}
                 </option>
@@ -73,7 +74,9 @@ export default function App() {
         </div>
         <MyCrossword
           allowedHtmlTags={
-            showDefinitions ? [...allowedHtmlTags, 'u'] : allowedHtmlTags
+            showDefinitions
+              ? [...ALLOWED_HTML_TAGS, 'u']
+              : [...ALLOWED_HTML_TAGS]
           }
           id={data.id}
           data={data}

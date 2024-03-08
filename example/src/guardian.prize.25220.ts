@@ -463,8 +463,8 @@ const data: GuardianCrossword = {
     name: 'Araucaria',
     webUrl: 'https://www.theguardian.com/profile/araucaria',
   },
-  date: 123,
-  dateSolutionAvailable: 123,
+  date: 1295049600000,
+  dateSolutionAvailable: 1295049600000,
   solutionAvailable: true,
 };
 

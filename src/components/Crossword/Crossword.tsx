@@ -38,6 +38,7 @@ import { initialiseGuessGrid, validateGuessGrid } from './../../utils/guess';
 
 interface CrosswordProps {
   allowedHtmlTags: string[];
+  allowMissingSolutions: boolean;
   cellMatcher: RegExp;
   data: GuardianCrossword;
   id: string;
@@ -50,6 +51,7 @@ interface CrosswordProps {
 
 export default function Crossword({
   allowedHtmlTags,
+  allowMissingSolutions,
   cellMatcher,
   data,
   id,
@@ -98,12 +100,13 @@ export default function Crossword({
   React.useEffect(() => {
     try {
       // initialise cells
-      const initCells = initialiseCells(
-        data.dimensions.cols,
-        data.dimensions.rows,
-        data.entries,
-        loadGrid ?? guessGrid,
-      );
+      const initCells = initialiseCells({
+        cols: data.dimensions.cols,
+        rows: data.dimensions.rows,
+        entries: data.entries,
+        guessGrid: loadGrid ?? guessGrid,
+        allowMissingSolutions,
+      });
       dispatch(cellsActionUpdateGrid(initCells));
 
       // initialise clues

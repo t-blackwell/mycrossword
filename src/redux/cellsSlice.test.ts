@@ -10,11 +10,11 @@ function getState() {
 }
 
 test('it updates grid', () => {
-  const cells = initialiseCells(
-    testData.dimensions.cols,
-    testData.dimensions.rows,
-    testData.entries,
-  );
+  const cells = initialiseCells({
+    cols: testData.dimensions.cols,
+    rows: testData.dimensions.rows,
+    entries: testData.entries,
+  });
   store.dispatch(updateGrid(cells));
   expect(getState()).toStrictEqual(cells);
 });

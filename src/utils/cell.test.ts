@@ -1,5 +1,6 @@
 import { Char } from '../interfaces';
 import { revealGrid as cellsActionRevealGrid } from '../redux/cellsSlice';
+import incompleteData from '../testData/test.incomplete.1';
 import invalidData1 from '../testData/test.invalid.1';
 import invalidData2 from '../testData/test.invalid.2';
 import invalidData3 from '../testData/test.invalid.3';
@@ -161,6 +162,27 @@ test('initialiseCells with invalid data 7', () => {
       entries: invalidData7.entries,
     }),
   ).toThrow('Crossword data error: group clue id not found');
+});
+
+test('initialiseCells with incomplete data', () => {
+  expect(() =>
+    initialiseCells({
+      cols: incompleteData.dimensions.cols,
+      rows: incompleteData.dimensions.rows,
+      entries: incompleteData.entries,
+    }),
+  ).toThrow('Crossword data error: solution length mismatch');
+});
+
+test('initialiseCells with incomplete data (allowed)', () => {
+  expect(() =>
+    initialiseCells({
+      cols: incompleteData.dimensions.cols,
+      rows: incompleteData.dimensions.rows,
+      entries: incompleteData.entries,
+      allowMissingSolutions: true,
+    }),
+  ).not.toThrow('Crossword data error: solution length mismatch');
 });
 
 test('initialiseCells with valid data', () => {

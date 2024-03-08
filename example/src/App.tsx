@@ -2,7 +2,7 @@ import MyCrossword from 'mycrossword';
 import 'mycrossword/dist/index.css';
 import * as React from 'react';
 import './App.css';
-import data from './incomplete.cryptic';
+import data from './guardian.cryptic.28505';
 
 const ALLOWED_HTML_TAGS = ['b', 'strong', 'i', 'em', 'sub', 'sup'] as const;
 
@@ -78,7 +78,6 @@ export default function App() {
               ? [...ALLOWED_HTML_TAGS, 'u']
               : [...ALLOWED_HTML_TAGS]
           }
-          allowMissingSolutions
           id={data.id}
           data={data}
           theme={theme}

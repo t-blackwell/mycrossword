@@ -102,6 +102,7 @@ export default function AnagramHelper({
               onChange={(event) => setLetters(event.target.value)}
               onKeyDown={(event) => {
                 if (['Enter', 'NumpadEnter'].includes(event.code)) {
+                  event.preventDefault();
                   shuffle();
                 } else if (event.code === 'Escape') {
                   // on esc, clear or close

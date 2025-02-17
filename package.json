@@ -2,7 +2,14 @@
   "name": "mycrossword",
   "author": "Tom Blackwell",
   "private": false,
-  "version": "0.0.1",
+  "license": "MIT",
+  "version": "2.0.0",
+  "description": "React crossword component",
+  "keywords": [
+    "react",
+    "crossword",
+    "crosswords"
+  ],
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",

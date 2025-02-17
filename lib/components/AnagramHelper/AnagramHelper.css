@@ -28,9 +28,11 @@
   text-align: center;
   border-radius: var(--border-radius);
   max-width: 100%;
+  text-transform: uppercase;
 }
 .MyCrossword .AnagramHelper__input::placeholder {
   color: var(--faint-grey1);
+  text-transform: initial;
 }
 .MyCrossword .AnagramHelper__counter {
   font-size: var(--font-size-caption);

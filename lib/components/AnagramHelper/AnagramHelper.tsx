@@ -46,19 +46,20 @@ export default function AnagramHelper({
 
   const shuffle = () => {
     if (letters !== '') {
-      const shuffledLetters = letters
-        .split('')
-        .sort(() => 0.5 - Math.random())
-        .join('');
-      setLetters(shuffledLetters);
+      setLetters((prev) =>
+        prev
+          .split('')
+          .sort(() => 0.5 - Math.random())
+          .join(''),
+      );
+
       setShuffling(true);
       buttonRef.current?.focus({ preventScroll: true });
     }
   };
 
   const appendWord = (word: string) => {
-    const newLetters = letters + word;
-    setLetters(newLetters.substr(0, solutionLength));
+    setLetters((prev) => (prev + word).substring(0, solutionLength));
     inputRef.current?.focus({ preventScroll: true });
   };
 

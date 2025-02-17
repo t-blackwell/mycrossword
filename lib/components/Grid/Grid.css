@@ -1,0 +1,37 @@
+.MyCrossword .Grid {
+  position: relative;
+}
+.MyCrossword .Grid:focus {
+  outline: none;
+}
+.MyCrossword .Grid--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--grid-background);
+}
+.MyCrossword .Grid__background {
+  fill: var(--grid-background);
+}
+.MyCrossword .Grid__inputContainer {
+  pointer-events: none;
+  position: absolute;
+}
+
+@media (max-width: 576px) {
+  .Grid[style] {
+    width: auto !important;
+    height: auto !important;
+    min-width: auto !important;
+    min-height: auto !important;
+  }
+  .Grid {
+    scroll-margin-top: calc(var(--grid-size) * 5);
+  }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .Grid {
+    scroll-margin-top: calc(var(--grid-size) * 5);
+  }
+}

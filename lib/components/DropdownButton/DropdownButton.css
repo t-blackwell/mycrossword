@@ -1,0 +1,54 @@
+.MyCrossword .DropdownButton {
+  position: relative;
+  user-select: none;
+}
+.MyCrossword .DropdownButton__button {
+  background-color: var(--button-background);
+  color: var(--button-color);
+  padding: var(--button-padding);
+  margin: var(--button-margin);
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--border-radius);
+}
+.MyCrossword .DropdownButton__dropdownButtonIcon {
+  fill: var(--button-color);
+  margin-left: calc(var(--grid-size) * 0.8);
+}
+.MyCrossword .DropdownButton__button:hover,
+.MyCrossword .DropdownButton--expanded .DropdownButton__button {
+  background-color: var(--button-background-selected);
+}
+.MyCrossword .DropdownButton__menu {
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: absolute;
+  background-color: var(--dropdown-background);
+  border: 1px solid var(--dropdown-border);
+  z-index: 2;
+  margin: 0 calc(var(--grid-size) * 0.5);
+  border-radius: var(--border-radius);
+  min-width: calc(100% - var(--grid-size));
+  padding: 0;
+  list-style: none;
+}
+.MyCrossword .DropdownButton--expanded .DropdownButton__menu {
+  visibility: visible;
+}
+.MyCrossword .DropdownButton__menuItem {
+  display: flex;
+  background-color: transparent;
+  border: none;
+  padding: var(--button-padding);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+.MyCrossword .DropdownButton__menuItem:not(:disabled):hover {
+  background-color: var(--dropdown-item-hover);
+  cursor: pointer;
+}

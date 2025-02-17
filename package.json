@@ -1,86 +1,56 @@
 {
   "name": "mycrossword",
-  "version": "1.4.0",
-  "description": "React crossword component",
-  "keywords": [
-    "react",
-    "crossword",
-    "crosswords"
-  ],
   "author": "Tom Blackwell",
-  "license": "MIT",
-  "repository": "github:t-blackwell/mycrossword",
   "private": false,
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/esm/index.d.ts",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.6.2",
-    "classnames": "^2.3.1",
-    "react-redux": "^7.2.6",
-    "sanitize-html": "^2.5.3"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/t-blackwell/mycrossword"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "dev": "vite --open",
+    "build": "tsc --p ./tsconfig-build.json && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.15.0",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/react-hooks": "^7.0.1",
-    "@testing-library/user-event": "^13.5.0",
-    "@trivago/prettier-plugin-sort-imports": "^3.1.1",
-    "@types/jest": "^27.0.2",
-    "@types/node": "^16.11.7",
-    "@types/react": "^17.0.35",
-    "@types/react-dom": "^17.0.11",
-    "@types/react-redux": "^7.1.20",
-    "@types/sanitize-html": "^2.5.0",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "@typescript-eslint/parser": "^5.5.0",
-    "autoprefixer": "^10.4.0",
-    "concurrently": "^6.4.0",
-    "css-loader": "^6.5.1",
-    "eslint": "^8.3.0",
-    "eslint-config-airbnb-typescript": "^16.1.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.27.1",
-    "eslint-plugin-react-hooks": "^4.3.0",
-    "identity-obj-proxy": "^3.0.0",
-    "jest": "^27.3.1",
-    "postcss": "^8.4.5",
-    "postcss-cli": "^9.1.0",
-    "prettier": "^2.3.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "sass": "^1.43.4",
-    "sass-loader": "^12.3.0",
-    "style-loader": "^3.3.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.4.4"
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.71",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-css-import-order": "^1.1.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "glob": "^10.3.10",
+    "prettier": "^3.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.3",
+    "vite": "^4.5.3",
+    "vite-plugin-dts": "^3.7.3",
+    "vite-plugin-lib-inject-css": "^2.0.1",
+    "vite-tsconfig-paths": "^5.1.4"
   },
-  "scripts": {
-    "build:autoprefix": "postcss dist/index.css -u autoprefixer -r -m",
-    "build:js": "yarn build:esm && yarn build:cjs",
-    "build:css": "sass --load-path src/ src/index.scss dist/index.css",
-    "build": "rm -rf dist/* && yarn run build:js && yarn run build:css && yarn build:autoprefix",
-    "build:watch": "concurrently \"tsc -p tsconfig.build.json --watch\" \"yarn run build:css --watch\"",
-    "build:esm": "tsc -p tsconfig.build.json",
-    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir dist/cjs",
-    "format": "prettier -w src",
-    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx .",
-    "lint:fix": "yarn lint --fix",
-    "test": "jest --config jest.config.js"
-  },
-  "browserslist": [
-    ">0.01%",
-    "not ie 11",
-    "not dead",
-    "not op_mini all"
-  ]
+  "dependencies": {
+    "classnames": "^2.5.1",
+    "isomorphic-dompurify": "^2.21.0",
+    "zustand": "^5.0.3"
+  }
 }

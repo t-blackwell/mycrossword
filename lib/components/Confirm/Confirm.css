@@ -1,0 +1,22 @@
+.MyCrossword .Confirm {
+  display: flex;
+  flex-direction: column;
+  margin: 0 calc(var(--grid-size) * 0.5);
+}
+.MyCrossword .Confirm__buttonContainer {
+  display: inline-flex;
+  margin: 0 calc(var(--grid-size) * -0.5);
+}
+.MyCrossword .Confirm__button {
+  background-color: var(--confirm-button-background);
+  color: var(--confirm-button-color);
+}
+.MyCrossword .Confirm__button:not(:disabled):hover {
+  background-color: var(--confirm-button-hover);
+}
+.MyCrossword .Confirm__timeout {
+  font-size: var(--font-size-caption);
+  font-weight: 400;
+  letter-spacing: calc(var(--grid-size) * 0.04);
+  margin-top: var(--grid-size);
+}

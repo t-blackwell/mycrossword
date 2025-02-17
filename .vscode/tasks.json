@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start app",
+      "icon": {
+        "id": "play",
+        "color": "terminal.ansiGreen"
+      },
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": []
+    },
+    {
+      "label": "build app",
+      "icon": {
+        "id": "wrench",
+        "color": "terminal.ansiGreen"
+      },
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": []
+    }
+  ]
+}

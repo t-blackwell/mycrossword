@@ -12,10 +12,10 @@
       "problemMatcher": []
     },
     {
-      "label": "build app",
+      "label": "build lib",
       "icon": {
         "id": "wrench",
-        "color": "terminal.ansiGreen"
+        "color": "terminal.ansiMagenta"
       },
       "type": "npm",
       "script": "build",

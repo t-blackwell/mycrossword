@@ -1,5 +1,9 @@
 import { decodeHtmlEntities, sanitize } from '~/utils/html';
 
+function normalizeAccents(text: string): string {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 interface ClueDisplayProps {
   allowedHtmlTags: string[];
   className?: string;
@@ -25,9 +29,10 @@ export default function ClueDisplay({
     );
   }
 
-  // regex split on word boundaries
-  const cleanClue = sanitize(clue);
-  const words = decodeHtmlEntities(cleanClue).split(/\b(\w+)\b/);
+  // use a Unicode-aware regex that includes accented characters
+  // this matches any sequence of letters (including accented ones) as a word
+  const cleanClue = decodeHtmlEntities(sanitize(clue));
+  const words = cleanClue.split(/\b([\p{L}\p{M}]+)\b/u);
 
   return (
     <>
@@ -37,10 +42,10 @@ export default function ClueDisplay({
             <span
               className={className}
               key={`${word}-${i}`}
-              onClick={() => onClick(word)}
+              onClick={() => onClick(normalizeAccents(word))}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
-                  onClick(word);
+                  onClick(normalizeAccents(word));
                 }
               }}
               role="button"

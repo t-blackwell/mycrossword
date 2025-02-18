@@ -17,7 +17,9 @@ export const useCluesStore = create<CluesStore>((set) => ({
   select: (clueId) => {
     set((state) => {
       // append clue to URL e.g. #1-across
-      window.history.replaceState(null, '', `#${clueId}`);
+      if (typeof window !== 'undefined') {
+        window.history.replaceState(null, '', `#${clueId}`);
+      }
 
       return {
         clues: state.clues.map((clue) => ({

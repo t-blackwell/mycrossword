@@ -24,6 +24,7 @@ import {
 } from '~/utils/clue';
 import { getBem } from '~/utils/bem';
 import Controls from '~/components/Controls/Controls';
+import useLocationHash from '~/hooks/useLocationHash/useLocationHash';
 import './Crossword.css';
 
 interface CrosswordProps {
@@ -56,6 +57,7 @@ export default function Crossword({
     `crosswords.${id}`,
     initialiseGuessGrid(data.dimensions.cols, data.dimensions.rows),
   );
+  const [locationHash] = useLocationHash();
 
   const storeClues = useCluesStore((store) => store.clues);
   const storeCells = useCellsStore((store) => store.cells);
@@ -127,6 +129,14 @@ export default function Crossword({
       setClues(parsedData.clues);
     }
   }, [parsedData.clues]);
+
+  React.useEffect(() => {
+    const selectedClue = clues.find((clue) => clue.selected);
+
+    if (selectedClue === undefined) {
+      selectClue(locationHash.replace('#', ''));
+    }
+  }, [locationHash]);
 
   // validate overriding guess grid if defined
   if (

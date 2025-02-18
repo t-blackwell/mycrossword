@@ -20,6 +20,16 @@
       "type": "npm",
       "script": "build",
       "problemMatcher": []
+    },
+    {
+      "label": "test lib",
+      "icon": {
+        "id": "beaker",
+        "color": "terminal.ansiMagenta"
+      },
+      "type": "npm",
+      "script": "test",
+      "problemMatcher": []
     }
   ]
 }

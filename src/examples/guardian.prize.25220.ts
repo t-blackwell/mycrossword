@@ -23,7 +23,7 @@ const data: GuardianCrossword = {
       solution: 'WITHOUTA',
       direction: 'across',
       group: ['7-across'],
-      separatorLocations: { ',': [7] },
+      separatorLocations: { ',': [7, 8] },
     },
     {
       id: '9-across',
@@ -68,7 +68,7 @@ const data: GuardianCrossword = {
       solution: 'WORTHANAGE',
       direction: 'across',
       group: ['11-across'],
-      separatorLocations: { ',': [5, 7] },
+      separatorLocations: { ',': [5, 7, 10] },
     },
     {
       id: '12-across',
@@ -186,7 +186,7 @@ const data: GuardianCrossword = {
         '10-across',
       ],
       separatorLocations: {
-        ',': [3],
+        ',': [3, 10],
       },
     },
     {
@@ -217,7 +217,7 @@ const data: GuardianCrossword = {
       solution: 'HOUROF',
       direction: 'across',
       group: ['25-across'],
-      separatorLocations: { ',': [4] },
+      separatorLocations: { ',': [4, 6] },
     },
     {
       id: '26-across',
@@ -232,7 +232,7 @@ const data: GuardianCrossword = {
       solution: 'GLORIOUS',
       direction: 'across',
       group: ['26-across'],
-      separatorLocations: {},
+      separatorLocations: { ',': [8] },
     },
     {
       id: '1-down',

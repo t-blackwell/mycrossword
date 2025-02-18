@@ -22,6 +22,7 @@ interface ControlsProps {
   gridRows: number;
   onAnagramHelperClick: () => void;
   onCellChange?: (cellChange: CellChange) => void;
+  onComplete?: () => void;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   solutionsAvailable: boolean;
 }
@@ -33,6 +34,7 @@ export default function Controls({
   gridRows,
   onAnagramHelperClick,
   onCellChange,
+  onComplete,
   setGuessGrid,
   solutionsAvailable,
 }: ControlsProps) {
@@ -46,6 +48,7 @@ export default function Controls({
 
   const answerAllCells = useCellsStore((store) => store.answerAll);
   const setCells = useCellsStore((store) => store.setCells);
+  const checkComplete = useCellsStore((store) => store.checkComplete);
   const answerAllClues = useCluesStore((store) => store.answerAll);
   const answerSomeClues = useCluesStore((store) => store.answerSome);
 
@@ -165,6 +168,12 @@ export default function Controls({
 
         setCells(updatedCells);
 
+        if (onComplete !== undefined) {
+          if (checkComplete() === true) {
+            onComplete();
+          }
+        }
+
         // if all cells are populated, mark clue as answered
         selectedCell.clueIds.forEach((clueId) => {
           const clue = clues.find((c) => c.id === clueId)!;
@@ -213,6 +222,12 @@ export default function Controls({
         });
 
         setCells(updatedCells);
+
+        if (onComplete !== undefined) {
+          if (checkComplete() === true) {
+            onComplete();
+          }
+        }
 
         updateAnsweredForCrossingClues(selectedClue, updatedCells);
 
@@ -333,6 +348,12 @@ export default function Controls({
             answerAllCells(true);
             answerAllClues(true);
             setShowRevealGridConfirm(false);
+
+            if (onComplete !== undefined) {
+              if (checkComplete() === true) {
+                onComplete();
+              }
+            }
 
             // update guesses in local storage
             const updatedCells = cells.map((cell) => ({

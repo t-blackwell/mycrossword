@@ -36,6 +36,7 @@ interface CrosswordProps {
   loadGrid?: GuessGrid;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
+  onComplete?: () => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   stickyClue: 'always' | 'never' | 'auto';
 }
@@ -49,6 +50,7 @@ export default function Crossword({
   loadGrid,
   onCellChange,
   onCellFocus,
+  onComplete,
   saveGrid,
   stickyClue,
 }: CrosswordProps) {
@@ -65,6 +67,7 @@ export default function Crossword({
   const selectClue = useCluesStore((store) => store.select);
   const setCells = useCellsStore((store) => store.setCells);
   const setClues = useCluesStore((store) => store.setClues);
+  const checkComplete = useCellsStore((store) => store.checkComplete);
 
   const parsedData = React.useMemo(() => {
     try {
@@ -121,6 +124,7 @@ export default function Crossword({
   React.useEffect(() => {
     if (parsedData.cells !== null) {
       setCells(parsedData.cells);
+      checkComplete();
     }
   }, [parsedData.cells]);
 
@@ -263,6 +267,7 @@ export default function Crossword({
                 inputRef={inputRef}
                 onCellChange={onCellChange}
                 onCellFocus={onCellFocus}
+                onComplete={onComplete}
                 rawClues={data.entries}
                 rows={data.dimensions.rows}
                 setGuessGrid={saveGrid ?? setGuessGrid}
@@ -277,6 +282,7 @@ export default function Crossword({
           gridRows={data.dimensions.rows}
           onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
           onCellChange={onCellChange}
+          onComplete={onComplete}
           setGuessGrid={saveGrid ?? setGuessGrid}
           solutionsAvailable={data.solutionAvailable}
         />

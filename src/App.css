@@ -30,6 +30,7 @@ h6 {
   align-items: center;
   margin-bottom: 16px;
   gap: 16px;
+  min-height: 36px;
 }
 .Page__control {
   display: flex;
@@ -38,4 +39,24 @@ h6 {
 }
 .Page__control label {
   font-size: 0.9rem;
+}
+.Page__alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e5f9f5;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+.Page__alertIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00cc99;
+  color: #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  line-height: 1.2;
 }

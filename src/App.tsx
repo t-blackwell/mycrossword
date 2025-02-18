@@ -25,6 +25,7 @@ type Theme = (typeof THEME_OPTIONS)[number];
 function App() {
   const [theme, setTheme] = useState<Theme>('blue');
   const [showDefinitions, setShowDefinitions] = useState(false);
+  const [complete, setComplete] = useState(false);
 
   return (
     <div className="Page">
@@ -56,6 +57,14 @@ function App() {
               type="checkbox"
             />
           </div>
+          {complete ? (
+            <div className="Page__alert">
+              <div className="Page__alertIcon">
+                <span>✔</span>
+              </div>
+              <span>Complete</span>
+            </div>
+          ) : null}
         </div>
         <MyCrossword
           allowedHtmlTags={
@@ -63,6 +72,7 @@ function App() {
           }
           id="example"
           data={data}
+          onComplete={() => setComplete(true)}
           theme={theme}
         />
       </main>

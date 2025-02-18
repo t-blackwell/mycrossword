@@ -385,6 +385,7 @@ export default function Controls({
       <DropdownButton id="clear-control" menu={clearMenu} text="Clear" />
       <div className={bem('Controls__buttonContainer')}>
         <Button
+          ariaLabel="Anagram helper"
           disabled={selectedClue === undefined}
           id="anagram-control"
           onClick={onAnagramHelperClick}

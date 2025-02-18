@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen } from '@testing-library/react';
 import WordWheel from './WordWheel';
 

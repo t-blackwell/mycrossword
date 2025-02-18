@@ -4,7 +4,7 @@ import data from '~/testData/test.valid.1';
 import { initialiseGuessGrid } from '~/utils/guess';
 import { initialiseStores } from '~/utils/test';
 import Controls from './Controls';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { useCellsStore } from '~/stores/useCellsStore';
 import { useCluesStore } from '~/stores/useCluesStore';
 
@@ -68,6 +68,31 @@ test('it renders without solution controls', () => {
   ).not.toBeInTheDocument();
   screen.getByRole('button', { name: 'Clear' });
   screen.getByRole('button', { name: 'Anagram helper' });
+});
+
+// TODO: fix media query test (::after text not found)
+test.skip('it renders with shorter button text', () => {
+  act(() => {
+    window.innerWidth = 500;
+    window.dispatchEvent(new Event('resize'));
+  });
+
+  render(
+    <Controls
+      cells={useCellsStore.getState().cells}
+      clues={useCluesStore.getState().clues}
+      gridCols={data.dimensions.cols}
+      gridRows={data.dimensions.rows}
+      onAnagramHelperClick={jest.fn}
+      setGuessGrid={jest.fn}
+      solutionsAvailable={false}
+    />,
+  );
+
+  screen.getByRole('button', { name: 'Anag.' });
+  expect(
+    screen.queryByRole('button', { name: 'Anagram helper' }),
+  ).not.toBeInTheDocument();
 });
 
 test('it checks incorrect letter', async () => {

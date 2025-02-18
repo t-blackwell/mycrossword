@@ -29,6 +29,7 @@ export interface MyCrosswordProps {
   loadGrid?: GuessGrid;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
+  onComplete?: () => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   stickyClue?: 'always' | 'never' | 'auto';
   theme?: Theme;
@@ -44,6 +45,7 @@ export default function MyCrossword({
   loadGrid,
   onCellChange,
   onCellFocus,
+  onComplete,
   saveGrid,
   stickyClue = 'auto',
   theme = 'blue',
@@ -66,6 +68,7 @@ export default function MyCrossword({
         loadGrid={loadGrid}
         onCellChange={onCellChange}
         onCellFocus={onCellFocus}
+        onComplete={onComplete}
         saveGrid={saveGrid}
         stickyClue={stickyClue}
       />

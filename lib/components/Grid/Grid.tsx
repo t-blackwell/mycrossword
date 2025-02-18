@@ -42,6 +42,7 @@ interface GridProps {
   inputRef?: React.RefObject<HTMLInputElement>;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
+  onComplete?: () => void;
   rawClues: GuardianClue[];
   rows: number;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
@@ -56,6 +57,7 @@ export default function Grid({
   inputRef,
   onCellChange,
   onCellFocus,
+  onComplete,
   rawClues,
   rows,
   setGuessGrid,
@@ -74,6 +76,7 @@ export default function Grid({
   const setCells = useCellsStore((state) => state.setCells);
   const selectClue = useCluesStore((state) => state.select);
   const answerClue = useCluesStore((state) => state.answerSome);
+  const checkComplete = useCellsStore((state) => state.checkComplete);
 
   const updateViewBoxScale = React.useCallback(() => {
     if (svgRef.current !== null) {
@@ -396,7 +399,7 @@ export default function Grid({
       // overwrite the cell's value
       setCells(updatedCells);
 
-      // if all cells are populated, mark clue as answered
+      // if all clue's cells are populated, mark clue as answered
       selectedCell.clueIds.forEach((clueId) => {
         const clue = clues.find((c) => c.id === clueId)!;
         const populated = isCluePopulated(clue, updatedCells);
@@ -407,6 +410,13 @@ export default function Grid({
       });
 
       moveNext();
+
+      // if all grid's cells are populated, mark crossword as complete
+      if (onComplete !== undefined) {
+        if (checkComplete() === true) {
+          onComplete();
+        }
+      }
 
       updateGuesses(updatedCells);
     } else {

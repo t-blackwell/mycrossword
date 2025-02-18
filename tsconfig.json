@@ -9,6 +9,7 @@
       "~/*": ["./lib/*"]
     },
     "types": ["@testing-library/jest-dom"],
+    "esModuleInterop": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",

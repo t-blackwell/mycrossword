@@ -141,31 +141,32 @@ export default function Crossword({
     }
   };
 
-  const moveToNextClue = (forwards: boolean) => {
-    // cycle through the clues
-    const index = clues.findIndex((clue) => clue.selected);
-    let nextIndex = 0;
+  const moveToNextClue = React.useCallback(
+    (forwards: boolean) => {
+      const index = clues.findIndex((clue) => clue.selected);
+      const nextIndex = forwards
+        ? index < clues.length - 1
+          ? index + 1
+          : 0
+        : index > 0
+          ? index - 1
+          : clues.length - 1;
 
-    // direction
-    if (forwards) {
-      nextIndex = index < clues.length - 1 ? index + 1 : 0;
-    } else {
-      nextIndex = index > 0 ? index - 1 : clues.length - 1;
-    }
+      const nextClue = clues[nextIndex];
+      const nextCluePos = {
+        col: nextClue.position.x,
+        row: nextClue.position.y,
+      };
 
-    const nextClue = clues[nextIndex];
-    const nextCluePos = {
-      col: nextClue.position.x,
-      row: nextClue.position.y,
-    };
+      selectClue(nextClue.id);
+      selectCells(nextCluePos);
 
-    selectClue(nextClue.id);
-    selectCells(nextCluePos);
+      cellFocus(nextCluePos, nextClue.id);
 
-    cellFocus(nextCluePos, nextClue.id);
-
-    inputRef?.current?.focus({ preventScroll: true });
-  };
+      inputRef?.current?.focus({ preventScroll: true });
+    },
+    [clues, selectClue, selectCells, cellFocus],
+  );
 
   return (
     <div className={bem('Crossword')}>

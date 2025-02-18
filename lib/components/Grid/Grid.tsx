@@ -440,9 +440,10 @@ export default function Grid({
           onMouseDown={(event) => {
             event.preventDefault();
 
-            const gridElement = document.querySelectorAll<HTMLElement>('.Grid');
-            if (gridElement.length === 1) {
-              gridElement[0].blur();
+            const inputElement =
+              document.querySelector<HTMLInputElement>('.GridInput');
+            if (inputElement !== null) {
+              inputElement.blur();
             }
           }}
           width={width}

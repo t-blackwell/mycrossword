@@ -425,7 +425,13 @@ export default function Grid({
     <div
       className={bem('Grid', isLoading ? 'Grid--loading' : null)}
       data-testid="grid"
-      style={{ minWidth: width, minHeight: height, width, height }}
+      style={{
+        minWidth: width,
+        minHeight: height,
+        width,
+        height,
+        aspectRatio: `${cols} / ${rows}`,
+      }}
     >
       {isLoading ? (
         <Spinner size="standard" />

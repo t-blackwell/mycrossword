@@ -101,26 +101,6 @@ describe.skip('all tests', () => {
     expect(cells.length).toBe(23);
   });
 
-  test('it renders with loading', () => {
-    initialiseStores(testData);
-
-    render(
-      <Grid
-        cellMatcher={cellMatcher}
-        cells={getCells()}
-        clues={getClues()}
-        cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
-        isLoading
-        rawClues={testData.entries}
-        rows={testData.dimensions.rows}
-        setGuessGrid={jest.fn}
-      />,
-    );
-
-    screen.getByRole('status');
-  });
-
   test('arrows move between cells', async () => {
     initialiseStores(testData);
     const setGuessGrid = jest.fn();

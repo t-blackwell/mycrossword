@@ -27,7 +27,11 @@ export default defineConfig({
         // https://rollupjs.org/configuration-options/#input
         glob
           .sync('lib/**/*.{ts,tsx}', {
-            ignore: ['lib/**/*.d.ts'],
+            ignore: [
+              'lib/**/*.d.ts',
+              'lib/**/*.test.{ts,tsx}',
+              'lib/testData/**',
+            ],
           })
           .map((file) => [
             // 1. The name of the entry point

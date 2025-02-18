@@ -2,8 +2,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 481px;
-  height: 481px;
   padding: calc(var(--grid-size) * 2);
   background-color: var(--grid-background);
   color: var(--grid-foreground);
@@ -19,6 +17,7 @@
 
 @media (max-width: 576px) {
   .MyCrossword .GridError {
-    width: auto;
+    width: auto !important;
+    height: auto !important;
   }
 }

@@ -4,13 +4,8 @@
 .MyCrossword .Grid:focus {
   outline: none;
 }
-.MyCrossword .Grid--loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--grid-background);
-}
 .MyCrossword .Grid__background {
+  background-color: var(--grid-background);
   fill: var(--grid-background);
 }
 .MyCrossword .Grid__inputContainer {

@@ -4,7 +4,6 @@ import GridCell, {
   getDimensions,
 } from '~/components/GridCell/GridCell';
 import GridInput from '~/components/GridInput/GridInput';
-import Spinner from '~/components/Spinner/Spinner';
 import { isValidChar } from '~/utils/general';
 import useDebounce from '~/hooks/useDebounce/useDebounce';
 import GridSeparators from '~/components/GridSeparators/GridSeparators';
@@ -41,7 +40,6 @@ interface GridProps {
   cols: number;
   guessGrid: GuessGrid;
   inputRef?: React.RefObject<HTMLInputElement>;
-  isLoading?: boolean;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   rawClues: GuardianClue[];
@@ -56,7 +54,6 @@ export default function Grid({
   cols,
   guessGrid,
   inputRef,
-  isLoading = false,
   onCellChange,
   onCellFocus,
   rawClues,
@@ -423,7 +420,7 @@ export default function Grid({
 
   return (
     <div
-      className={bem('Grid', isLoading ? 'Grid--loading' : null)}
+      className={bem('Grid')}
       data-testid="grid"
       style={{
         minWidth: width,
@@ -433,89 +430,76 @@ export default function Grid({
         aspectRatio: `${cols} / ${rows}`,
       }}
     >
-      {isLoading ? (
-        <Spinner size="standard" />
-      ) : (
-        <>
-          <svg
-            preserveAspectRatio="xMinYMin"
-            ref={svgRef}
-            viewBox={`0 0 ${width} ${height}`}
-          >
-            <rect
-              className={bem('Grid__background')}
-              onMouseDown={(event) => {
-                event.preventDefault();
+      <svg
+        preserveAspectRatio="xMinYMin"
+        ref={svgRef}
+        viewBox={`0 0 ${width} ${height}`}
+      >
+        <rect
+          className={bem('Grid__background')}
+          onMouseDown={(event) => {
+            event.preventDefault();
 
-                const gridElement =
-                  document.querySelectorAll<HTMLElement>('.Grid');
-                if (gridElement.length === 1) {
-                  gridElement[0].blur();
-                }
-              }}
-              width={width}
-              height={height}
-              x="0"
-              y="0"
+            const gridElement = document.querySelectorAll<HTMLElement>('.Grid');
+            if (gridElement.length === 1) {
+              gridElement[0].blur();
+            }
+          }}
+          width={width}
+          height={height}
+          x="0"
+          y="0"
+        />
+        {cells.map(({ clueIds, guess, num, pos }) => {
+          const isSelected = cellPositionMatches(pos, selectedCell?.pos);
+          const isHighlighted = clueIds.some((clueId) =>
+            selectedClue?.group.includes(clueId),
+          );
+
+          const selectedClueIndex =
+            selectedClue !== undefined ? clueIds.indexOf(selectedClue.id) : -1;
+
+          return (
+            <GridCell
+              clueIds={clueIds}
+              guess={guess}
+              inputRef={inputRef}
+              isHighlighted={isHighlighted}
+              isSelected={isSelected}
+              key={`${pos.col},${pos.row}`}
+              num={num}
+              onCellFocus={onCellFocus}
+              pos={pos}
+              selectedClueIndex={selectedClueIndex}
             />
-            {cells.map(({ clueIds, guess, num, pos }) => {
-              const isSelected = cellPositionMatches(pos, selectedCell?.pos);
-              const isHighlighted = clueIds.some((clueId) =>
-                selectedClue?.group.includes(clueId),
-              );
-
-              const selectedClueIndex =
-                selectedClue !== undefined
-                  ? clueIds.indexOf(selectedClue.id)
-                  : -1;
-
-              return (
-                <GridCell
-                  clueIds={clueIds}
-                  guess={guess}
-                  inputRef={inputRef}
-                  isHighlighted={isHighlighted}
-                  isSelected={isSelected}
-                  key={`${pos.col},${pos.row}`}
-                  num={num}
-                  onCellFocus={onCellFocus}
-                  pos={pos}
-                  selectedClueIndex={selectedClueIndex}
-                />
-              );
-            })}
-            <GridSeparators clues={rawClues} />
-          </svg>
-          <div
-            className={bem('Grid__inputContainer')}
-            style={{
-              width:
-                selectedCell !== undefined
-                  ? CELL_SIZE * viewBoxScale
-                  : undefined,
-              height:
-                selectedCell !== undefined
-                  ? CELL_SIZE * viewBoxScale
-                  : undefined,
-              top:
-                dimensions?.yRect !== undefined
-                  ? dimensions.yRect * viewBoxScale
-                  : undefined,
-              left:
-                dimensions?.xRect !== undefined
-                  ? dimensions.xRect * viewBoxScale
-                  : undefined,
-            }}
-          >
-            <GridInput
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              ref={inputRef}
-              visible={selectedCell !== undefined}
-            />
-          </div>
-        </>
-      )}
+          );
+        })}
+        <GridSeparators clues={rawClues} />
+      </svg>
+      <div
+        className={bem('Grid__inputContainer')}
+        style={{
+          width:
+            selectedCell !== undefined ? CELL_SIZE * viewBoxScale : undefined,
+          height:
+            selectedCell !== undefined ? CELL_SIZE * viewBoxScale : undefined,
+          top:
+            dimensions?.yRect !== undefined
+              ? dimensions.yRect * viewBoxScale
+              : undefined,
+          left:
+            dimensions?.xRect !== undefined
+              ? dimensions.xRect * viewBoxScale
+              : undefined,
+        }}
+      >
+        <GridInput
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          ref={inputRef}
+          visible={selectedCell !== undefined}
+        />
+      </div>
     </div>
   );
 }

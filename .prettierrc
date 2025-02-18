@@ -1,6 +1,4 @@
 {
-  "endOfLine": "auto",
-  "singleQuote": true,
-  "trailingComma": "all",
-  "importOrder": ["^[./]"]
+  "endOfLine": "crlf",
+  "singleQuote": true
 }

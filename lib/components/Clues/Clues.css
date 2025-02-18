@@ -1,0 +1,73 @@
+.MyCrossword .Clues {
+  display: flex;
+  flex-grow: 1;
+}
+.MyCrossword .Clues__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0 var(--grid-size);
+  width: 50%;
+}
+.MyCrossword .Clues__listHeader {
+  border-bottom: 1px solid var(--light-grey);
+  margin-top: 0;
+  padding-bottom: calc(var(--grid-size) * 0.4);
+  margin-bottom: 0;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+@media (width >= 992px) {
+  .MyCrossword .Clues__listBody {
+    overflow-y: auto;
+    border-bottom: 1px solid var(--light-grey);
+    scrollbar-width: thin;
+    flex-grow: 1;
+  }
+}
+
+@media (768px <= width <= 992px) {
+  .MyCrossword .Clues {
+    flex-direction: column;
+    overflow-y: auto;
+    border-bottom: 1px solid var(--light-grey);
+    margin: 0 var(--grid-size);
+    scrollbar-width: thin;
+  }
+  .MyCrossword .Clues .Clues__list {
+    width: 100%;
+    margin: 0;
+  }
+  .MyCrossword .Clues .Clues__list--down {
+    margin-top: calc(var(--grid-size) * 2);
+  }
+  .MyCrossword .Clues .Clues__list--down .Clues__listHeader {
+    top: -1px;
+  }
+}
+
+@media (width <= 768px) {
+  .MyCrossword .Clues {
+    max-height: max-content !important;
+  }
+}
+
+@media (576px <= width <= 768px) {
+  .MyCrossword .Clues {
+    margin-top: var(--grid-size);
+  }
+}
+
+@media (width <= 576px) {
+  .MyCrossword .Clues {
+    flex-direction: column;
+  }
+  .MyCrossword .Clues .Clues__list {
+    width: 100%;
+  }
+  .MyCrossword .Clues .Clues__list--down {
+    margin-top: calc(var(--grid-size) * 2);
+  }
+}

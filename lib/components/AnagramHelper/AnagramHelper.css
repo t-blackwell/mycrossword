@@ -1,0 +1,88 @@
+.MyCrossword .AnagramHelper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--grid-size) * 2);
+  background-color: var(--faint-grey5);
+  box-sizing: border-box;
+  border: 1px solid var(--faint-grey1);
+  text-align: center;
+  overflow: hidden;
+}
+.MyCrossword .AnagramHelper__top {
+  display: flex;
+  flex: 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.MyCrossword .AnagramHelper__bottom {
+  flex: 50%;
+}
+.MyCrossword .AnagramHelper__input {
+  font-size: var(--font-size-xlarge);
+  background: none;
+  border: 1px solid var(--outline-button-color);
+  padding: calc(var(--grid-size)) calc(var(--grid-size) * 0.5);
+  margin: calc(var(--grid-size) * 0.5) 0;
+  text-align: center;
+  border-radius: var(--border-radius);
+  max-width: 100%;
+  text-transform: uppercase;
+}
+.MyCrossword .AnagramHelper__input::placeholder {
+  color: var(--faint-grey1);
+  text-transform: initial;
+}
+.MyCrossword .AnagramHelper__counter {
+  font-size: var(--font-size-caption);
+}
+.MyCrossword .AnagramHelper__counter--hidden {
+  visibility: hidden;
+}
+.MyCrossword .AnagramHelper__clue {
+  line-height: var(--line-height);
+}
+.MyCrossword .AnagramHelper__clueNum {
+  font-weight: bold;
+  margin-right: var(--grid-size);
+  text-transform: capitalize;
+}
+.MyCrossword .AnagramHelper__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.MyCrossword .AnagramHelper__buttons .Button {
+  min-width: calc(var(--grid-size) * 8);
+}
+.MyCrossword .Button.AnagramHelper__closeButton {
+  position: absolute;
+  top: var(--grid-size);
+  right: var(--grid-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--grid-size) * 3.5);
+  height: calc(var(--grid-size) * 3.5);
+  padding: 0;
+  z-index: 1;
+}
+.MyCrossword .AnagramHelper__closeButtonIcon {
+  width: calc(var(--grid-size) * 3);
+  height: calc(var(--grid-size) * 3);
+}
+.MyCrossword .AnagramHelper__clickableWord {
+  cursor: pointer;
+  user-select: none;
+}
+.MyCrossword .AnagramHelper__clickableWord:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+  .MyCrossword .AnagramHelper[style] {
+    width: auto !important;
+    min-width: auto !important;
+  }
+}

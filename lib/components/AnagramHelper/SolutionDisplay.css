@@ -1,0 +1,42 @@
+.MyCrossword .SolutionDisplay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.MyCrossword .SolutionDisplay__letter {
+  color: var(--grid-color);
+  border: 1px solid var(--light-grey);
+  padding: calc(var(--grid-size) * 0.4);
+  margin-top: calc(var(--grid-size) * 0.4);
+  margin-right: calc(var(--grid-size) * 0.2);
+  min-width: calc(var(--grid-size) * 1.5);
+  height: calc(var(--grid-size) * 1.5);
+  text-transform: uppercase;
+  user-select: none;
+  box-sizing: content-box;
+  line-height: 1.2;
+}
+.MyCrossword .SolutionDisplay__letter--populated {
+  background-color: var(--faint-grey3);
+  border-color: var(--grid-color);
+}
+.MyCrossword .SolutionDisplay__letter--missing {
+  color: red;
+  border-color: red;
+  background-color: rgba(255, 0, 0, 0.1);
+}
+.MyCrossword .SolutionDisplay__letter--hasSpace {
+  margin-right: calc(var(--grid-size) * 1.5);
+}
+.MyCrossword .SolutionDisplay__letter--hasHyphen {
+  position: relative;
+}
+.MyCrossword .SolutionDisplay__letter--hasHyphen::after {
+  position: absolute;
+  content: '—';
+  top: calc(var(--grid-size) * 0.5);
+  left: calc(var(--grid-size) * 2);
+  font-size: var(--font-size-small);
+  font-weight: bold;
+}

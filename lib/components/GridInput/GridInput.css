@@ -1,0 +1,21 @@
+.MyCrossword .GridInput {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  text-anchor: middle;
+  text-align: center;
+  font-size: calc(var(--font-size-large) * 1.3);
+  overflow: hidden;
+  caret-color: #fff;
+}
+.MyCrossword .GridInput--inclusivelyHidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}

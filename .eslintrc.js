@@ -1,21 +1,19 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.json',
-    sourceType: 'module',
-  },
-  plugins: ['@typescript-eslint', 'import'],
-  extends: ['airbnb-typescript', 'prettier'],
   root: true,
-  env: {
-    browser: true,
-    jest: true,
-  },
-  ignorePatterns: ['.eslintrc.js', 'jest.config.js', 'setupTests.ts', 'dist/**/*'],
+  env: { browser: true, es2020: true },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:css-import-order/recommended',
+  ],
+  ignorePatterns: ['dist', '.eslintrc.js'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react-refresh', 'css-import-order'],
   rules: {
-    'react/prop-types': 'off',
-    'react/require-default-props': 'off',
-    'react/jsx-filename-extension': 'off',
-    'import/no-extraneous-dependencies': 'off',
+    'react-refresh/only-export-components': [
+      'warn',
+      { allowConstantExport: true },
+    ],
   },
 };

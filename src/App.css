@@ -1,0 +1,41 @@
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  margin: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+.Page__banner {
+  background-color: #24292f;
+  color: #fff;
+  min-height: 64px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+}
+.Page__main {
+  padding: 16px;
+  overflow: hidden;
+}
+.Page__controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+.Page__control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.Page__control label {
+  font-size: 0.9rem;
+}

@@ -1,0 +1,45 @@
+.MyCrossword .Spinner {
+  border: calc(var(--grid-size) * 0.4) solid rgba(92, 112, 128, 0.2);
+  border-radius: 50%;
+  border-top: calc(var(--grid-size) * 0.4) solid rgba(92, 112, 128, 0.8);
+  -webkit-animation: spin 0.5s linear infinite; /* Safari */
+  animation: spin 0.5s linear infinite;
+  box-sizing: border-box;
+}
+.MyCrossword .Spinner--small {
+  min-width: calc(var(--grid-size) * 2);
+  min-height: calc(var(--grid-size) * 2);
+  width: calc(var(--grid-size) * 2);
+  height: calc(var(--grid-size) * 2);
+}
+.MyCrossword .Spinner--standard {
+  min-width: calc(var(--grid-size) * 5);
+  min-height: calc(var(--grid-size) * 5);
+  width: calc(var(--grid-size) * 5);
+  height: calc(var(--grid-size) * 5);
+}
+.MyCrossword .Spinner--large {
+  min-width: calc(var(--grid-size) * 10);
+  min-height: calc(var(--grid-size) * 10);
+  width: calc(var(--grid-size) * 10);
+  height: calc(var(--grid-size) * 10);
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

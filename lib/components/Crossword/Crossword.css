@@ -1,0 +1,21 @@
+.MyCrossword .Crossword {
+  display: flex;
+}
+.MyCrossword .Crossword__gridAndControls {
+  flex-shrink: 0;
+}
+
+@media (max-width: 576px) {
+  .MyCrossword .Crossword {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .MyCrossword .Crossword {
+    flex-direction: column;
+  }
+  .MyCrossword .Crossword__gridAndControls {
+    margin: 0 auto;
+  }
+}

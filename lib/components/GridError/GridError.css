@@ -1,0 +1,24 @@
+.MyCrossword .GridError {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 481px;
+  height: 481px;
+  padding: calc(var(--grid-size) * 2);
+  background-color: var(--grid-background);
+  color: var(--grid-foreground);
+  text-align: center;
+}
+.MyCrossword .GridError__title {
+  font-weight: normal;
+  margin: 0;
+}
+.MyCrossword .GridError__subTitle {
+  font-family: monospace;
+}
+
+@media (max-width: 576px) {
+  .MyCrossword .GridError {
+    width: auto;
+  }
+}

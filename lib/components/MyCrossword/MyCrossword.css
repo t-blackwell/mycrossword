@@ -1,0 +1,116 @@
+.MyCrossword {
+  /** Layout **/
+  --grid-size: 10px;
+  --line-height: calc(var(--grid-size) * 2.2);
+  --border-radius: calc(var(--grid-size) * 0.2);
+  --button-padding: calc(var(--grid-size) * 0.8) calc(var(--grid-size) * 1.2);
+  --button-margin: calc(var(--grid-size) * 0.5);
+
+  /** Fonts **/
+  --font-family:
+    'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+  --font-size-caption: calc(var(--grid-size) * 1.2);
+  --font-size-small: var(--grid-size);
+  --font-size: calc(var(--grid-size) * 1.4);
+  --font-size-large: calc(var(--grid-size) * 1.6);
+  --font-size-xlarge: calc(var(--grid-size) * 2.4);
+
+  /** Colours **/
+  --page-background: #fff;
+  --grid-color: #000;
+  --grid-background: #000;
+  --grid-foreground: #fff;
+
+  --grey: #767676;
+  --light-grey: #ccc;
+  --faint-grey1: rgba(0, 0, 0, 0.23);
+  --faint-grey2: rgba(0, 0, 0, 0.15);
+  --faint-grey3: rgba(0, 0, 0, 0.08);
+  --faint-grey4: rgba(0, 0, 0, 0.04);
+  --faint-grey5: rgba(0, 0, 0, 0.02);
+
+  --button-color: #fff;
+  --button-background: #1976d2;
+  --button-background-selected: #115293;
+
+  --dropdown-background: #fff;
+  --dropdown-border: var(--faint-grey2);
+  --dropdown-item-hover: var(--faint-grey3);
+
+  --confirm-button-background: #1976d2;
+  --confirm-button-color: #fff;
+  --confirm-button-hover: #115293;
+
+  --outline-button-background: var(--faint-grey4);
+  --outline-button-background-selected: var(--faint-grey3);
+  --outline-button-border: var(--faint-grey1);
+  --outline-button-color: rgba(0, 0, 0, 0.87);
+
+  --scrollbar-track-background: #f1f1f1;
+  --scrollbar-thumb-background: #c1c1c1;
+  --scrollbar-thumb-hover: #a8a8a8;
+
+  /** Theme styles **/
+  --theme-red-700: #d32f2f;
+  --theme-red-100: #ffcdd2;
+
+  --theme-pink-700: #c2185b;
+  --theme-pink-100: #f8bbd0;
+
+  --theme-purple-700: #7b1fa2;
+  --theme-purple-100: #e1bee7;
+
+  --theme-deep-purple-700: #512da8;
+  --theme-deep-purple-100: #d1c4e9;
+
+  --theme-indigo-700: #303f9f;
+  --theme-indigo-100: #c5cae9;
+
+  --theme-blue-700: #1976d2;
+  --theme-blue-100: #bbdefb;
+
+  --theme-light-blue-700: #0288d1;
+  --theme-light-blue-100: #b3e5fc;
+
+  --theme-cyan-700: #0097a7;
+  --theme-cyan-100: #b2ebf2;
+
+  --theme-teal-700: #00796b;
+  --theme-teal-100: #b2dfdb;
+
+  --theme-green-700: #388e3c;
+  --theme-green-100: #c8e6c9;
+
+  --theme-deep-orange-700: #e64a19;
+  --theme-deep-orange-100: #ffccbc;
+
+  --theme-blue-grey-700: #455a64;
+  --theme-blue-grey-100: #cfd8dc;
+
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  -webkit-font-smoothing: subpixel-antialiased;
+  box-sizing: content-box;
+}
+.MyCrossword sup {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+.MyCrossword sub {
+  vertical-align: baseline;
+  position: relative;
+  top: 0.4em;
+}
+.MyCrossword ::-webkit-scrollbar {
+  width: var(--grid-size * 0.9);
+}
+.MyCrossword ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-background);
+}
+.MyCrossword ::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-background);
+}
+.MyCrossword ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}

@@ -21,24 +21,14 @@ React crossword component built to work with Guardian crossword data.
 
 ## Install
 
-### npm
-
 ```sh
-npm install mycrossword --save
-```
-
-### yarn
-
-```sh
-yarn add mycrossword
+npm install mycrossword
 ```
 
 ## Usage
 
 ```js
 import MyCrossword from 'mycrossword';
-import 'mycrossword/dist/index.css';
-import React from 'react';
 
 const data = {
   /* ... crossword data (see below) ... */
@@ -200,9 +190,10 @@ While the project has been created from scratch, it should be considered as a co
 ### Technical improvements
 
 - Use of TypeScript
+- Built with Vite
 - Switched to functional components
 - Better performance (memoization, useCallback etc.)
-- Simplified global state management using RTK
+- Simplified global state management using Zustand
 - More modular component hierarchy
 - Scoped CSS
 - Full unit test coverage
@@ -227,15 +218,13 @@ While the project has been created from scratch, it should be considered as a co
 
 ## Working with this project
 
-`yarn` to install dependencies
+`npm i` to install dependencies
 
-`yarn test` to run unit tests
+`npm run test` to run unit tests
 
-`yarn build` to package for publishing
+`npm run build` to package for publishing
 
-`yarn build:watch` to package and watch for changes
-
-`cd example && yarn start` to run the example application
+`npm run dev` to run the example application
 
 ## Licence
 

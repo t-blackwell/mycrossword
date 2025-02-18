@@ -1,0 +1,46 @@
+.MyCrossword .StickyClue {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  padding: var(--grid-size) 0;
+  background-color: var(--page-background);
+  border-bottom: 1px solid var(--grid-background);
+  height: calc(var(--grid-size) * 3);
+  max-height: calc(var(--grid-size) * 3);
+  line-height: 1.3;
+  z-index: 1;
+}
+.MyCrossword .StickyClue__inner {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  flex-grow: 1;
+  padding: 0 calc(var(--grid-size) * 0.5);
+}
+.MyCrossword .StickyClue__num {
+  font-weight: bold;
+  margin-right: var(--grid-size);
+}
+.MyCrossword .StickyClue__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0 calc(var(--grid-size) * 0.5);
+  border-radius: var(--border-radius);
+}
+.MyCrossword .StickyClue__button:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+@media (width > 768px) {
+  .MyCrossword .StickyClue--auto {
+    display: none;
+  }
+}

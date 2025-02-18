@@ -1,0 +1,96 @@
+.MyCrossword .GridCell {
+  fill: var(--grid-color);
+  user-select: none;
+}
+.MyCrossword .GridCell__rect {
+  cursor: pointer;
+  fill: var(--grid-foreground);
+}
+.MyCrossword .GridCell__num {
+  cursor: pointer;
+  font-size: var(--font-size-small);
+}
+.MyCrossword .GridCell__text {
+  cursor: text;
+  font-size: var(--font-size-large);
+}
+.MyCrossword .GridCell--selected .GridCell__text {
+  font-weight: bold;
+  fill: #fff;
+}
+.MyCrossword .GridCell--selected .GridCell__num {
+  fill: #fff;
+}
+/** Theme styles **/
+.MyCrossword--redTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-red-100);
+}
+.MyCrossword--redTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-red-700);
+}
+.MyCrossword--pinkTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-pink-100);
+}
+.MyCrossword--pinkTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-pink-700);
+}
+.MyCrossword--purpleTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-purple-100);
+}
+.MyCrossword--purpleTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-purple-700);
+}
+.MyCrossword--deepPurpleTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-deep-purple-100);
+}
+.MyCrossword--deepPurpleTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-deep-purple-700);
+}
+.MyCrossword--indigoTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-indigo-100);
+}
+.MyCrossword--indigoTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-indigo-700);
+}
+.MyCrossword--blueTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-blue-100);
+}
+.MyCrossword--blueTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-blue-700);
+}
+.MyCrossword--lightBlueTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-light-blue-100);
+}
+.MyCrossword--lightBlueTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-light-blue-700);
+}
+.MyCrossword--cyanTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-cyan-100);
+}
+.MyCrossword--cyanTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-cyan-700);
+}
+.MyCrossword--tealTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-teal-100);
+}
+.MyCrossword--tealTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-teal-700);
+}
+.MyCrossword--greenTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-green-100);
+}
+.MyCrossword--greenTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-green-700);
+}
+.MyCrossword--deepOrangeTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-deep-orange-100);
+}
+.MyCrossword--deepOrangeTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-deep-orange-700);
+}
+.MyCrossword--blueGreyTheme .GridCell--highlighted .GridCell__rect {
+  fill: var(--theme-blue-grey-100);
+}
+.MyCrossword--blueGreyTheme .GridCell--selected .GridCell__rect {
+  fill: var(--theme-blue-grey-700);
+}

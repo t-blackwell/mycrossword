@@ -1,0 +1,74 @@
+.MyCrossword .Clue {
+  cursor: pointer;
+  display: flex;
+  line-height: var(--line-height);
+  color: var(--grid-color);
+  padding: calc(var(--grid-size) * 0.4) calc(var(--grid-size) * 1.2)
+    calc(var(--grid-size) * 0.4) calc(var(--grid-size) * 0.7);
+  user-select: none;
+}
+.MyCrossword .Clue--answered {
+  opacity: 0.6;
+}
+.MyCrossword .Clue--highlighted strong {
+  font-weight: 800;
+}
+.MyCrossword .Clue:not(.Clue--highlighted):hover {
+  background-color: var(--faint-grey4);
+}
+.MyCrossword .Clue__num {
+  flex: 0 0 calc(var(--grid-size) * 2);
+  font-weight: bold;
+  margin-right: calc(var(--grid-size) * 2);
+}
+.MyCrossword .Clue__text::before {
+  display: block;
+  content: attr(data-text);
+  font-weight: bold;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .MyCrossword .Clue {
+    scroll-margin-top: calc(var(--grid-size) * 2.3);
+  }
+}
+
+.MyCrossword--redTheme .Clue--highlighted {
+  background-color: var(--theme-red-100);
+}
+.MyCrossword--pinkTheme .Clue--highlighted {
+  background-color: var(--theme-pink-100);
+}
+.MyCrossword--purpleTheme .Clue--highlighted {
+  background-color: var(--theme-purple-100);
+}
+.MyCrossword--deepPurpleTheme .Clue--highlighted {
+  background-color: var(--theme-deep-purple-100);
+}
+.MyCrossword--indigoTheme .Clue--highlighted {
+  background-color: var(--theme-indigo-100);
+}
+.MyCrossword--blueTheme .Clue--highlighted {
+  background-color: var(--theme-blue-100);
+}
+.MyCrossword--lightBlueTheme .Clue--highlighted {
+  background-color: var(--theme-light-blue-100);
+}
+.MyCrossword--cyanTheme .Clue--highlighted {
+  background-color: var(--theme-cyan-100);
+}
+.MyCrossword--tealTheme .Clue--highlighted {
+  background-color: var(--theme-teal-100);
+}
+.MyCrossword--greenTheme .Clue--highlighted {
+  background-color: var(--theme-green-100);
+}
+.MyCrossword--deepOrangeTheme .Clue--highlighted {
+  background-color: var(--theme-deep-orange-100);
+}
+.MyCrossword--blueGreyTheme .Clue--highlighted {
+  background-color: var(--theme-blue-grey-100);
+}

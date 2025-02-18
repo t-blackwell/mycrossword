@@ -1,0 +1,28 @@
+.MyCrossword .Button {
+  border-radius: var(--border-radius);
+  padding: var(--button-padding);
+  font-weight: bold;
+  cursor: pointer;
+  margin: var(--button-margin);
+  user-select: none;
+}
+.MyCrossword .Button--filled {
+  background-color: var(--button-background);
+  border: none;
+  color: var(--button-color);
+}
+.MyCrossword .Button--filled:not(:disabled):hover {
+  background-color: var(--button-background-selected);
+}
+.MyCrossword .Button--outlined {
+  background-color: var(--outline-button-background);
+  border: 1px solid var(--outline-button-border);
+  color: var(--outline-button-color);
+}
+.MyCrossword .Button--outlined:not(:disabled):hover {
+  background-color: var(--outline-button-background-selected);
+}
+.MyCrossword .Button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}

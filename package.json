@@ -12,6 +12,7 @@
   ],
   "type": "module",
   "main": "dist/main.js",
+  "module": "dist/main.js",
   "types": "dist/main.d.ts",
   "files": [
     "dist"

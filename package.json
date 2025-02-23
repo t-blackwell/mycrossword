@@ -3,7 +3,7 @@
   "author": "Tom Blackwell",
   "private": false,
   "license": "MIT",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "React crossword component",
   "keywords": [
     "react",
@@ -17,11 +17,10 @@
   "exports": {
     ".": {
       "import": "./dist/main.js",
-      "types": "./dist/main.d.ts",
-      "style": "./dist/main.css"
-    }
+      "types": "./dist/main.d.ts"
+    },
+    "./style.css": "./dist/style.css"
   },
-  "style": "./dist/main.css",
   "files": [
     "dist"
   ],

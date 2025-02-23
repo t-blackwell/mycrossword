@@ -29,6 +29,7 @@ npm install mycrossword
 
 ```js
 import MyCrossword from 'mycrossword';
+import 'mycrossword/style.css';
 
 const data = {
   /* ... crossword data (see below) ... */

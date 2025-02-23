@@ -5,7 +5,12 @@ type SanitizeOptions = {
   allowedTags?: string[];
 };
 
-export function sanitize(html: string, options: SanitizeOptions = {}): string {
+export function sanitize(html: string, options: SanitizeOptions = {}) {
+  // skip sanitization on the server
+  if (typeof window === 'undefined') {
+    return html;
+  }
+
   const domPurifyOptions = {
     ALLOWED_ATTR: options.allowedAttributes ?? [],
     ALLOWED_TAGS: options.allowedTags ?? [],

@@ -106,9 +106,11 @@ function Clue({
       <span
         className={bem('Clue__text')}
         dangerouslySetInnerHTML={{
-          __html: sanitize(text, { allowedTags: allowedHtmlTags }),
+          __html: sanitize(decodeHtmlEntities(text), {
+            allowedTags: allowedHtmlTags,
+          }),
         }}
-        data-text={decodeHtmlEntities(sanitize(text))}
+        data-text={sanitize(decodeHtmlEntities(text))}
       />
     </div>
   );

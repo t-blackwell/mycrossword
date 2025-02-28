@@ -94,12 +94,12 @@ const entityDictionary: Record<string, string> = {
  * Decode HTML entities in a string.
  */
 export function decodeHtmlEntities(html: string): string {
-  return html.replace(/&([^;]+);/g, (ent, entityCode) => {
-    const entity = ent.toLowerCase();
+  return html.replace(/&([^;]+);/g, (entity, entityCode) => {
+    // Check dictionary for named entities (case-insensitive)
+    const namedEntity = entityDictionary[entity.toLowerCase()];
 
-    // Check dictionary for named entities
-    if (entityDictionary[entity] !== undefined) {
-      return entityDictionary[entity];
+    if (namedEntity !== undefined) {
+      return namedEntity;
     }
 
     // Handle decimal numeric entities
@@ -107,7 +107,7 @@ export function decodeHtmlEntities(html: string): string {
       let code: number;
 
       // Handle hexadecimal entities (&#x...)
-      if (entityCode.startsWith('#x')) {
+      if (entityCode.startsWith('#x') || entityCode.startsWith('#X')) {
         code = parseInt(entityCode.slice(2), 16);
       } else {
         // Handle decimal entities (&#...)
@@ -118,7 +118,7 @@ export function decodeHtmlEntities(html: string): string {
       if (!isNaN(code)) {
         try {
           return String.fromCodePoint(code);
-        } catch {
+        } catch (e) {
           // Return the original entity if the code point is invalid
           return entity;
         }

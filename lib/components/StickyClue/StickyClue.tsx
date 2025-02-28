@@ -1,7 +1,7 @@
 import ChevronLeftIcon from '~/icons/ChevronLeftIcon';
 import ChevronRightIcon from '~/icons/ChevronRightIcon';
 import { getBem } from '~/utils/bem';
-import { sanitize } from '~/utils/html';
+import { decodeHtmlEntities, sanitize } from '~/utils/html';
 import './StickyClue.css';
 
 interface StickyClueProps {
@@ -40,7 +40,7 @@ export default function StickyClue({
               <span className={bem('StickyClue__num')}>{num}</span>
               <span
                 dangerouslySetInnerHTML={{
-                  __html: sanitize(text, { allowedTags }),
+                  __html: sanitize(decodeHtmlEntities(text), { allowedTags }),
                 }}
               />
             </span>

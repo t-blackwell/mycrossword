@@ -3,7 +3,7 @@
   "author": "Tom Blackwell",
   "private": false,
   "license": "MIT",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "React crossword component",
   "keywords": [
     "react",

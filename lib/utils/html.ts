@@ -94,7 +94,9 @@ const entityDictionary: Record<string, string> = {
  * Decode HTML entities in a string.
  */
 export function decodeHtmlEntities(html: string): string {
-  return html.replace(/&([^;]+);/g, (entity, entityCode) => {
+  return html.replace(/&([^;]+);/g, (ent, entityCode) => {
+    const entity = ent.toLowerCase();
+
     // Check dictionary for named entities
     if (entityDictionary[entity] !== undefined) {
       return entityDictionary[entity];
@@ -105,7 +107,7 @@ export function decodeHtmlEntities(html: string): string {
       let code: number;
 
       // Handle hexadecimal entities (&#x...)
-      if (entityCode.startsWith('#x') || entityCode.startsWith('#X')) {
+      if (entityCode.startsWith('#x')) {
         code = parseInt(entityCode.slice(2), 16);
       } else {
         // Handle decimal entities (&#...)

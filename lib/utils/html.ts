@@ -40,9 +40,90 @@ export function sanitize(
   return current;
 }
 
-export function decodeHtmlEntities(html: string) {
-  const textarea = document.createElement('textarea');
-  textarea.innerHTML = html;
+const entityDictionary: Record<string, string> = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&#x27;': "'",
+  '&#x2F;': '/',
+  '&#96;': '`',
+  '&#x3D;': '=',
+  '&nbsp;': ' ',
+  '&copy;': '©',
+  '&reg;': '®',
+  '&trade;': '™',
+  '&euro;': '€',
+  '&pound;': '£',
+  '&yen;': '¥',
+  '&cent;': '¢',
+  '&apos;': "'",
+  '&sect;': '§',
+  '&para;': '¶',
+  '&plusmn;': '±',
+  '&times;': '×',
+  '&divide;': '÷',
+  '&laquo;': '«',
+  '&raquo;': '»',
+  '&ldquo;': '“',
+  '&rdquo;': '”',
+  '&lsquo;': '‘',
+  '&rsquo;': '’',
+  '&hellip;': '…',
+  '&middot;': '·',
+  '&bull;': '•',
+  '&ndash;': '–',
+  '&mdash;': '—',
+  '&alpha;': 'α',
+  '&beta;': 'β',
+  '&gamma;': 'γ',
+  '&delta;': 'δ',
+  '&pi;': 'π',
+  '&sigma;': 'σ',
+  '&omega;': 'ω',
+  '&mu;': 'μ',
+  '&tau;': 'τ',
+  '&phi;': 'φ',
+  '&chi;': 'χ',
+  '&psi;': 'ψ',
+  '&theta;': 'θ',
+};
 
-  return textarea.value;
+/**
+ * Decode HTML entities in a string.
+ */
+export function decodeHtmlEntities(html: string): string {
+  return html.replace(/&([^;]+);/g, (entity, entityCode) => {
+    // Check dictionary for named entities
+    if (entityDictionary[entity] !== undefined) {
+      return entityDictionary[entity];
+    }
+
+    // Handle decimal numeric entities
+    if (entityCode.startsWith('#')) {
+      let code: number;
+
+      // Handle hexadecimal entities (&#x...)
+      if (entityCode.startsWith('#x') || entityCode.startsWith('#X')) {
+        code = parseInt(entityCode.slice(2), 16);
+      } else {
+        // Handle decimal entities (&#...)
+        code = parseInt(entityCode.slice(1), 10);
+      }
+
+      // Use String.fromCodePoint instead of String.fromCharCode to handle all Unicode
+      if (!isNaN(code)) {
+        try {
+          return String.fromCodePoint(code);
+        } catch {
+          // Return the original entity if the code point is invalid
+          return entity;
+        }
+      }
+    }
+
+    // Return unchanged if not recognized
+    return entity;
+  });
 }

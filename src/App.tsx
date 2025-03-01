@@ -1,7 +1,8 @@
-import './App.css';
-import { MyCrossword } from '../';
+import { MyCrossword } from '../dist/main';
+import '../dist/style.css';
 import data from './examples/guardian.cryptic.28505';
 import { useState } from 'react';
+import './App.css';
 
 const ALLOWED_HTML_TAGS = ['b', 'strong', 'i', 'em', 'sub', 'sup'];
 

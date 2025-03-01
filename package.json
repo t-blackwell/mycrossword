@@ -3,7 +3,7 @@
   "author": "Tom Blackwell",
   "private": false,
   "license": "MIT",
-  "version": "2.0.1",
+  "version": "2.0.10",
   "description": "React crossword component",
   "keywords": [
     "react",
@@ -19,7 +19,7 @@
       "import": "./dist/main.js",
       "types": "./dist/main.d.ts"
     },
-    "./dist/*.css": "./dist/*.css"
+    "./style.css": "./dist/style.css"
   },
   "files": [
     "dist"
@@ -28,7 +28,10 @@
     "type": "git",
     "url": "https://github.com/t-blackwell/mycrossword"
   },
-  "sideEffects": true,
+  "sideEffects": [
+    "*.css",
+    "**/*.css"
+  ],
   "scripts": {
     "dev": "vite --open",
     "build": "tsc --p ./tsconfig-build.json && vite build",
@@ -71,7 +74,6 @@
   },
   "dependencies": {
     "classnames": "^2.5.1",
-    "isomorphic-dompurify": "^2.21.0",
     "zustand": "^5.0.3"
   }
 }

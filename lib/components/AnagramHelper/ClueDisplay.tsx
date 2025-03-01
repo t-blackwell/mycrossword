@@ -23,7 +23,9 @@ export default function ClueDisplay({
     return (
       <span
         dangerouslySetInnerHTML={{
-          __html: sanitize(clue, { allowedTags: allowedHtmlTags }),
+          __html: sanitize(decodeHtmlEntities(clue), {
+            allowedTags: allowedHtmlTags,
+          }),
         }}
       />
     );
@@ -31,7 +33,7 @@ export default function ClueDisplay({
 
   // use a Unicode-aware regex that includes accented characters
   // this matches any sequence of letters (including accented ones) as a word
-  const cleanClue = decodeHtmlEntities(sanitize(clue));
+  const cleanClue = sanitize(decodeHtmlEntities(clue));
   const words = cleanClue.split(/\b([\p{L}\p{M}]+)\b/u);
 
   return (

@@ -103,7 +103,7 @@
   top: 0.4em;
 }
 .MyCrossword ::-webkit-scrollbar {
-  width: var(--grid-size * 0.9);
+  width: calc(var(--grid-size) * 0.9);
 }
 .MyCrossword ::-webkit-scrollbar-track {
   background: var(--scrollbar-track-background);

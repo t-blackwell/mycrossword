@@ -68,7 +68,13 @@ export default function AnagramHelper({
   }, [clue.id]);
 
   return (
-    <div className={bem('AnagramHelper')} style={style}>
+    <div
+      className={bem(
+        'AnagramHelper',
+        shuffling ? 'AnagramHelper--shuffling' : null,
+      )}
+      style={style}
+    >
       <Button
         ariaLabel="Close"
         className={bem('AnagramHelper__closeButton')}

@@ -1,7 +1,7 @@
 .MyCrossword {
   /** Layout **/
   --grid-size: 10px;
-  --line-height: calc(var(--grid-size) * 1.8);
+  --line-height: calc(var(--grid-size) * 2.2);
   --border-radius: calc(var(--grid-size) * 0.2);
   --button-padding: calc(var(--grid-size) * 0.8) calc(var(--grid-size) * 1.2);
   --button-margin: calc(var(--grid-size) * 0.5);

@@ -3,15 +3,19 @@
 }
 .MyCrossword .Crossword__gridAndControls {
   flex-shrink: 0;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.Crossword__gridContainer {
+  width: 100%;
 }
 
 @media (width <= 768px) {
   .MyCrossword .Crossword {
     flex-direction: column;
-  }
-  .MyCrossword .Crossword__gridAndControls,
-  .MyCrossword .Crossword__gridContainer {
-    margin: 0 auto;
   }
 }
 

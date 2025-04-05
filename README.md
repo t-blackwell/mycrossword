@@ -58,8 +58,6 @@ export default function MyPage() {
 | `stickyClue`            | `'always' \| 'never' \| 'auto'` = 'auto'<br />Optional value to define when to show the sticky clue above the grid. Defaults to `'auto'` (shown on `xs` and `sm` breakpoints).                                                                                                                          |
 | `theme`                 | `'red' \| 'pink' \| 'purple' \| 'deepPurple' \| 'indigo' \| 'blue' \| 'lightBlue' \| 'cyan' \| 'teal' \| 'green' \| 'deepOrange' \| 'blueGrey'` = 'blue'<br />Optional value to override the main colour applied to the highlighted cells and clues. Defaults to `'blue'`.                              |
 
-For more type information, see [interfaces](./src/interfaces).
-
 ## Crossword data
 
 This is an example of the JSON data required to create the crossword shown above. Its structure is defined by the [GuardianCrossword](./src/interfaces/GuardianCrossword.ts) interface.

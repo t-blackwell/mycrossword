@@ -60,7 +60,7 @@ export default function MyPage() {
 
 ## Crossword data
 
-This is an example of the JSON data required to create the crossword shown above. Its structure is defined by the [GuardianCrossword](./src/interfaces/GuardianCrossword.ts) interface.
+This is an example of the JSON data required to create the crossword shown above. Its structure is defined by the [GuardianCrossword](./GuardianCrossword.md) interface.
 
 ```
 {

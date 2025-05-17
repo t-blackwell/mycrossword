@@ -251,18 +251,18 @@ export default function Crossword({
             />
           ) : (
             <>
-              {stickyClue !== 'never' && parentClue !== undefined ? (
+              {stickyClue !== 'never' ? (
                 <StickyClue
                   allowedTags={allowedHtmlTags}
                   num={
-                    parentClue.group.length === 1
+                    parentClue?.group.length === 1
                       ? `${parentClue.number}${parentClue.direction.charAt(0)}`
-                      : parentClue.humanNumber
+                      : parentClue?.humanNumber
                   }
                   onMoveNext={() => moveToNextClue(true)}
                   onMovePrev={() => moveToNextClue(false)}
                   show={stickyClue}
-                  text={parentClue.clue}
+                  text={parentClue?.clue}
                 />
               ) : null}
               <Grid

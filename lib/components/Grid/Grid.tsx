@@ -25,6 +25,19 @@ import { useCluesStore } from '~/stores/useCluesStore';
 import { getBem } from '~/utils/bem';
 import './Grid.css';
 
+const ARROWS_KEYS = [
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+] as const;
+
+type ArrowKey = (typeof ARROWS_KEYS)[number];
+
+function isArrowKey(key: string): key is ArrowKey {
+  return ARROWS_KEYS.includes(key as ArrowKey);
+}
+
 function cellPositionMatches(cellPosA: CellPosition, cellPosB?: CellPosition) {
   if (cellPosB === undefined) {
     return false;
@@ -260,23 +273,63 @@ export default function Grid({
     }
   };
 
-  const moveDirection = (direction: string) => {
+  const moveDirection = (direction: ArrowKey) => {
     if (selectedClue === undefined || selectedCell === undefined) {
       return;
     }
+
+    // Get the current cell from cells array to check its clueIds
+    const currentCell = cells.find(
+      (cell) =>
+        cell.pos.col === selectedCell.pos.col &&
+        cell.pos.row === selectedCell.pos.row,
+    );
+
+    if (!currentCell) {
+      return;
+    }
+
+    // If the cell has clues in both directions (crossing letters)
+    if (currentCell.clueIds.length === 2) {
+      const isVerticalArrow =
+        direction === 'ArrowUp' || direction === 'ArrowDown';
+      const isHorizontalArrow =
+        direction === 'ArrowLeft' || direction === 'ArrowRight';
+
+      // Check if we need to switch direction
+      if (
+        (isVerticalArrow && selectedClue.direction === 'across') ||
+        (isHorizontalArrow && selectedClue.direction === 'down')
+      ) {
+        // Find the other clue ID for this cell (the one that's not currently selected)
+        const otherClueId = currentCell.clueIds.find(
+          (id) => id !== selectedClue.id,
+        );
+
+        if (otherClueId !== undefined) {
+          // Switch to the other direction without moving the cell
+          selectClue(otherClueId);
+          cellFocus(selectedCell.pos, otherClueId);
+          return;
+        }
+      }
+    }
+
+    // If we didn't switch directions or the cell only has one clue,
+    // perform the original move logic
     let nextCell: Cell | undefined;
 
     switch (direction) {
-      case 'Up':
+      case 'ArrowUp':
         nextCell = findNextCell(0, -1);
         break;
-      case 'Down':
+      case 'ArrowDown':
         nextCell = findNextCell(0, 1);
         break;
-      case 'Left':
+      case 'ArrowLeft':
         nextCell = findNextCell(-1, 0);
         break;
-      case 'Right':
+      case 'ArrowRight':
         nextCell = findNextCell(1, 0);
         break;
       default:
@@ -288,9 +341,15 @@ export default function Grid({
 
       // update the selected clue
       if (!nextCell.clueIds.includes(selectedClue.id)) {
-        selectClue(nextCell.clueIds[0]);
+        // try to continue in the same direction
+        const nextClueId =
+          nextCell.clueIds.find((clueId) =>
+            clueId.endsWith(selectedClue.direction),
+          ) ?? nextCell.clueIds[0];
 
-        cellFocus(nextCell.pos, nextCell.clueIds[0]);
+        selectClue(nextClueId);
+
+        cellFocus(nextCell.pos, nextClueId);
       } else {
         cellFocus(nextCell.pos, selectedClue.id);
       }
@@ -323,11 +382,9 @@ export default function Grid({
     // prevent arrow keys propagating to window
     event.stopPropagation();
 
-    if (
-      ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
-    ) {
+    if (isArrowKey(event.key)) {
       // move to the next cell
-      moveDirection(event.key.replace('Arrow', ''));
+      moveDirection(event.key);
     } else if (['Backspace', 'Delete'].includes(event.key)) {
       cellChange(selectedCell, undefined);
 

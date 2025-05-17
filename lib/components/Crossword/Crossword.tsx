@@ -126,9 +126,9 @@ export default function Crossword({
       storeClues.length > 0
     ) {
       const clueId = locationHash.replace('#', '');
+      const clueExists = storeClues.some((clue) => clue.id === clueId);
 
-      // Only select if clueId exists and nothing is currently selected
-      if (clueId !== '' && !storeClues.some((clue) => clue.selected)) {
+      if (clueExists && !storeClues.some((clue) => clue.selected)) {
         selectClue(clueId);
       }
     }

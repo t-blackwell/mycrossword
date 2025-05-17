@@ -1,6 +1,7 @@
 import { MyCrossword } from '../dist/main';
 import '../dist/style.css';
-import data from './examples/guardian.cryptic.28505';
+import data28505 from './examples/guardian.cryptic.28505';
+import data25220 from './examples/guardian.prize.25220';
 import { useState } from 'react';
 import './App.css';
 
@@ -21,12 +22,37 @@ const THEME_OPTIONS = [
   'blueGrey',
 ] as const;
 
+const crosswords = [
+  {
+    id: '28505',
+    name: 'Guardian Cryptic 28,505',
+    data: data28505,
+  },
+  {
+    id: '25220',
+    name: 'Guardian Prize 25,220',
+    data: data25220,
+  },
+] as const;
+
+type CrosswordId = (typeof crosswords)[number]['id'];
+
 type Theme = (typeof THEME_OPTIONS)[number];
 
 function App() {
   const [theme, setTheme] = useState<Theme>('blue');
   const [showDefinitions, setShowDefinitions] = useState(false);
   const [complete, setComplete] = useState(false);
+  const [selectedCrosswordId, setSelectedCrosswordId] =
+    useState<CrosswordId>('28505');
+
+  const selectedCrossword = crosswords.find(
+    (crossword) => crossword.id === selectedCrosswordId,
+  );
+
+  if (selectedCrossword === undefined) {
+    throw new Error(`Crossword with id ${selectedCrosswordId} not found.`);
+  }
 
   return (
     <div className="Page">
@@ -35,6 +61,22 @@ function App() {
       </div>
       <main className="Page__main">
         <div className="Page__controls">
+          <div className="Page__control">
+            <label htmlFor="crossword-selector">Crossword</label>
+            <select
+              id="crossword-selector"
+              onChange={(event) =>
+                setSelectedCrosswordId(event.target.value as CrosswordId)
+              }
+              value={selectedCrosswordId}
+            >
+              {crosswords.map((crossword) => (
+                <option key={crossword.id} value={crossword.id}>
+                  {crossword.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="Page__control">
             <label htmlFor="theme-selector">Theme</label>
             <select
@@ -71,8 +113,8 @@ function App() {
           allowedHtmlTags={
             showDefinitions ? ['u', ...ALLOWED_HTML_TAGS] : ALLOWED_HTML_TAGS
           }
-          id="example"
-          data={data}
+          id={`example.${selectedCrosswordId}`}
+          data={selectedCrossword.data}
           onComplete={() => setComplete(true)}
           theme={theme}
         />

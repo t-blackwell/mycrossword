@@ -60,89 +60,81 @@ export default function Crossword({
     initialiseGuessGrid(data.dimensions.cols, data.dimensions.rows),
   );
   const [locationHash] = useLocationHash();
-
-  const storeClues = useCluesStore((store) => store.clues);
-  const storeCells = useCellsStore((store) => store.cells);
-  const selectCells = useCellsStore((store) => store.select);
-  const selectClue = useCluesStore((store) => store.select);
-  const setCells = useCellsStore((store) => store.setCells);
-  const setClues = useCluesStore((store) => store.setClues);
-  const checkComplete = useCellsStore((store) => store.checkComplete);
-
-  const parsedData = React.useMemo(() => {
-    try {
-      const initialisedCells = initialiseCells({
-        cols: data.dimensions.cols,
-        rows: data.dimensions.rows,
-        entries: data.entries,
-        guessGrid: loadGrid ?? guessGrid,
-        allowMissingSolutions,
-      });
-
-      const initialisedClues = initialiseClues(data.entries, initialisedCells);
-
-      return {
-        cells: initialisedCells,
-        clues: initialisedClues,
-        error: null,
-      };
-    } catch (err: unknown) {
-      const error =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      return { cells: null, clues: null, error };
-    }
-  }, [data, loadGrid, allowMissingSolutions]);
-
-  // coalesce store values with initial values
-  const cells = React.useMemo(
-    () =>
-      storeCells.length === 0 && parsedData.cells !== null
-        ? parsedData.cells
-        : storeCells,
-    [storeCells, parsedData.cells],
-  );
-  const clues = React.useMemo(
-    () =>
-      storeClues.length === 0 && parsedData.clues !== null
-        ? parsedData.clues
-        : storeClues,
-    [storeClues, parsedData.clues],
-  );
-
-  const selectedClue = clues.find((clue) => clue.selected);
-  const parentClue =
-    selectedClue?.group.length === 1
-      ? selectedClue
-      : clues.find((clue) => clue.id === selectedClue?.group[0]);
   const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
-  const gridHeight =
-    data.dimensions.rows * CELL_SIZE + data.dimensions.rows + 1;
-  const gridWidth = data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1;
+  const [error, setError] = React.useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  // sync store values with parsed data
+  // Access store methods
+  const storeCells = useCellsStore((store) => store.cells);
+  const storeClues = useCluesStore((store) => store.clues);
+  const setCells = useCellsStore((store) => store.setCells);
+  const setClues = useCluesStore((store) => store.setClues);
+  const selectCells = useCellsStore((store) => store.select);
+  const selectClue = useCluesStore((store) => store.select);
+  const checkComplete = useCellsStore((store) => store.checkComplete);
+
+  // Clear cells and clues when id/data changes
   React.useEffect(() => {
-    if (parsedData.cells !== null) {
-      setCells(parsedData.cells);
-      checkComplete();
-    }
-  }, [parsedData.cells]);
+    setCells([]);
+    setClues([]);
+  }, [id, data, setCells, setClues]);
 
+  // Initialize cells and clues once
   React.useEffect(() => {
-    if (parsedData.clues !== null) {
-      setClues(parsedData.clues);
-    }
-  }, [parsedData.clues]);
+    // Only initialize if no data exists in stores
+    if (storeCells.length === 0 || storeClues.length === 0) {
+      try {
+        const initialisedCells = initialiseCells({
+          cols: data.dimensions.cols,
+          rows: data.dimensions.rows,
+          entries: data.entries,
+          guessGrid: loadGrid ?? guessGrid,
+          allowMissingSolutions,
+        });
 
+        const initialisedClues = initialiseClues(
+          data.entries,
+          initialisedCells,
+        );
+
+        setCells(initialisedCells);
+        setClues(initialisedClues);
+
+        // Check for completion after initialization
+        setTimeout(checkComplete, 0);
+        setError(null);
+      } catch (err: unknown) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        setError(errorMessage);
+      }
+    }
+  }, [
+    data,
+    loadGrid,
+    guessGrid,
+    allowMissingSolutions,
+    storeCells.length,
+    storeClues.length,
+  ]);
+
+  // Handle location hash changes
   React.useEffect(() => {
-    const selectedClue = clues.find((clue) => clue.selected);
+    if (
+      locationHash !== undefined &&
+      locationHash !== '' &&
+      storeClues.length > 0
+    ) {
+      const clueId = locationHash.replace('#', '');
 
-    if (selectedClue === undefined) {
-      selectClue(locationHash.replace('#', ''));
+      // Only select if clueId exists and nothing is currently selected
+      if (clueId !== '' && !storeClues.some((clue) => clue.selected)) {
+        selectClue(clueId);
+      }
     }
-  }, [locationHash]);
+  }, [locationHash, storeClues, selectClue]);
 
-  // validate overriding guess grid if defined
+  // Validate overriding guess grid if defined
   if (
     loadGrid !== undefined &&
     !validateGuessGrid(
@@ -152,57 +144,49 @@ export default function Crossword({
       cellMatcher,
     )
   ) {
-    return (
-      <div className={bem('Crossword')}>
-        <GridError
-          message="Error loading grid"
-          style={{
-            height: gridHeight,
-            width: gridWidth,
-            aspectRatio: `${data.dimensions.cols} / ${data.dimensions.rows}`,
-          }}
-        />
-      </div>
-    );
+    return renderGridError('Error loading grid', data.dimensions);
   }
 
-  // something went wrong...
-  if (parsedData.error !== null) {
-    return (
-      <div className={bem('Crossword')}>
-        <GridError
-          message={parsedData.error}
-          style={{
-            height: gridHeight,
-            width: gridWidth,
-            aspectRatio: `${data.dimensions.cols} / ${data.dimensions.rows}`,
-          }}
-        />
-      </div>
-    );
+  // Handle initialization errors
+  if (error !== null) {
+    return renderGridError(error, data.dimensions);
   }
+
+  // Find selected clue
+  const selectedClue = storeClues.find((clue) => clue.selected);
+
+  // Find parent clue
+  let parentClue = undefined;
+  if (selectedClue !== undefined) {
+    if (selectedClue.group.length === 1) {
+      parentClue = selectedClue;
+    } else {
+      parentClue = storeClues.find((clue) => clue.id === selectedClue.group[0]);
+    }
+  }
+
+  const gridHeight =
+    data.dimensions.rows * CELL_SIZE + data.dimensions.rows + 1;
+  const gridWidth = data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1;
 
   const cellFocus = (pos: CellPosition, clueId: string) => {
     if (onCellFocus !== undefined) {
-      onCellFocus({
-        pos,
-        clueId,
-      });
+      onCellFocus({ pos, clueId });
     }
   };
 
   const moveToNextClue = React.useCallback(
     (forwards: boolean) => {
-      const index = clues.findIndex((clue) => clue.selected);
-      const nextIndex = forwards
-        ? index < clues.length - 1
-          ? index + 1
-          : 0
-        : index > 0
-          ? index - 1
-          : clues.length - 1;
+      const index = storeClues.findIndex((clue) => clue.selected);
 
-      const nextClue = clues[nextIndex];
+      let nextIndex;
+      if (forwards) {
+        nextIndex = index < storeClues.length - 1 ? index + 1 : 0;
+      } else {
+        nextIndex = index > 0 ? index - 1 : storeClues.length - 1;
+      }
+
+      const nextClue = storeClues[nextIndex];
       const nextCluePos = {
         col: nextClue.position.x,
         row: nextClue.position.y,
@@ -213,10 +197,34 @@ export default function Crossword({
 
       cellFocus(nextCluePos, nextClue.id);
 
-      inputRef?.current?.focus({ preventScroll: true });
+      if (inputRef.current !== null) {
+        inputRef.current.focus({ preventScroll: true });
+      }
     },
-    [clues, selectClue, selectCells, cellFocus],
+    [storeClues, selectClue, selectCells, cellFocus],
   );
+
+  // Helper function for rendering grid errors
+  function renderGridError(
+    message: string,
+    dimensions: { cols: number; rows: number },
+  ) {
+    const gridHeight = dimensions.rows * CELL_SIZE + dimensions.rows + 1;
+    const gridWidth = dimensions.cols * CELL_SIZE + dimensions.cols + 1;
+
+    return (
+      <div className={bem('Crossword')}>
+        <GridError
+          message={message}
+          style={{
+            height: gridHeight,
+            width: gridWidth,
+            aspectRatio: `${dimensions.cols} / ${dimensions.rows}`,
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={bem('Crossword')}>
@@ -224,16 +232,15 @@ export default function Crossword({
         <div
           className={bem('Crossword__gridContainer')}
           style={{
-            maxWidth:
-              data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1,
+            maxWidth: gridWidth,
           }}
         >
           {isAnagramHelperOpen && parentClue !== undefined ? (
             <AnagramHelper
               allowedHtmlTags={allowedHtmlTags}
               clue={parentClue}
-              groupCells={getGroupCells(parentClue.group, cells)}
-              groupSeparators={getGroupSeparators(parentClue.group, clues)}
+              groupCells={getGroupCells(parentClue.group, storeCells)}
+              groupSeparators={getGroupSeparators(parentClue.group, storeClues)}
               onClose={() => setIsAnagramHelperOpen(false)}
               style={{
                 height: gridHeight,
@@ -244,24 +251,24 @@ export default function Crossword({
             />
           ) : (
             <>
-              {stickyClue !== 'never' ? (
+              {stickyClue !== 'never' && parentClue !== undefined ? (
                 <StickyClue
                   allowedTags={allowedHtmlTags}
                   num={
-                    parentClue?.group.length === 1
+                    parentClue.group.length === 1
                       ? `${parentClue.number}${parentClue.direction.charAt(0)}`
-                      : parentClue?.humanNumber
+                      : parentClue.humanNumber
                   }
                   onMoveNext={() => moveToNextClue(true)}
                   onMovePrev={() => moveToNextClue(false)}
                   show={stickyClue}
-                  text={parentClue?.clue}
+                  text={parentClue.clue}
                 />
               ) : null}
               <Grid
                 cellMatcher={cellMatcher}
-                cells={cells}
-                clues={clues}
+                cells={storeCells}
+                clues={storeClues}
                 cols={data.dimensions.cols}
                 guessGrid={guessGrid}
                 inputRef={inputRef}
@@ -276,8 +283,8 @@ export default function Crossword({
           )}
         </div>
         <Controls
-          cells={cells}
-          clues={clues}
+          cells={storeCells}
+          clues={storeClues}
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
           onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
@@ -289,7 +296,7 @@ export default function Crossword({
       </div>
       <Clues
         allowedHtmlTags={allowedHtmlTags}
-        entries={clues}
+        entries={storeClues}
         gridHeight={gridHeight}
         inputRef={inputRef}
         onCellFocus={onCellFocus}

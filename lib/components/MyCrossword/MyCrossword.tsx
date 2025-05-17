@@ -65,6 +65,7 @@ export default function MyCrossword({
         cellMatcher={cellMatcher}
         data={data}
         id={id}
+        key={id}
         loadGrid={loadGrid}
         onCellChange={onCellChange}
         onCellFocus={onCellFocus}

@@ -134,41 +134,6 @@ export default function Crossword({
     }
   }, [locationHash, storeClues, selectClue]);
 
-  // Validate overriding guess grid if defined
-  if (
-    loadGrid !== undefined &&
-    !validateGuessGrid(
-      loadGrid,
-      data.dimensions.cols,
-      data.dimensions.rows,
-      cellMatcher,
-    )
-  ) {
-    return renderGridError('Error loading grid', data.dimensions);
-  }
-
-  // Handle initialization errors
-  if (error !== null) {
-    return renderGridError(error, data.dimensions);
-  }
-
-  // Find selected clue
-  const selectedClue = storeClues.find((clue) => clue.selected);
-
-  // Find parent clue
-  let parentClue = undefined;
-  if (selectedClue !== undefined) {
-    if (selectedClue.group.length === 1) {
-      parentClue = selectedClue;
-    } else {
-      parentClue = storeClues.find((clue) => clue.id === selectedClue.group[0]);
-    }
-  }
-
-  const gridHeight =
-    data.dimensions.rows * CELL_SIZE + data.dimensions.rows + 1;
-  const gridWidth = data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1;
-
   const cellFocus = (pos: CellPosition, clueId: string) => {
     if (onCellFocus !== undefined) {
       onCellFocus({ pos, clueId });
@@ -203,6 +168,41 @@ export default function Crossword({
     },
     [storeClues, selectClue, selectCells, cellFocus],
   );
+
+  // Validate overriding guess grid if defined
+  if (
+    loadGrid !== undefined &&
+    !validateGuessGrid(
+      loadGrid,
+      data.dimensions.cols,
+      data.dimensions.rows,
+      cellMatcher,
+    )
+  ) {
+    return renderGridError('Error loading grid', data.dimensions);
+  }
+
+  // Handle initialization errors
+  if (error !== null) {
+    return renderGridError(error, data.dimensions);
+  }
+
+  // Find selected clue
+  const selectedClue = storeClues.find((clue) => clue.selected);
+
+  // Find parent clue
+  let parentClue = undefined;
+  if (selectedClue !== undefined) {
+    if (selectedClue.group.length === 1) {
+      parentClue = selectedClue;
+    } else {
+      parentClue = storeClues.find((clue) => clue.id === selectedClue.group[0]);
+    }
+  }
+
+  const gridHeight =
+    data.dimensions.rows * CELL_SIZE + data.dimensions.rows + 1;
+  const gridWidth = data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1;
 
   // Helper function for rendering grid errors
   function renderGridError(

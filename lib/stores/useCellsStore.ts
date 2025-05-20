@@ -5,6 +5,7 @@ type CellsStore = {
   cells: Cell[];
   complete: boolean;
   checkComplete: () => boolean | null;
+  resetComplete: () => void;
   setCells: (cells: Cell[]) => void;
   select: (pos: CellPosition) => void;
   answerAll: (answered: boolean) => void;
@@ -21,6 +22,9 @@ export const useCellsStore = create<CellsStore>((set, get) => ({
     const isComplete = get().cells.every((cell) => cell.val === cell.guess);
     set({ complete: isComplete });
     return isComplete;
+  },
+  resetComplete: () => {
+    set({ complete: false });
   },
   setCells: (cells) => {
     set(() => ({ cells }));

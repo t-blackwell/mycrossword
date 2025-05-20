@@ -72,11 +72,13 @@ export default function Crossword({
   const selectCells = useCellsStore((store) => store.select);
   const selectClue = useCluesStore((store) => store.select);
   const checkComplete = useCellsStore((store) => store.checkComplete);
+  const resetComplete = useCellsStore((store) => store.resetComplete);
 
   // Clear cells and clues when id/data changes
   React.useEffect(() => {
     setCells([]);
     setClues([]);
+    resetComplete();
   }, [id, data, setCells, setClues]);
 
   // Initialize cells and clues once

@@ -54,6 +54,14 @@ function App() {
     throw new Error(`Crossword with id ${selectedCrosswordId} not found.`);
   }
 
+  const handleCrosswordChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const crosswordId = event.target.value as CrosswordId;
+    setSelectedCrosswordId(crosswordId);
+    setComplete(false);
+  };
+
   return (
     <div className="Page">
       <div className="Page__banner">
@@ -65,9 +73,7 @@ function App() {
             <label htmlFor="crossword-selector">Crossword</label>
             <select
               id="crossword-selector"
-              onChange={(event) =>
-                setSelectedCrosswordId(event.target.value as CrosswordId)
-              }
+              onChange={handleCrosswordChange}
               value={selectedCrosswordId}
             >
               {crosswords.map((crossword) => (

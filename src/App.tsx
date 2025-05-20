@@ -2,6 +2,7 @@ import { MyCrossword } from '../dist/main';
 import '../dist/style.css';
 import data28505 from './examples/guardian.cryptic.28505';
 import data25220 from './examples/guardian.prize.25220';
+import dataMini from './examples/mini';
 import { useState } from 'react';
 import './App.css';
 
@@ -32,6 +33,11 @@ const crosswords = [
     id: '25220',
     name: 'Guardian Prize 25,220',
     data: data25220,
+  },
+  {
+    id: 'mini',
+    name: 'Mini crossword No 1',
+    data: dataMini,
   },
 ] as const;
 

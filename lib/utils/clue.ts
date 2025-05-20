@@ -67,9 +67,14 @@ export function initialiseClues(
   cells: Cell[],
   selectedClueId?: string,
 ) {
-  return entries.map((entry) => ({
-    ...entry,
-    answered: isCluePopulated(entry, cells),
-    selected: entry.id === selectedClueId,
-  }));
+  return entries
+    .map((entry) => ({
+      ...entry,
+      answered: isCluePopulated(entry, cells),
+      selected: entry.id === selectedClueId,
+    }))
+    .sort(
+      (a: GuardianClue, b: GuardianClue) =>
+        a.direction.localeCompare(b.direction) || a.number - b.number,
+    );
 }

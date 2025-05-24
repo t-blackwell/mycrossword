@@ -8,11 +8,9 @@
 }
 .MyCrossword .GridCell__num {
   cursor: pointer;
-  font-size: var(--font-size-small);
 }
 .MyCrossword .GridCell__text {
   cursor: text;
-  font-size: var(--font-size-large);
 }
 .MyCrossword .GridCell--selected .GridCell__text {
   font-weight: bold;

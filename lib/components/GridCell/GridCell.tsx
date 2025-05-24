@@ -5,20 +5,19 @@ import { useCellsStore } from '~/stores/useCellsStore';
 import { getBem } from '~/utils/bem';
 import './GridCell.css';
 
-export const CELL_SIZE = 31;
-
-export const getDimensions = (cellPos: CellPosition) => {
-  const xRect = 1 + (CELL_SIZE + 1) * cellPos.col;
-  const yRect = 1 + (CELL_SIZE + 1) * cellPos.row;
+export const getDimensions = (cellSize: number, cellPos: CellPosition) => {
+  const xRect = 1 + (cellSize + 1) * cellPos.col;
+  const yRect = 1 + (cellSize + 1) * cellPos.row;
   const xNum = xRect + 1;
   const yNum = yRect + 9;
-  const xText = xRect + CELL_SIZE * 0.5;
-  const yText = yRect + CELL_SIZE * 0.675;
+  const xText = xRect + cellSize * 0.5;
+  const yText = yRect + cellSize * 0.675;
 
   return { xRect, yRect, xNum, yNum, xText, yText };
 };
 
 interface GridCellProps {
+  cellSize: number;
   clueIds: string[];
   guess?: Char;
   inputRef?: React.RefObject<HTMLInputElement>;
@@ -31,6 +30,7 @@ interface GridCellProps {
 }
 
 function GridCell({
+  cellSize,
   clueIds,
   guess,
   inputRef,
@@ -50,7 +50,10 @@ function GridCell({
   const bem = getBem('GridCell');
   const selectClue = useCluesStore((state) => state.select);
   const selectCells = useCellsStore((state) => state.select);
-  const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions(pos);
+  const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions(
+    cellSize,
+    pos,
+  );
 
   const cellFocus = (cellPos: CellPosition, clueId: string) => {
     if (onCellFocus !== undefined) {
@@ -97,8 +100,8 @@ function GridCell({
         className={bem('GridCell__rect')}
         x={xRect}
         y={yRect}
-        width={CELL_SIZE}
-        height={CELL_SIZE}
+        width={cellSize}
+        height={cellSize}
       />
       {num ? (
         <text className={bem('GridCell__num')} x={xNum} y={yNum}>

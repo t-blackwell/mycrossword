@@ -23,6 +23,7 @@ export interface MyCrosswordProps {
   allowedHtmlTags?: string[];
   allowMissingSolutions?: boolean;
   cellMatcher?: RegExp;
+  cellSize?: number;
   className?: string;
   data: GuardianCrossword;
   id: string;
@@ -38,6 +39,7 @@ export interface MyCrosswordProps {
 export default function MyCrossword({
   allowedHtmlTags = DEFAULT_HTML_TAGS,
   allowMissingSolutions = false,
+  cellSize = 31,
   cellMatcher = DEFAULT_CELL_MATCHER,
   className,
   data,
@@ -63,6 +65,7 @@ export default function MyCrossword({
         allowedHtmlTags={allowedHtmlTags}
         allowMissingSolutions={allowMissingSolutions}
         cellMatcher={cellMatcher}
+        cellSize={cellSize}
         data={data}
         id={id}
         key={id}

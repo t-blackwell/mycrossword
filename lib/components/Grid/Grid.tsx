@@ -1,8 +1,5 @@
 import * as React from 'react';
-import GridCell, {
-  CELL_SIZE,
-  getDimensions,
-} from '~/components/GridCell/GridCell';
+import GridCell, { getDimensions } from '~/components/GridCell/GridCell';
 import GridInput from '~/components/GridInput/GridInput';
 import { isValidChar } from '~/utils/general';
 import useDebounce from '~/hooks/useDebounce/useDebounce';
@@ -49,6 +46,7 @@ function cellPositionMatches(cellPosA: CellPosition, cellPosB?: CellPosition) {
 interface GridProps {
   cellMatcher: RegExp;
   cells: Cell[];
+  cellSize: number;
   clues: Clue[];
   cols: number;
   guessGrid: GuessGrid;
@@ -64,6 +62,7 @@ interface GridProps {
 export default function Grid({
   cellMatcher,
   cells,
+  cellSize,
   clues,
   cols,
   guessGrid,
@@ -78,8 +77,8 @@ export default function Grid({
   const bem = getBem('Grid');
   const selectedCell = cells.find((cell) => cell.selected);
   const selectedClue = clues.find((clue) => clue.selected);
-  const width = cols * CELL_SIZE + cols + 1;
-  const height = rows * CELL_SIZE + rows + 1;
+  const width = cols * cellSize + cols + 1;
+  const height = rows * cellSize + rows + 1;
   const [guesses, setGuesses] = React.useState<GuessGrid>(guessGrid);
   const debouncedGuesses: GuessGrid = useDebounce<GuessGrid>(guesses, 1000);
   const svgRef = React.useRef<SVGSVGElement>(null);
@@ -483,7 +482,9 @@ export default function Grid({
   };
 
   const dimensions =
-    selectedCell !== undefined ? getDimensions(selectedCell?.pos) : undefined;
+    selectedCell !== undefined
+      ? getDimensions(cellSize, selectedCell.pos)
+      : undefined;
 
   return (
     <div
@@ -529,6 +530,7 @@ export default function Grid({
 
           return (
             <GridCell
+              cellSize={cellSize}
               clueIds={clueIds}
               guess={guess}
               inputRef={inputRef}
@@ -542,15 +544,15 @@ export default function Grid({
             />
           );
         })}
-        <GridSeparators clues={rawClues} />
+        <GridSeparators cellSize={cellSize} clues={rawClues} />
       </svg>
       <div
         className={bem('Grid__inputContainer')}
         style={{
           width:
-            selectedCell !== undefined ? CELL_SIZE * viewBoxScale : undefined,
+            selectedCell !== undefined ? cellSize * viewBoxScale : undefined,
           height:
-            selectedCell !== undefined ? CELL_SIZE * viewBoxScale : undefined,
+            selectedCell !== undefined ? cellSize * viewBoxScale : undefined,
           top:
             dimensions?.yRect !== undefined
               ? dimensions.yRect * viewBoxScale

@@ -1,26 +1,32 @@
 import * as React from 'react';
 import { Direction, GuardianClue } from '~/types';
-import { CELL_SIZE } from '../GridCell/GridCell';
 
-function getPos(val: number) {
-  return val * (CELL_SIZE + 1) + 1;
+function getPos(val: number, cellSize: number) {
+  return val * (cellSize + 1) + 1;
 }
 
 interface GridSeparatorProps {
+  cellSize: number;
   char: ',' | '-';
   col: number;
   row: number;
   direction: Direction;
 }
 
-function GridSeparator({ char, col, row, direction }: GridSeparatorProps) {
-  const top = getPos(row);
-  const left = getPos(col);
+function GridSeparator({
+  char,
+  col,
+  row,
+  direction,
+  cellSize,
+}: GridSeparatorProps) {
+  const top = getPos(row, cellSize);
+  const left = getPos(col, cellSize);
   const across = direction === 'across';
 
   if (char === ',') {
-    const width = across ? 1 : CELL_SIZE;
-    const height = across ? CELL_SIZE : 1;
+    const width = across ? 1 : cellSize;
+    const height = across ? cellSize : 1;
     const x = across ? left - 2 : left;
     const y = across ? top : top - 2;
 
@@ -28,13 +34,13 @@ function GridSeparator({ char, col, row, direction }: GridSeparatorProps) {
   }
 
   if (char === '-') {
-    const width = across ? CELL_SIZE * 0.25 : 1;
-    const height = across ? 1 : CELL_SIZE * 0.25;
+    const width = across ? cellSize * 0.25 : 1;
+    const height = across ? 1 : cellSize * 0.25;
     const x = across
       ? left - 0.5 - width * 0.5
-      : left + CELL_SIZE * 0.5 + width * 0.5;
+      : left + cellSize * 0.5 + width * 0.5;
     const y = across
-      ? top + CELL_SIZE * 0.5 + height * 0.5
+      ? top + cellSize * 0.5 + height * 0.5
       : top - 0.5 - height * 0.5;
 
     return <rect width={width} height={height} x={x} y={y} />;
@@ -43,7 +49,12 @@ function GridSeparator({ char, col, row, direction }: GridSeparatorProps) {
   return <></>;
 }
 
-function getGridSeparator(char: ',' | '-', pos: number, clue: GuardianClue) {
+function getGridSeparator(
+  char: ',' | '-',
+  pos: number,
+  clue: GuardianClue,
+  cellSize: number,
+) {
   // don't show separators between split words i.e. in a group
   if (pos <= 0 || pos >= clue.length) {
     return null;
@@ -53,6 +64,7 @@ function getGridSeparator(char: ',' | '-', pos: number, clue: GuardianClue) {
   const y = clue.position.y + (clue.direction === 'across' ? 0 : pos);
   return (
     <GridSeparator
+      cellSize={cellSize}
       key={[x, y, clue.direction].join(',')}
       char={char}
       direction={clue.direction}
@@ -63,10 +75,11 @@ function getGridSeparator(char: ',' | '-', pos: number, clue: GuardianClue) {
 }
 
 interface GridSeparatorsProps {
+  cellSize: number;
   clues: GuardianClue[];
 }
 
-function GridSeparators({ clues }: GridSeparatorsProps) {
+function GridSeparators({ clues, cellSize }: GridSeparatorsProps) {
   return (
     <svg className="GridSeparators">
       {clues
@@ -78,13 +91,13 @@ function GridSeparators({ clues }: GridSeparatorsProps) {
 
           if (commas !== undefined) {
             separators.push(
-              commas.map((pos) => getGridSeparator(',', pos, clue)),
+              commas.map((pos) => getGridSeparator(',', pos, clue, cellSize)),
             );
           }
 
           if (hyphens !== undefined) {
             separators.push(
-              hyphens.map((pos) => getGridSeparator('-', pos, clue)),
+              hyphens.map((pos) => getGridSeparator('-', pos, clue, cellSize)),
             );
           }
 

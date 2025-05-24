@@ -221,8 +221,8 @@ test('it gets correct dimensions', () => {
   expect(yRect).toBe(1);
   expect(xNum).toBe(2);
   expect(yNum).toBe(10);
-  expect(xText).toBe(16.5);
-  expect(yText).toBe(21.925);
+  expect(xText).toBe(17);
+  expect(yText).toBe(22);
 
   const {
     xRect: xRect2,
@@ -240,6 +240,6 @@ test('it gets correct dimensions', () => {
   expect(yRect2).toBe(33);
   expect(xNum2).toBe(194);
   expect(yNum2).toBe(42);
-  expect(xText2).toBe(208.5);
-  expect(yText2).toBe(53.925);
+  expect(xText2).toBe(209);
+  expect(yText2).toBe(54);
 });

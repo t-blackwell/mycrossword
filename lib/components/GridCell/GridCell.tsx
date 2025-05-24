@@ -9,9 +9,9 @@ export const getDimensions = (cellSize: number, cellPos: CellPosition) => {
   const xRect = 1 + (cellSize + 1) * cellPos.col;
   const yRect = 1 + (cellSize + 1) * cellPos.row;
   const xNum = xRect + 1;
-  const yNum = yRect + cellSize * 0.29;
-  const xText = xRect + cellSize * 0.5;
-  const yText = yRect + cellSize * 0.675;
+  const yNum = yRect + Math.ceil(cellSize * 0.29);
+  const xText = xRect + Math.ceil(cellSize * 0.5);
+  const yText = yRect + Math.ceil(cellSize * 0.675);
 
   return { xRect, yRect, xNum, yNum, xText, yText };
 };
@@ -108,7 +108,7 @@ function GridCell({
           className={bem('GridCell__num')}
           x={xNum}
           y={yNum}
-          style={{ fontSize: Math.round(cellSize * 0.32) }}
+          style={{ fontSize: Math.ceil(cellSize * 0.32) }}
         >
           {num}
         </text>
@@ -118,7 +118,7 @@ function GridCell({
         textAnchor="middle"
         x={xText}
         y={yText}
-        style={{ fontSize: Math.round(cellSize * 0.55) }}
+        style={{ fontSize: Math.ceil(cellSize * 0.55) }}
       >
         {guess}
       </text>

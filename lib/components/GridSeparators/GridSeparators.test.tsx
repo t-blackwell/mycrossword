@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import data from '~/testData/test.valid.1';
 import GridSeparators from './GridSeparators';
+import { DEFAULT_CELL_SIZE } from '~/utils/general';
 
 interface RectProps {
   width: string;
@@ -16,7 +17,9 @@ test('it renders', () => {
     { width: '31', height: '1', x: '97', y: '127' },
   ];
 
-  const { container } = render(<GridSeparators clues={data.entries} />);
+  const { container } = render(
+    <GridSeparators cellSize={DEFAULT_CELL_SIZE} clues={data.entries} />,
+  );
 
   const rects = container.querySelectorAll('rect');
   expect(rects.length).toBe(3);

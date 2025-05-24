@@ -7,6 +7,7 @@ import { initialiseStores } from '~/utils/test';
 import Grid from './Grid';
 import { useCellsStore } from '~/stores/useCellsStore';
 import { useCluesStore } from '~/stores/useCluesStore';
+import { DEFAULT_CELL_SIZE } from '~/utils/general';
 
 const cellMatcher = /[A-Z]/;
 
@@ -64,6 +65,7 @@ function expectSelectionsAndRerender(
   rerenderFn(
     <Grid
       cellMatcher={cellMatcher}
+      cellSize={DEFAULT_CELL_SIZE}
       cells={getCells()}
       clues={getClues()}
       cols={testData.dimensions.cols}
@@ -84,6 +86,7 @@ describe.skip('all tests', () => {
     render(
       <Grid
         cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -110,6 +113,7 @@ describe.skip('all tests', () => {
     const { rerender } = render(
       <Grid
         cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -281,6 +285,7 @@ describe.skip('all tests', () => {
     const { rerender } = render(
       <Grid
         cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -702,6 +707,7 @@ describe.skip('all tests', () => {
     const { rerender } = render(
       <Grid
         cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -720,6 +726,7 @@ describe.skip('all tests', () => {
     rerender(
       <Grid
         cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -737,6 +744,7 @@ describe.skip('all tests', () => {
     rerender(
       <Grid
         cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
@@ -753,6 +761,7 @@ describe.skip('all tests', () => {
     rerender(
       <Grid
         cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}

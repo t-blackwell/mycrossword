@@ -1,5 +1,6 @@
 export const DEFAULT_HTML_TAGS = ['b', 'strong', 'i', 'em', 'sub', 'sup'];
 export const DEFAULT_CELL_MATCHER = /[A-Z]/;
+export const DEFAULT_CELL_SIZE = 31;
 
 export function isValidChar(char: string, matcher: RegExp) {
   if (char.length !== 1) {

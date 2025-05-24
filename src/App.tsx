@@ -125,6 +125,7 @@ function App() {
           allowedHtmlTags={
             showDefinitions ? ['u', ...ALLOWED_HTML_TAGS] : ALLOWED_HTML_TAGS
           }
+          cellSize={selectedCrosswordId === 'mini' ? 50 : 31}
           id={`example.${selectedCrosswordId}`}
           data={selectedCrossword.data}
           onComplete={() => setComplete(true)}

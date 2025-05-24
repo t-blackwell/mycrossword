@@ -1,5 +1,9 @@
 import userEvent from '@testing-library/user-event';
-import { DEFAULT_CELL_MATCHER, DEFAULT_HTML_TAGS } from '../../utils/general';
+import {
+  DEFAULT_CELL_MATCHER,
+  DEFAULT_CELL_SIZE,
+  DEFAULT_HTML_TAGS,
+} from '../../utils/general';
 import { GuessGrid } from '~/types';
 import invalidData from './../../testData/test.invalid.1';
 import validData from './../../testData/test.valid.1';
@@ -14,6 +18,7 @@ test('it renders', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       stickyClue="auto"
@@ -42,6 +47,7 @@ test('it displays error with invalid data', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={invalidData}
       id="test"
       stickyClue="auto"
@@ -76,6 +82,7 @@ test('it displays valid guess grid', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       loadGrid={guessGrid}
@@ -92,6 +99,7 @@ test('it displays error with invalid guess grid', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       loadGrid={{ value: [] }}
@@ -113,6 +121,7 @@ test.skip('it calls saveGrid', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       saveGrid={saveGrid}
@@ -147,6 +156,7 @@ test('it always shows sticky clue', async () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       stickyClue="always"
@@ -168,6 +178,7 @@ test('it never shows sticky clue', async () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       stickyClue="never"
@@ -191,6 +202,7 @@ test.skip('it conditionally shows sticky clue', async () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       stickyClue="auto"
@@ -211,6 +223,7 @@ test.skip('it conditionally shows sticky clue', async () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
       cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="test"
       stickyClue="auto"

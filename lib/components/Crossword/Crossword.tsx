@@ -14,7 +14,6 @@ import StickyClue from '~/components/StickyClue/StickyClue';
 import Grid from '~/components/Grid/Grid';
 import Clues from '~/components/Clues/Clues';
 import AnagramHelper from '~/components/AnagramHelper/AnagramHelper';
-import { CELL_SIZE } from '~/components/GridCell/GridCell';
 import useLocalStorage from '~/hooks/useLocalStorage/useLocalStorage';
 import { initialiseCells } from '~/utils/cell';
 import {
@@ -31,6 +30,7 @@ interface CrosswordProps {
   allowedHtmlTags: string[];
   allowMissingSolutions: boolean;
   cellMatcher: RegExp;
+  cellSize: number;
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;
@@ -45,6 +45,7 @@ export default function Crossword({
   allowedHtmlTags,
   allowMissingSolutions,
   cellMatcher,
+  cellSize,
   data,
   id,
   loadGrid,
@@ -202,17 +203,16 @@ export default function Crossword({
     }
   }
 
-  const gridHeight =
-    data.dimensions.rows * CELL_SIZE + data.dimensions.rows + 1;
-  const gridWidth = data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1;
+  const gridHeight = data.dimensions.rows * cellSize + data.dimensions.rows + 1;
+  const gridWidth = data.dimensions.cols * cellSize + data.dimensions.cols + 1;
 
   // Helper function for rendering grid errors
   function renderGridError(
     message: string,
     dimensions: { cols: number; rows: number },
   ) {
-    const gridHeight = dimensions.rows * CELL_SIZE + dimensions.rows + 1;
-    const gridWidth = dimensions.cols * CELL_SIZE + dimensions.cols + 1;
+    const gridHeight = dimensions.rows * cellSize + dimensions.rows + 1;
+    const gridWidth = dimensions.cols * cellSize + dimensions.cols + 1;
 
     return (
       <div className={bem('Crossword')}>
@@ -270,6 +270,7 @@ export default function Crossword({
               <Grid
                 cellMatcher={cellMatcher}
                 cells={storeCells}
+                cellSize={cellSize}
                 clues={storeClues}
                 cols={data.dimensions.cols}
                 guessGrid={guessGrid}

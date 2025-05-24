@@ -3,8 +3,9 @@ import { CellPosition } from '~/types';
 import testData from '~/testData/test.valid.1';
 import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/jest';
 import { initialiseStores } from '~/utils/test';
-import GridCell, { CELL_SIZE, getDimensions } from './GridCell';
+import GridCell, { getDimensions } from './GridCell';
 import { render } from '@testing-library/react';
+import { DEFAULT_CELL_SIZE } from '~/utils/general';
 
 const cellPos: CellPosition = { col: 0, row: 0 };
 
@@ -16,6 +17,7 @@ test('it renders', () => {
   const { container } = render(
     <svg>
       <GridCell
+        cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
         isHighlighted={false}
         isSelected={false}
@@ -25,7 +27,10 @@ test('it renders', () => {
     </svg>,
   );
 
-  const { xRect, yRect, xText, yText } = getDimensions(cellPos);
+  const { xRect, yRect, xText, yText } = getDimensions(
+    DEFAULT_CELL_SIZE,
+    cellPos,
+  );
 
   const groups = container.querySelectorAll('g');
   expect(groups.length).toBe(1);
@@ -36,8 +41,8 @@ test('it renders', () => {
   expect(rects.length).toBe(1);
   expect(rects[0]).toHaveAttribute('x', xRect.toString());
   expect(rects[0]).toHaveAttribute('y', yRect.toString());
-  expect(rects[0]).toHaveAttribute('width', CELL_SIZE.toString());
-  expect(rects[0]).toHaveAttribute('height', CELL_SIZE.toString());
+  expect(rects[0]).toHaveAttribute('width', DEFAULT_CELL_SIZE.toString());
+  expect(rects[0]).toHaveAttribute('height', DEFAULT_CELL_SIZE.toString());
 
   const text = container.querySelectorAll('text');
   expect(text.length).toBe(1);
@@ -50,6 +55,7 @@ test('it renders with num', () => {
   const { container } = render(
     <svg>
       <GridCell
+        cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
         isHighlighted={false}
         isSelected={false}
@@ -60,7 +66,10 @@ test('it renders with num', () => {
     </svg>,
   );
 
-  const { xNum, yNum, xText, yText } = getDimensions(cellPos);
+  const { xNum, yNum, xText, yText } = getDimensions(
+    DEFAULT_CELL_SIZE,
+    cellPos,
+  );
 
   const text = container.querySelectorAll('text');
   expect(text.length).toBe(2);
@@ -79,6 +88,7 @@ test('it renders with guess', () => {
   const { container } = render(
     <svg>
       <GridCell
+        cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
         isHighlighted={false}
         isSelected={false}
@@ -98,6 +108,7 @@ test('it renders highlighted', () => {
   const { container } = render(
     <svg>
       <GridCell
+        cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
         isHighlighted
         isSelected={false}
@@ -117,6 +128,7 @@ test('it renders selected', () => {
   const { container } = render(
     <svg>
       <GridCell
+        cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
         isHighlighted={false}
         isSelected
@@ -137,6 +149,7 @@ test('it calls onCellFocus on click', async () => {
   const { container } = render(
     <svg>
       <GridCell
+        cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
         isHighlighted={false}
         isSelected={false}
@@ -160,6 +173,7 @@ test('it throws with 0 clueIds', () => {
     render(
       <svg>
         <GridCell
+          cellSize={DEFAULT_CELL_SIZE}
           clueIds={[]}
           isHighlighted={false}
           isSelected
@@ -180,6 +194,7 @@ test('it throws with more than 2 clueIds', () => {
     render(
       <svg>
         <GridCell
+          cellSize={DEFAULT_CELL_SIZE}
           clueIds={['1-across', '1-down', 'something-else']}
           isHighlighted={false}
           isSelected
@@ -194,17 +209,20 @@ test('it throws with more than 2 clueIds', () => {
 });
 
 test('it gets correct dimensions', () => {
-  const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions({
-    col: 0,
-    row: 0,
-  });
+  const { xRect, yRect, xNum, yNum, xText, yText } = getDimensions(
+    DEFAULT_CELL_SIZE,
+    {
+      col: 0,
+      row: 0,
+    },
+  );
 
   expect(xRect).toBe(1);
   expect(yRect).toBe(1);
   expect(xNum).toBe(2);
   expect(yNum).toBe(10);
-  expect(xText).toBe(16.5);
-  expect(yText).toBe(21.925);
+  expect(xText).toBe(17);
+  expect(yText).toBe(22);
 
   const {
     xRect: xRect2,
@@ -213,7 +231,7 @@ test('it gets correct dimensions', () => {
     yNum: yNum2,
     xText: xText2,
     yText: yText2,
-  } = getDimensions({
+  } = getDimensions(DEFAULT_CELL_SIZE, {
     col: 6,
     row: 1,
   });
@@ -222,6 +240,6 @@ test('it gets correct dimensions', () => {
   expect(yRect2).toBe(33);
   expect(xNum2).toBe(194);
   expect(yNum2).toBe(42);
-  expect(xText2).toBe(208.5);
-  expect(yText2).toBe(53.925);
+  expect(xText2).toBe(209);
+  expect(yText2).toBe(54);
 });

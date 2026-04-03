@@ -86,11 +86,13 @@ export default function Controls({
           return;
         }
 
-        // Mark the cell as checked
+        // Mark the cell as checked only if it has a guess
         const updatedCells = cells.map((cell) => {
           if (
             cell.pos.col === selectedCell.pos.col &&
-            cell.pos.row === selectedCell.pos.row
+            cell.pos.row === selectedCell.pos.row &&
+            cell.guess !== undefined &&
+            cell.guess !== ''
           ) {
             return {
               ...cell,
@@ -114,7 +116,7 @@ export default function Controls({
       disabled: selectedClue === undefined,
       onClick: () => {
         if (selectedClue !== undefined) {
-          // Mark all cells in the clue as checked
+          // Mark all cells in the clue as checked only if they have a guess
           const groupCells = getGroupCells(selectedClue.group, cells);
           const updatedCells = cells.map((cell) => {
             const inGroup = groupCells.some(
@@ -122,7 +124,7 @@ export default function Controls({
                 groupCell.pos.col === cell.pos.col &&
                 groupCell.pos.row === cell.pos.row,
             );
-            if (inGroup) {
+            if (inGroup && cell.guess !== undefined && cell.guess !== '') {
               return {
                 ...cell,
                 checked: true,
@@ -299,11 +301,12 @@ export default function Controls({
           buttonText="Confirm check grid"
           onCancel={() => setShowCheckGridConfirm(false)}
           onConfirm={() => {
-            // Mark all cells as checked
-            const updatedCells = cells.map((cell) => ({
-              ...cell,
-              checked: true,
-            }));
+            // Mark all cells as checked only if they have a guess
+            const updatedCells = cells.map((cell) =>
+              cell.guess !== undefined && cell.guess !== ''
+                ? { ...cell, checked: true }
+                : cell,
+            );
 
             setCells(updatedCells);
 

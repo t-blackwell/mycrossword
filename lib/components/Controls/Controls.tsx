@@ -86,7 +86,7 @@ export default function Controls({
           return;
         }
 
-        // Mark the cell as checked and set isCorrect
+        // Mark the cell as checked
         const updatedCells = cells.map((cell) => {
           if (
             cell.pos.col === selectedCell.pos.col &&
@@ -95,11 +95,11 @@ export default function Controls({
             return {
               ...cell,
               checked: true,
-              isCorrect: cell.guess === cell.val,
             };
           }
           return cell;
         });
+
         setCells(updatedCells);
         updateGuessGrid(updatedCells);
 
@@ -114,7 +114,7 @@ export default function Controls({
       disabled: selectedClue === undefined,
       onClick: () => {
         if (selectedClue !== undefined) {
-          // Mark all cells in the clue as checked and set isCorrect
+          // Mark all cells in the clue as checked
           const groupCells = getGroupCells(selectedClue.group, cells);
           const updatedCells = cells.map((cell) => {
             const inGroup = groupCells.some(
@@ -126,7 +126,6 @@ export default function Controls({
               return {
                 ...cell,
                 checked: true,
-                isCorrect: cell.guess === cell.val,
               };
             }
             return cell;
@@ -300,12 +299,12 @@ export default function Controls({
           buttonText="Confirm check grid"
           onCancel={() => setShowCheckGridConfirm(false)}
           onConfirm={() => {
-            // Mark all cells as checked and set isCorrect
+            // Mark all cells as checked
             const updatedCells = cells.map((cell) => ({
               ...cell,
               checked: true,
-              isCorrect: cell.guess === cell.val,
             }));
+
             setCells(updatedCells);
 
             // check all clues to see if they need to be marked as unanswered

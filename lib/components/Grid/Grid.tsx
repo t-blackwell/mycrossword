@@ -520,7 +520,7 @@ export default function Grid({
           y="0"
         />
         {cells.map((cell) => {
-          const { clueIds, guess, num, pos, checked, isCorrect } = cell;
+          const { clueIds, guess, num, pos, checked, val } = cell;
           const isSelected = cellPositionMatches(pos, selectedCell?.pos);
           const isHighlighted = clueIds.some((clueId) =>
             selectedClue?.group.includes(clueId),
@@ -532,18 +532,18 @@ export default function Grid({
           return (
             <GridCell
               cellSize={cellSize}
+              checked={checked}
               clueIds={clueIds}
               guess={guess}
+              highlighted={isHighlighted}
               inputRef={inputRef}
-              isHighlighted={isHighlighted}
-              isSelected={isSelected}
               key={`${pos.col},${pos.row}`}
               num={num}
               onCellFocus={onCellFocus}
               pos={pos}
+              selected={isSelected}
               selectedClueIndex={selectedClueIndex}
-              checked={checked}
-              isCorrect={isCorrect}
+              val={val}
             />
           );
         })}

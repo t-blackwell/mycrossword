@@ -19,8 +19,8 @@ test('it renders', () => {
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
-        isHighlighted={false}
-        isSelected={false}
+        highlighted={false}
+        selected={false}
         pos={cellPos}
         selectedClueIndex={-1}
       />
@@ -57,8 +57,8 @@ test('it renders with num', () => {
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
-        isHighlighted={false}
-        isSelected={false}
+        highlighted={false}
+        selected={false}
         num={1}
         pos={cellPos}
         selectedClueIndex={-1}
@@ -90,8 +90,8 @@ test('it renders with guess', () => {
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
-        isHighlighted={false}
-        isSelected={false}
+        highlighted={false}
+        selected={false}
         pos={cellPos}
         selectedClueIndex={-1}
         guess={guess}
@@ -110,8 +110,8 @@ test('it renders highlighted', () => {
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
-        isHighlighted
-        isSelected={false}
+        highlighted
+        selected={false}
         pos={cellPos}
         selectedClueIndex={-1}
       />
@@ -130,8 +130,8 @@ test('it renders selected', () => {
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
-        isHighlighted={false}
-        isSelected
+        highlighted={false}
+        selected
         pos={cellPos}
         selectedClueIndex={-1}
       />
@@ -151,8 +151,8 @@ test('it calls onCellFocus on click', async () => {
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
         clueIds={['1-across']}
-        isHighlighted={false}
-        isSelected={false}
+        highlighted={false}
+        selected={false}
         onCellFocus={cellFocus}
         pos={cellPos}
         selectedClueIndex={-1}
@@ -175,8 +175,8 @@ test('it throws with 0 clueIds', () => {
         <GridCell
           cellSize={DEFAULT_CELL_SIZE}
           clueIds={[]}
-          isHighlighted={false}
-          isSelected
+          highlighted={false}
+          selected
           pos={cellPos}
           selectedClueIndex={-1}
         />
@@ -196,8 +196,8 @@ test('it throws with more than 2 clueIds', () => {
         <GridCell
           cellSize={DEFAULT_CELL_SIZE}
           clueIds={['1-across', '1-down', 'something-else']}
-          isHighlighted={false}
-          isSelected
+          highlighted={false}
+          selected
           pos={cellPos}
           selectedClueIndex={-1}
         />

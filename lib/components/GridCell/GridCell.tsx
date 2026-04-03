@@ -27,6 +27,8 @@ interface GridCellProps {
   onCellFocus?: (cellFocus: CellFocus) => void;
   pos: CellPosition;
   selectedClueIndex: number;
+  checked?: boolean;
+  isCorrect?: boolean;
 }
 
 function GridCell({
@@ -40,6 +42,8 @@ function GridCell({
   onCellFocus,
   pos,
   selectedClueIndex,
+  checked,
+  isCorrect,
 }: GridCellProps) {
   if (clueIds.length !== 1 && clueIds.length !== 2) {
     throw new Error(
@@ -93,6 +97,11 @@ function GridCell({
         'GridCell',
         isHighlighted ? 'GridCell--highlighted' : null,
         isSelected ? 'GridCell--selected' : null,
+        checked
+          ? isCorrect
+            ? 'GridCell--correct'
+            : 'GridCell--incorrect'
+          : null,
       )}
       onClick={updateSelectedCell}
     >

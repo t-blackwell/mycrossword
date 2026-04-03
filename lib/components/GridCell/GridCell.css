@@ -1,3 +1,10 @@
+/* Checked state coloring */
+.MyCrossword .GridCell--correct .GridCell__rect {
+  fill: #a5d6a7 !important; /* light green */
+}
+.MyCrossword .GridCell--incorrect .GridCell__rect {
+  fill: #ef9a9a !important; /* light red */
+}
 .MyCrossword .GridCell {
   fill: var(--grid-color);
   user-select: none;

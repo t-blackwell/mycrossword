@@ -94,6 +94,8 @@ export type Cell = {
   pos: CellPosition;
   selected: boolean;
   val: Char;
+  checked?: boolean; // true if cell has been checked
+  isCorrect?: boolean; // true if checked and correct, false if checked and incorrect
 };
 
 export type CellPosition = {

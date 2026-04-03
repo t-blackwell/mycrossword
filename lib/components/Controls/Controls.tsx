@@ -86,22 +86,26 @@ export default function Controls({
           return;
         }
 
+        // Mark the cell as checked and set isCorrect
+        const updatedCells = cells.map((cell) => {
+          if (
+            cell.pos.col === selectedCell.pos.col &&
+            cell.pos.row === selectedCell.pos.row
+          ) {
+            return {
+              ...cell,
+              checked: true,
+              isCorrect: cell.guess === cell.val,
+            };
+          }
+          return cell;
+        });
+        setCells(updatedCells);
+        updateGuessGrid(updatedCells);
+
+        // Optionally, clear incorrect guess (existing behavior)
         if (selectedCell.guess !== selectedCell.val) {
           cellChange(selectedCell, undefined);
-
-          // merge in selectedCell with its letter cleared
-          const updatedCells = mergeCell(
-            { ...selectedCell, guess: undefined },
-            cells,
-          );
-
-          setCells(updatedCells);
-
-          // mark across and/or down clue as unanswered
-          answerSomeClues(selectedCell.clueIds, false);
-
-          // update guesses in local storage
-          updateGuessGrid(updatedCells);
         }
       },
       text: 'Check letter',
@@ -110,36 +114,35 @@ export default function Controls({
       disabled: selectedClue === undefined,
       onClick: () => {
         if (selectedClue !== undefined) {
-          // handle cell changes
+          // Mark all cells in the clue as checked and set isCorrect
+          const groupCells = getGroupCells(selectedClue.group, cells);
+          const updatedCells = cells.map((cell) => {
+            const inGroup = groupCells.some(
+              (groupCell) =>
+                groupCell.pos.col === cell.pos.col &&
+                groupCell.pos.row === cell.pos.row,
+            );
+            if (inGroup) {
+              return {
+                ...cell,
+                checked: true,
+                isCorrect: cell.guess === cell.val,
+              };
+            }
+            return cell;
+          });
+          setCells(updatedCells);
+          updateAnsweredForCrossingClues(selectedClue, updatedCells);
+          updateGuessGrid(updatedCells);
+
+          // Optionally, clear incorrect guesses (existing behavior)
           if (onCellChange !== undefined) {
-            const groupCells = getGroupCells(selectedClue.group, cells);
             groupCells.forEach((cell) => {
               if (cell.guess !== undefined && cell.val !== cell.guess) {
                 cellChange(cell, undefined);
               }
             });
           }
-
-          const updatedCells = cells.map((cell) => {
-            const intersection = selectedClue.group.filter((clueId) =>
-              cell.clueIds.includes(clueId),
-            );
-
-            if (intersection.length > 0) {
-              return {
-                ...cell,
-                guess: cell.guess === cell.val ? cell.val : undefined,
-              };
-            }
-
-            return cell;
-          });
-
-          setCells(updatedCells);
-          updateAnsweredForCrossingClues(selectedClue, updatedCells);
-
-          // update guesses in local storage
-          updateGuessGrid(updatedCells);
         }
       },
       text: 'Check word',
@@ -297,20 +300,12 @@ export default function Controls({
           buttonText="Confirm check grid"
           onCancel={() => setShowCheckGridConfirm(false)}
           onConfirm={() => {
-            // handle cell changes
-            if (onCellChange !== undefined) {
-              cells.forEach((cell) => {
-                if (cell.guess !== undefined && cell.val !== cell.guess) {
-                  cellChange(cell, undefined);
-                }
-              });
-            }
-
+            // Mark all cells as checked and set isCorrect
             const updatedCells = cells.map((cell) => ({
               ...cell,
-              guess: cell.guess === cell.val ? cell.val : undefined,
+              checked: true,
+              isCorrect: cell.guess === cell.val,
             }));
-
             setCells(updatedCells);
 
             // check all clues to see if they need to be marked as unanswered
@@ -320,8 +315,6 @@ export default function Controls({
             });
 
             setShowCheckGridConfirm(false);
-
-            // update guesses in local storage
             updateGuessGrid(updatedCells);
           }}
         />

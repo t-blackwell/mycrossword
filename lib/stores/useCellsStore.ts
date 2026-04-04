@@ -67,6 +67,7 @@ export const useCellsStore = create<CellsStore>((set, get) => ({
         cells: state.cells.map((cell) => ({
           ...cell,
           guess: answered ? cell.val : undefined,
+          checked: false,
         })),
       };
     });

@@ -164,9 +164,9 @@ export default function Controls({
 
         cellChange(selectedCell, selectedCell.val);
 
-        // merge in selectedCell with its letter revealed
+        // merge in selectedCell with its letter revealed and checked: false
         const updatedCells = mergeCell(
-          { ...selectedCell, guess: selectedCell.val },
+          { ...selectedCell, guess: selectedCell.val, checked: false },
           cells,
         );
 
@@ -219,6 +219,7 @@ export default function Controls({
             return {
               ...cell,
               guess: cell.val,
+              checked: false,
             };
           }
 
@@ -354,6 +355,7 @@ export default function Controls({
             const updatedCells = cells.map((cell) => ({
               ...cell,
               guess: cell.val,
+              checked: false,
             }));
             updateGuessGrid(updatedCells);
           }}

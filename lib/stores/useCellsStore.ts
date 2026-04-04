@@ -27,7 +27,18 @@ export const useCellsStore = create<CellsStore>((set, get) => ({
     set({ complete: false });
   },
   setCells: (cells) => {
-    set(() => ({ cells }));
+    set((state) => ({
+      cells: cells.map((cell, i) => {
+        const prev = state.cells[i];
+
+        // If guess changed, uncheck
+        if (prev && prev.guess !== cell.guess) {
+          return { ...cell, checked: false };
+        }
+
+        return cell;
+      }),
+    }));
   },
   select: (pos) => {
     set((state) => {

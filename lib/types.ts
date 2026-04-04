@@ -88,13 +88,13 @@ export type Char =
   | '';
 
 export type Cell = {
+  checked?: boolean;
   clueIds: string[];
   guess?: Char;
   num?: number;
   pos: CellPosition;
   selected: boolean;
   val: Char;
-  checked?: boolean; // true if cell has been checked
 };
 
 export type CellPosition = {

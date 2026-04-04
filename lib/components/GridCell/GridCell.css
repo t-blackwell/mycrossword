@@ -116,6 +116,11 @@
 .MyCrossword .GridCell--incorrect .GridCell__num {
   fill: var(--error-color);
 }
+.GridCell__strikethrough {
+  stroke: var(--error-color);
+  stroke-width: 3px;
+  stroke-opacity: 0.25;
+}
 
 @keyframes shake {
   10%,

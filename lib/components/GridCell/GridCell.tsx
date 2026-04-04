@@ -122,6 +122,15 @@ function GridCell({
           {num}
         </text>
       ) : null}
+      {checked && guess !== val ? (
+        <line
+          className={bem('GridCell__strikethrough')}
+          x1={xRect + cellSize}
+          y1={yRect}
+          x2={xRect}
+          y2={yRect + cellSize}
+        />
+      ) : null}
       <text
         className={bem('GridCell__text')}
         textAnchor="middle"

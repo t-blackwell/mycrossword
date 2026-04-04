@@ -285,15 +285,7 @@ export default function Controls({
             );
 
             setCells(updatedCells);
-
-            // check all clues to see if they need to be marked as unanswered
-            clues.forEach((clue) => {
-              const populated = isCluePopulated(clue, updatedCells);
-              answerSomeClues(clue.group, populated);
-            });
-
             setShowCheckGridConfirm(false);
-            updateGuessGrid(updatedCells);
           }}
         />
       </div>

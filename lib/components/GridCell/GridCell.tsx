@@ -21,12 +21,14 @@ interface GridCellProps {
   clueIds: string[];
   guess?: Char;
   inputRef?: React.RefObject<HTMLInputElement>;
-  isHighlighted: boolean;
-  isSelected: boolean;
+  highlighted: boolean;
+  selected: boolean;
   num?: number;
   onCellFocus?: (cellFocus: CellFocus) => void;
   pos: CellPosition;
   selectedClueIndex: number;
+  checked?: boolean;
+  val?: Char;
 }
 
 function GridCell({
@@ -34,12 +36,14 @@ function GridCell({
   clueIds,
   guess,
   inputRef,
-  isHighlighted,
-  isSelected,
+  highlighted,
+  selected,
   num,
   onCellFocus,
   pos,
   selectedClueIndex,
+  checked,
+  val,
 }: GridCellProps) {
   if (clueIds.length !== 1 && clueIds.length !== 2) {
     throw new Error(
@@ -68,19 +72,19 @@ function GridCell({
     let index = selectedClueIndex === -1 ? 0 : selectedClueIndex;
 
     // highlight the other direction if clicking the selected cell more than once
-    if (clueIds.length === 2 && isSelected) {
+    if (clueIds.length === 2 && selected) {
       index = selectedClueIndex === 0 ? 1 : 0;
     }
 
     const clueId = clueIds[index];
     selectClue(clueId);
 
-    if (!isSelected) {
+    if (!selected) {
       selectCells(pos);
     }
 
     // cell focus has switched
-    if (!isSelected || clueIds.length === 2) {
+    if (!selected || clueIds.length === 2) {
       cellFocus(pos, clueId);
     }
 
@@ -91,8 +95,13 @@ function GridCell({
     <g
       className={bem(
         'GridCell',
-        isHighlighted ? 'GridCell--highlighted' : null,
-        isSelected ? 'GridCell--selected' : null,
+        highlighted ? 'GridCell--highlighted' : null,
+        selected ? 'GridCell--selected' : null,
+        checked
+          ? guess === val
+            ? 'GridCell--correct'
+            : 'GridCell--incorrect'
+          : null,
       )}
       onClick={updateSelectedCell}
     >
@@ -112,6 +121,15 @@ function GridCell({
         >
           {num}
         </text>
+      ) : null}
+      {checked && guess !== val ? (
+        <line
+          className={bem('GridCell__strikethrough')}
+          x1={xRect + cellSize}
+          y1={yRect}
+          x2={xRect}
+          y2={yRect + cellSize}
+        />
       ) : null}
       <text
         className={bem('GridCell__text')}

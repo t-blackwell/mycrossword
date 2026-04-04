@@ -393,7 +393,7 @@ export default function Grid({
         guess: undefined,
       };
 
-      const updatedCells = mergeCell(updatedCell, cells);
+      const updatedCells = mergeCell({ newCell: updatedCell, cells });
       setCells(updatedCells);
 
       // mark clue(s) as unanswered (ones in group and crossing)
@@ -450,7 +450,7 @@ export default function Grid({
         guess: key as Char,
       };
 
-      const updatedCells = mergeCell(updatedCell, cells);
+      const updatedCells = mergeCell({ newCell: updatedCell, cells });
 
       // overwrite the cell's value
       setCells(updatedCells);
@@ -519,7 +519,8 @@ export default function Grid({
           x="0"
           y="0"
         />
-        {cells.map(({ clueIds, guess, num, pos }) => {
+        {cells.map((cell) => {
+          const { clueIds, guess, num, pos, checked, val } = cell;
           const isSelected = cellPositionMatches(pos, selectedCell?.pos);
           const isHighlighted = clueIds.some((clueId) =>
             selectedClue?.group.includes(clueId),
@@ -531,16 +532,18 @@ export default function Grid({
           return (
             <GridCell
               cellSize={cellSize}
+              checked={checked}
               clueIds={clueIds}
               guess={guess}
+              highlighted={isHighlighted}
               inputRef={inputRef}
-              isHighlighted={isHighlighted}
-              isSelected={isSelected}
               key={`${pos.col},${pos.row}`}
               num={num}
               onCellFocus={onCellFocus}
               pos={pos}
+              selected={isSelected}
               selectedClueIndex={selectedClueIndex}
+              val={val}
             />
           );
         })}

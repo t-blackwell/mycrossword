@@ -92,3 +92,52 @@
 .MyCrossword--blueGreyTheme .GridCell--selected .GridCell__rect {
   fill: var(--theme-blue-grey-700);
 }
+/** Checked styles **/
+.MyCrossword .GridCell--correct .GridCell__rect {
+  fill: var(--success-background);
+  transition: fill 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.MyCrossword .GridCell--correct .GridCell__text {
+  fill: var(--success-color);
+  font-weight: bold;
+}
+.MyCrossword .GridCell--correct .GridCell__num {
+  fill: var(--success-color);
+}
+.MyCrossword .GridCell--incorrect .GridCell__rect {
+  fill: var(--error-background);
+  transition: fill 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.MyCrossword .GridCell--incorrect .GridCell__text {
+  fill: var(--error-color);
+  font-weight: bold;
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+.MyCrossword .GridCell--incorrect .GridCell__num {
+  fill: var(--error-color);
+}
+.GridCell__strikethrough {
+  stroke: var(--error-color);
+  stroke-width: 3px;
+  stroke-opacity: 0.25;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-3px);
+  }
+  40%,
+  60% {
+    transform: translateX(3px);
+  }
+}

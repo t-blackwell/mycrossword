@@ -8,6 +8,8 @@ import { act, render, screen } from '@testing-library/react';
 import { useCellsStore } from '~/stores/useCellsStore';
 import { useCluesStore } from '~/stores/useCluesStore';
 
+const FIRST_SOLUTION = 'YOYO';
+
 function getLocalStorageGuessGrid(): GuessGrid {
   const str = localStorage.getItem(data.id);
 
@@ -115,8 +117,6 @@ test('it checks incorrect letter', async () => {
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe(gridChar);
 
-  const cellChange = jest.fn();
-
   render(
     <Controls
       cells={useCellsStore.getState().cells}
@@ -125,7 +125,6 @@ test('it checks incorrect letter', async () => {
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
       setGuessGrid={setLocalStorageGuessGrid}
-      onCellChange={cellChange}
       solutionsAvailable
     />,
   );
@@ -137,22 +136,18 @@ test('it checks incorrect letter', async () => {
   expect(menuItem).toBeEnabled();
   await userEvent.click(menuItem);
 
-  expect(cellChange).toHaveBeenCalledTimes(1);
-
-  // check the incorrect 'X' has been removed from the cells
+  // check the incorrect 'X' has been marked as checked
   const firstCell = useCellsStore
     .getState()
     .cells.find(
       (cell) =>
         cell.pos.col === firstCellPos.col && cell.pos.row === firstCellPos.row,
     );
-  expect(firstCell).toBeDefined();
-  expect(firstCell?.guess).toBeUndefined();
 
-  // check the incorrect 'X' has been removed from the local storage
-  expect(
-    getLocalStorageGuessGrid().value[firstCellPos.col][firstCellPos.row],
-  ).toBe('');
+  expect(firstCell).toBeDefined();
+  expect(firstCell?.checked).toBe(true);
+  expect(firstCell?.guess).toBe(gridChar);
+  expect(firstCell?.val).toBe(FIRST_SOLUTION[0]);
 });
 
 test('it checks correct letter', async () => {
@@ -175,8 +170,6 @@ test('it checks correct letter', async () => {
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe(gridChar);
 
-  const cellChange = jest.fn();
-
   render(
     <Controls
       cells={useCellsStore.getState().cells}
@@ -184,7 +177,6 @@ test('it checks correct letter', async () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
-      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -197,8 +189,6 @@ test('it checks correct letter', async () => {
   expect(menuItem).toBeEnabled();
   await userEvent.click(menuItem);
 
-  expect(cellChange).toHaveBeenCalledTimes(0);
-
   // check the correct 'Y' (solution = YO-YO) has been kept in the cells
   const firstCell = useCellsStore
     .getState()
@@ -206,13 +196,11 @@ test('it checks correct letter', async () => {
       (cell) =>
         cell.pos.col === firstCellPos.col && cell.pos.row === firstCellPos.row,
     );
-  expect(firstCell).toBeDefined();
-  expect(firstCell?.guess).toBe(gridChar);
 
-  // check the letter has been kept in local storage
-  expect(
-    getLocalStorageGuessGrid().value[firstCellPos.col][firstCellPos.row],
-  ).toBe(gridChar);
+  expect(firstCell).toBeDefined();
+  expect(firstCell?.checked).toBe(true);
+  expect(firstCell?.guess).toBe(gridChar);
+  expect(firstCell?.val).toBe(FIRST_SOLUTION[0]);
 });
 
 test('it checks word', async () => {
@@ -230,8 +218,6 @@ test('it checks word', async () => {
   useCellsStore.getState().select({ col: 0, row: 0 });
   useCluesStore.getState().select('1-across');
 
-  const cellChange = jest.fn();
-
   render(
     <Controls
       cells={useCellsStore.getState().cells}
@@ -239,7 +225,6 @@ test('it checks word', async () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
-      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -252,24 +237,16 @@ test('it checks word', async () => {
   expect(menuItem).toBeEnabled();
   await userEvent.click(menuItem);
 
-  expect(cellChange).toHaveBeenCalledTimes(2);
-
-  // check the word YO-YO ... Ys should remain, Os should be undefined
-  const solution = 'YOYO';
-  const localStorageGuessGrid = getLocalStorageGuessGrid();
-  for (let i = 0; i < 4; i += 1) {
+  for (let i = 0; i < FIRST_SOLUTION.length; i += 1) {
     // check cells in store
     const currentCell = useCellsStore
       .getState()
       .cells.find((cell) => cell.pos.col === i && cell.pos.row === 0);
-    expect(currentCell).toBeDefined();
-    expect(currentCell?.guess).toBe(
-      solution[i] === gridChar ? gridChar : undefined,
-    );
 
-    // check cells in local storage
-    const currentCellLs = localStorageGuessGrid.value[i][0];
-    expect(currentCellLs).toBe(solution[i] === gridChar ? gridChar : '');
+    expect(currentCell).toBeDefined();
+    expect(currentCell?.checked).toBe(true);
+    expect(currentCell?.guess).toBe(gridChar);
+    expect(currentCell?.val).toBe(FIRST_SOLUTION[i]);
   }
 });
 
@@ -284,8 +261,6 @@ test('it checks grid', async () => {
   setLocalStorageGuessGrid(initGrid);
   initialiseStores(data, getLocalStorageGuessGrid());
 
-  const cellChange = jest.fn();
-
   render(
     <Controls
       cells={useCellsStore.getState().cells}
@@ -293,7 +268,6 @@ test('it checks grid', async () => {
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={jest.fn}
-      onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -312,19 +286,11 @@ test('it checks grid', async () => {
   });
   await userEvent.click(confirmButton);
 
-  expect(cellChange).toHaveBeenCalledTimes(21); // 23 - 2 (two Ws)
-
-  const guessGrid = getLocalStorageGuessGrid();
-
-  // traverse cells and check they've all been cleared exc two (YELLO*W* & LIEDO*W*N)
+  // traverse cells and check they've all been marked as checked
   useCellsStore.getState().cells.forEach((cell) => {
-    if (cell.guess === gridChar) {
-      expect(cell.guess).toBe(gridChar);
-      expect(guessGrid.value[cell.pos.col][cell.pos.row]).toBe(gridChar);
-    } else {
-      expect(cell.guess).toBeUndefined();
-      expect(guessGrid.value[cell.pos.col][cell.pos.row]).toBe('');
-    }
+    expect(cell).toBeDefined();
+    expect(cell?.checked).toBe(true);
+    expect(cell?.guess).toBe(gridChar);
   });
 });
 

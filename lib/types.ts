@@ -88,6 +88,7 @@ export type Char =
   | '';
 
 export type Cell = {
+  checked?: boolean;
   clueIds: string[];
   guess?: Char;
   num?: number;

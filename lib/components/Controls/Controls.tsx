@@ -104,11 +104,6 @@ export default function Controls({
 
         setCells(updatedCells);
         updateGuessGrid(updatedCells);
-
-        // Optionally, clear incorrect guess (existing behavior)
-        if (selectedCell.guess !== selectedCell.val) {
-          cellChange(selectedCell, undefined);
-        }
       },
       text: 'Check letter',
     },
@@ -135,15 +130,6 @@ export default function Controls({
           setCells(updatedCells);
           updateAnsweredForCrossingClues(selectedClue, updatedCells);
           updateGuessGrid(updatedCells);
-
-          // Optionally, clear incorrect guesses (existing behavior)
-          if (onCellChange !== undefined) {
-            groupCells.forEach((cell) => {
-              if (cell.guess !== undefined && cell.val !== cell.guess) {
-                cellChange(cell, undefined);
-              }
-            });
-          }
         }
       },
       text: 'Check word',

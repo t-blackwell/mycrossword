@@ -86,20 +86,10 @@ export default function Controls({
           return;
         }
 
-        // Mark the cell as checked only if it has a guess
-        const updatedCells = cells.map((cell) => {
-          if (
-            cell.pos.col === selectedCell.pos.col &&
-            cell.pos.row === selectedCell.pos.row &&
-            cell.guess !== undefined &&
-            cell.guess !== ''
-          ) {
-            return {
-              ...cell,
-              checked: true,
-            };
-          }
-          return cell;
+        const updatedCells = mergeCell({
+          cells,
+          newCell: { ...selectedCell, checked: true },
+          when: (cell) => cell.guess !== undefined && cell.guess !== '',
         });
 
         setCells(updatedCells);
@@ -151,10 +141,10 @@ export default function Controls({
         cellChange(selectedCell, selectedCell.val);
 
         // merge in selectedCell with its letter revealed and checked: false
-        const updatedCells = mergeCell(
-          { ...selectedCell, guess: selectedCell.val, checked: false },
+        const updatedCells = mergeCell({
+          newCell: { ...selectedCell, guess: selectedCell.val, checked: false },
           cells,
-        );
+        });
 
         setCells(updatedCells);
 

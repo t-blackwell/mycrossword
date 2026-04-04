@@ -393,7 +393,7 @@ export default function Grid({
         guess: undefined,
       };
 
-      const updatedCells = mergeCell(updatedCell, cells);
+      const updatedCells = mergeCell({ newCell: updatedCell, cells });
       setCells(updatedCells);
 
       // mark clue(s) as unanswered (ones in group and crossing)
@@ -450,7 +450,7 @@ export default function Grid({
         guess: key as Char,
       };
 
-      const updatedCells = mergeCell(updatedCell, cells);
+      const updatedCells = mergeCell({ newCell: updatedCell, cells });
 
       // overwrite the cell's value
       setCells(updatedCells);

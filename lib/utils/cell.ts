@@ -1,8 +1,20 @@
 import { Cell, CellPosition, Char, GuardianClue, GuessGrid } from '~/types';
 
-export function mergeCell(newCell: Cell, cells: Cell[]) {
+export function mergeCell({
+  cells,
+  newCell,
+  when,
+}: {
+  cells: Cell[];
+  newCell: Cell;
+  when?: (cell: Cell) => boolean;
+}) {
   return cells.map((cell) => {
-    if (cell.pos.col === newCell.pos.col && cell.pos.row === newCell.pos.row) {
+    if (
+      cell.pos.col === newCell.pos.col &&
+      cell.pos.row === newCell.pos.row &&
+      (when === undefined || when(cell))
+    ) {
       return newCell;
     }
 

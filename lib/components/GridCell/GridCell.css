@@ -1,10 +1,3 @@
-/* Checked state coloring */
-.MyCrossword .GridCell--correct .GridCell__rect {
-  fill: #a5d6a7 !important; /* light green */
-}
-.MyCrossword .GridCell--incorrect .GridCell__rect {
-  fill: #ef9a9a !important; /* light red */
-}
 .MyCrossword .GridCell {
   fill: var(--grid-color);
   user-select: none;
@@ -98,4 +91,19 @@
 }
 .MyCrossword--blueGreyTheme .GridCell--selected .GridCell__rect {
   fill: var(--theme-blue-grey-700);
+}
+/** Checked styles **/
+.MyCrossword .GridCell--correct .GridCell__rect {
+  fill: var(--success-background);
+}
+.MyCrossword .GridCell--correct .GridCell__text {
+  fill: var(--success-color);
+  font-weight: bold;
+}
+.MyCrossword .GridCell--incorrect .GridCell__rect {
+  fill: var(--error-background);
+}
+.MyCrossword .GridCell--incorrect .GridCell__text {
+  fill: var(--error-color);
+  font-weight: bold;
 }

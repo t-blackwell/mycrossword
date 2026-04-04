@@ -87,6 +87,13 @@
   --theme-blue-grey-700: #455a64;
   --theme-blue-grey-100: #cfd8dc;
 
+  /** Checked styles **/
+  --success-color: #1b5e20; /* green-900 */
+  --success-background: #a5d6a7; /* green-200 */
+
+  --error-color: #b71c1c; /* red-900 */
+  --error-background: #ef9a9a; /* red-200 */
+
   font-family: var(--font-family);
   font-size: var(--font-size);
   -webkit-font-smoothing: subpixel-antialiased;

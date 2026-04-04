@@ -93,7 +93,6 @@ export default function Controls({
         });
 
         setCells(updatedCells);
-        updateGuessGrid(updatedCells);
       },
       text: 'Check letter',
     },
@@ -109,6 +108,7 @@ export default function Controls({
                 groupCell.pos.col === cell.pos.col &&
                 groupCell.pos.row === cell.pos.row,
             );
+
             if (inGroup && cell.guess !== undefined && cell.guess !== '') {
               return {
                 ...cell,
@@ -117,9 +117,8 @@ export default function Controls({
             }
             return cell;
           });
+
           setCells(updatedCells);
-          updateAnsweredForCrossingClues(selectedClue, updatedCells);
-          updateGuessGrid(updatedCells);
         }
       },
       text: 'Check word',

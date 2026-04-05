@@ -1,0 +1,35 @@
+.SkipOrContinue {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--grid-size) * 0.5);
+  background: none;
+  border: none;
+  cursor: default;
+  padding: 0;
+  font-size: 14px;
+  color: inherit;
+  transition: cursor 0.2s;
+}
+.SkipOrContinue--waiting .SkipOrContinue__label {
+  transition: opacity 0.2s;
+  opacity: 0.6;
+}
+.SkipOrContinue--ready {
+  cursor: pointer;
+}
+.SkipOrContinue--ready .SkipOrContinue__label {
+  opacity: 1;
+}
+.SkipOrContinue__counter {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 12px;
+  background-color: var(--grid-background);
+  color: var(--grid-foreground);
+  flex-shrink: 0;
+}

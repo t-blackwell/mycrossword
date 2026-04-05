@@ -128,8 +128,8 @@ function App() {
           cellSize={selectedCrosswordId === 'mini' ? 50 : 31}
           id={`example.${selectedCrosswordId}`}
           intro={{
-            node: <span>This is an intro!</span>,
-            timeout: 10_000,
+            node: <span className="Page__advert">ADVERTISEMENT</span>,
+            timeout: 3_000,
           }}
           data={selectedCrossword.data}
           onComplete={() => setComplete(true)}

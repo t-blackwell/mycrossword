@@ -1,0 +1,9 @@
+.Intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--grid-size) * 3);
+  min-height: calc(var(--grid-size) * 28);
+  padding: calc(var(--grid-size) * 2);
+}

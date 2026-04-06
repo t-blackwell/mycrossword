@@ -3,7 +3,8 @@ import { getBem } from '~/utils/bem';
 import SkipOrContinue from './CountdownOrContinue';
 import './Intro.css';
 
-// TODO: update readme
+// TODO: bump version
+// TODO: update deps
 
 export interface IntroProps {
   continueLabel?: string;

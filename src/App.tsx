@@ -129,7 +129,7 @@ function App() {
           id={`example.${selectedCrosswordId}`}
           intro={{
             node: <span className="Page__advert">advertisement</span>,
-            timeout: 3_000,
+            countdown: { seconds: 3 },
           }}
           data={selectedCrossword.data}
           onComplete={() => setComplete(true)}

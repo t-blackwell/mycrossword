@@ -1,39 +1,45 @@
 import { getBem } from '~/utils/bem';
-import './SkipOrContinue.css';
+import './CountdownOrContinue.css';
 
-const bem = getBem('SkipOrContinue');
+const bem = getBem('CountdownOrContinue');
 
-interface SkipOrContinueProps {
+interface CountdownOrContinueProps {
   canContinue: boolean;
+  continueLabel?: string;
   countdown: number;
+  countdownLabel?: string;
   onContinue: () => void;
 }
 
-export default function SkipOrContinue({
+export default function CountdownOrContinue({
   canContinue,
+  continueLabel = 'Continue to crossword',
   countdown,
+  countdownLabel = 'Skip in',
   onContinue,
-}: SkipOrContinueProps) {
+}: CountdownOrContinueProps) {
   return (
     <button
       className={bem(
-        'SkipOrContinue',
-        canContinue ? 'SkipOrContinue--ready' : 'SkipOrContinue--waiting',
+        'CountdownOrContinue',
+        canContinue
+          ? 'CountdownOrContinue--ready'
+          : 'CountdownOrContinue--waiting',
       )}
       type="button"
       onClick={() => canContinue && onContinue()}
       disabled={!canContinue}
       aria-label={
-        canContinue ? 'Continue to crossword' : `Skip in ${countdown}`
+        canContinue ? continueLabel : `${countdownLabel} ${countdown}`
       }
     >
-      <span className={bem('SkipOrContinue__label')}>
-        {canContinue ? 'Continue to crossword' : 'Skip in'}
+      <span className={bem('CountdownOrContinue__label')}>
+        {canContinue ? continueLabel : countdownLabel}
       </span>
       <div
         className={bem(
-          'SkipOrContinue__counter',
-          canContinue ? 'SkipOrContinue__counter--ready' : undefined,
+          'CountdownOrContinue__counter',
+          canContinue ? 'CountdownOrContinue__counter--ready' : undefined,
         )}
       >
         {canContinue ? (

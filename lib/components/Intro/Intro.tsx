@@ -3,8 +3,6 @@ import { getBem } from '~/utils/bem';
 import SkipOrContinue from './CountdownOrContinue';
 import './Intro.css';
 
-// TODO: update deps
-
 export interface IntroProps {
   continueLabel?: string;
   countdown?: {

@@ -127,6 +127,10 @@ function App() {
           }
           cellSize={selectedCrosswordId === 'mini' ? 50 : 31}
           id={`example.${selectedCrosswordId}`}
+          intro={{
+            node: <span className="Page__advert">advertisement</span>,
+            countdown: { seconds: 3 },
+          }}
           data={selectedCrossword.data}
           onComplete={() => setComplete(true)}
           theme={theme}

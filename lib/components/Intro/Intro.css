@@ -1,0 +1,17 @@
+.Intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--grid-size) * 3);
+  min-height: calc(var(--grid-size) * 29);
+  min-width: calc(var(--grid-size) * 29);
+  max-width: calc(var(--grid-size) * 72);
+  padding: calc(var(--grid-size) * 1);
+}
+.Intro__content {
+  display: flex;
+  min-height: calc(var(--grid-size) * 26);
+  background-color: var(--faint-grey5);
+  width: 100%;
+}

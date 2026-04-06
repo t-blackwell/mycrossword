@@ -62,11 +62,11 @@ h6 {
   line-height: 1.2;
 }
 .Page__advert {
-  color: #999;
+  display: inline-flex;
+  margin: auto;
+  color: #aaa;
   border: 1px solid #ccc;
-  padding: 6px 16px;
-  border-radius: 2px;
-  font-size: 0.75rem;
+  padding: 8px 16px;
+  font-size: 0.875rem;
   text-align: center;
-  letter-spacing: 0.1rem;
 }

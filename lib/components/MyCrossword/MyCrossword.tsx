@@ -75,9 +75,12 @@ export default function MyCrossword({
     return (
       <div
         className={classNames(
-          bem('MyCrossword', `MyCrossword--${theme}Theme`),
+          bem(
+            'MyCrossword',
+            `MyCrossword--${theme}Theme`,
+            'MyCrossword--showIntro',
+          ),
           className,
-          'MyCrossword-intro',
         )}
       >
         <Intro

@@ -128,7 +128,7 @@ function App() {
           cellSize={selectedCrosswordId === 'mini' ? 50 : 31}
           id={`example.${selectedCrosswordId}`}
           intro={{
-            node: <span className="Page__advert">ADVERTISEMENT</span>,
+            node: <span className="Page__advert">advertisement</span>,
             timeout: 3_000,
           }}
           data={selectedCrossword.data}

@@ -1,6 +1,7 @@
 .SkipOrContinue {
   display: flex;
   align-items: center;
+  align-self: flex-end;
   gap: calc(var(--grid-size) * 0.5);
   background: none;
   border: none;
@@ -21,13 +22,13 @@
   opacity: 1;
 }
 .SkipOrContinue__counter {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 12px;
   background-color: var(--grid-background);
   color: var(--grid-foreground);

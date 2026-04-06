@@ -99,6 +99,11 @@
   -webkit-font-smoothing: subpixel-antialiased;
   box-sizing: content-box;
 }
+.MyCrossword--showIntro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .MyCrossword sup {
   vertical-align: baseline;
   position: relative;

@@ -63,50 +63,41 @@ export default function MyCrossword({
     setShowIntro(false);
   };
 
-  if (showIntro && intro) {
-    return (
-      <div
-        className={classNames(
-          bem(
-            'MyCrossword',
-            `MyCrossword--${theme}Theme`,
-            'MyCrossword--showIntro',
-          ),
-          className,
-        )}
-      >
+  return (
+    <div
+      className={classNames(
+        bem(
+          'MyCrossword',
+          `MyCrossword--${theme}Theme`,
+          showIntro && intro !== undefined ? 'MyCrossword--showIntro' : null,
+        ),
+        className,
+      )}
+    >
+      {showIntro && intro !== undefined ? (
         <Intro
           node={intro.node}
           countdown={intro.countdown}
           continueLabel={intro.continueLabel}
           onContinue={handleIntroContinue}
         />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={classNames(
-        bem('MyCrossword', `MyCrossword--${theme}Theme`),
-        className,
+      ) : (
+        <Crossword
+          allowedHtmlTags={allowedHtmlTags}
+          allowMissingSolutions={allowMissingSolutions}
+          cellMatcher={cellMatcher}
+          cellSize={cellSize}
+          data={data}
+          id={id}
+          key={id}
+          loadGrid={loadGrid}
+          onCellChange={onCellChange}
+          onCellFocus={onCellFocus}
+          onComplete={onComplete}
+          saveGrid={saveGrid}
+          stickyClue={stickyClue}
+        />
       )}
-    >
-      <Crossword
-        allowedHtmlTags={allowedHtmlTags}
-        allowMissingSolutions={allowMissingSolutions}
-        cellMatcher={cellMatcher}
-        cellSize={cellSize}
-        data={data}
-        id={id}
-        key={id}
-        loadGrid={loadGrid}
-        onCellChange={onCellChange}
-        onCellFocus={onCellFocus}
-        onComplete={onComplete}
-        saveGrid={saveGrid}
-        stickyClue={stickyClue}
-      />
     </div>
   );
 }

@@ -3,6 +3,9 @@ import { getBem } from '~/utils/bem';
 import SkipOrContinue from './SkipOrContinue';
 import './Intro.css';
 
+// TODO: add continue and skip text props (default "Continue to crossword" and "Skip in") and i18n support
+// TODO: update readme
+
 export interface IntroProps {
   node: React.ReactNode;
   timeout?: number; // ms

@@ -10,16 +10,11 @@
   font-size: 14px;
   color: inherit;
   transition: cursor 0.2s;
-}
-.SkipOrContinue--waiting .SkipOrContinue__label {
-  transition: opacity 0.2s;
-  opacity: 0.6;
+  user-select: none;
 }
 .SkipOrContinue--ready {
   cursor: pointer;
-}
-.SkipOrContinue--ready .SkipOrContinue__label {
-  opacity: 1;
+  animation: 0.8s fadeIn ease-in-out;
 }
 .SkipOrContinue__counter {
   width: 22px;
@@ -33,4 +28,13 @@
   background-color: var(--grid-background);
   color: var(--grid-foreground);
   flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

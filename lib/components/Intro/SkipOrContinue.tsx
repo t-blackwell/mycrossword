@@ -36,7 +36,28 @@ export default function SkipOrContinue({
           canContinue ? 'SkipOrContinue__counter--ready' : undefined,
         )}
       >
-        <span>{canContinue ? '>' : countdown}</span>
+        {canContinue ? (
+          // chevron right icon '>'
+          <svg
+            aria-hidden="true"
+            fill="none"
+            focusable="false"
+            height="16"
+            viewBox="0 0 16 16"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 4l4 4-4 4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : (
+          <span>{countdown}</span>
+        )}
       </div>
     </button>
   );

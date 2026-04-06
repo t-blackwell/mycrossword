@@ -58,6 +58,7 @@ export default function Intro({
         handleClearTimer();
       }
     }, 250);
+
     return () => {
       handleClearTimer();
     };

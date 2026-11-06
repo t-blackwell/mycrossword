@@ -50,6 +50,8 @@ test('it renders', async () => {
   expect(reset).toBeDisabled();
   const shuffle = screen.getByRole('button', { name: 'Shuffle' });
   expect(shuffle).toBeDisabled();
+  const arrangement = screen.getByRole('button', { name: 'Row' });
+  expect(arrangement).toBeDisabled();
 
   // check close button calls function
   const close = screen.getByRole('button', { name: 'Close' });
@@ -63,6 +65,7 @@ test('it renders', async () => {
   screen.getByText('4/4');
   expect(reset).toBeEnabled();
   expect(shuffle).toBeEnabled();
+  expect(arrangement).toBeEnabled();
 
   // shuffle letters into word wheel
   await userEvent.click(shuffle);
@@ -78,6 +81,22 @@ test('it renders', async () => {
   expect(screen.getAllByText('X').length).toBe(2);
   expect(screen.getAllByText('Y').length).toBe(2);
   expect(screen.getAllByText('Z').length).toBe(2);
+
+  // switch to a row, which shows the letters in typed order
+  await userEvent.click(arrangement);
+  expect(arrangement).toHaveTextContent('Wheel');
+  screen.getByRole('group', { name: 'Letter tiles: W X Y Z' });
+
+  // shuffling the row keeps it a row
+  await userEvent.click(shuffle);
+  expect(arrangement).toHaveTextContent('Wheel');
+  expect(
+    screen.queryByRole('group', { name: 'Letter tiles: W X Y Z' }),
+  ).toBeNull();
+
+  // switch back to a wheel
+  await userEvent.click(arrangement);
+  expect(arrangement).toHaveTextContent('Row');
 
   // reset buttons and input
   await userEvent.click(reset);

@@ -46,6 +46,10 @@
   --outline-button-border: var(--faint-grey1);
   --outline-button-color: rgba(0, 0, 0, 0.87);
 
+  --anagram-tile-background: #f1dfb8;
+  --anagram-tile-edge: #c9a96e;
+  --anagram-tile-color: #3a2c17;
+
   --scrollbar-track-background: #f1f1f1;
   --scrollbar-thumb-background: #c1c1c1;
   --scrollbar-thumb-hover: #a8a8a8;

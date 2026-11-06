@@ -46,12 +46,14 @@ export default function AnagramHelper({
 
   const shuffle = () => {
     if (letters !== '') {
-      setLetters((prev) =>
-        prev
-          .split('')
-          .sort(() => 0.5 - Math.random())
-          .join(''),
-      );
+      setLetters((prev) => {
+        const letterArray = prev.split('');
+        for (let i = letterArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [letterArray[i], letterArray[j]] = [letterArray[j], letterArray[i]];
+        }
+        return letterArray.join('');
+      });
 
       setShuffling(true);
       buttonRef.current?.focus({ preventScroll: true });

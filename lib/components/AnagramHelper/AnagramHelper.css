@@ -108,7 +108,7 @@
     font-size: var(--font-size-small);
     padding: calc(var(--grid-size) * 0.6);
   }
-  .MyCrossword .AnagramHelper .WordWheel {
+  .MyCrossword .AnagramHelper .LetterTiles {
     display: none;
   }
   .MyCrossword .AnagramHelper__top {
@@ -125,8 +125,7 @@
     margin: calc(var(--grid-size) * 0.5) 0;
     line-height: calc(var(--grid-size) * 1.8);
   }
-  .MyCrossword .AnagramHelper .SolutionDisplay__letter {
-    height: calc(var(--grid-size) * 1.2);
-    min-width: calc(var(--grid-size) * 1.2);
+  .MyCrossword .AnagramHelper .SolutionDisplay {
+    --SolutionDisplay-tileSize: calc(var(--grid-size) * 2);
   }
 }

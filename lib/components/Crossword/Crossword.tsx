@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { initialiseGuessGrid, validateGuessGrid } from '~/utils/guess';
 import {
+  getGuessGrid,
+  initialiseGuessGrid,
+  validateGuessGrid,
+} from '~/utils/guess';
+import {
+  Cell,
   CellChange,
   CellFocus,
   CellPosition,
+  Char,
   GuardianCrossword,
   GuessGrid,
 } from '~/types';
@@ -15,12 +21,14 @@ import Grid from '~/components/Grid/Grid';
 import Clues from '~/components/Clues/Clues';
 import AnagramHelper from '~/components/AnagramHelper/AnagramHelper';
 import useLocalStorage from '~/hooks/useLocalStorage/useLocalStorage';
-import { initialiseCells } from '~/utils/cell';
+import { initialiseCells, mergeCell } from '~/utils/cell';
 import {
   getGroupCells,
   getGroupSeparators,
   initialiseClues,
+  isCluePopulated,
 } from '~/utils/clue';
+import { isValidChar } from '~/utils/general';
 import { getBem } from '~/utils/bem';
 import Controls from '~/components/Controls/Controls';
 import useLocationHash from '~/hooks/useLocationHash/useLocationHash';
@@ -72,6 +80,7 @@ export default function Crossword({
   const setClues = useCluesStore((store) => store.setClues);
   const selectCells = useCellsStore((store) => store.select);
   const selectClue = useCluesStore((store) => store.select);
+  const answerSomeClues = useCluesStore((store) => store.answerSome);
   const checkComplete = useCellsStore((store) => store.checkComplete);
   const resetComplete = useCellsStore((store) => store.resetComplete);
 
@@ -172,6 +181,64 @@ export default function Crossword({
     [storeClues, selectClue, selectCells, cellFocus],
   );
 
+  // set (or clear) a cell's letter from outside the grid, e.g. the anagram
+  // helper, keeping the clues, saved grid and callbacks up to date. Returns
+  // whether the letter was accepted.
+  const setCellGuess = (cell: Cell, guess: Char | undefined) => {
+    if (guess !== undefined && !isValidChar(guess, cellMatcher)) {
+      return false;
+    }
+
+    const cells = useCellsStore.getState().cells;
+    const currentCell = cells.find(
+      (c) => c.pos.col === cell.pos.col && c.pos.row === cell.pos.row,
+    );
+
+    if (currentCell === undefined) {
+      return false;
+    }
+
+    if ((currentCell.guess || undefined) === guess) {
+      return true;
+    }
+
+    if (onCellChange !== undefined) {
+      onCellChange({
+        pos: currentCell.pos,
+        guess,
+        previousGuess: currentCell.guess,
+      });
+    }
+
+    const updatedCells = mergeCell({
+      cells,
+      newCell: { ...currentCell, guess },
+    });
+
+    setCells(updatedCells);
+
+    // mark the cell's clues as answered (or not)
+    currentCell.clueIds.forEach((clueId) => {
+      const clue = storeClues.find((c) => c.id === clueId);
+
+      if (clue !== undefined) {
+        answerSomeClues(clue.group, isCluePopulated(clue, updatedCells));
+      }
+    });
+
+    (saveGrid ?? setGuessGrid)(
+      getGuessGrid(data.dimensions.cols, data.dimensions.rows, updatedCells),
+    );
+
+    if (guess !== undefined && onComplete !== undefined) {
+      if (checkComplete() === true) {
+        onComplete();
+      }
+    }
+
+    return true;
+  };
+
   // Validate overriding guess grid if defined
   if (
     loadGrid !== undefined &&
@@ -243,6 +310,7 @@ export default function Crossword({
               clue={parentClue}
               groupCells={getGroupCells(parentClue.group, storeCells)}
               groupSeparators={getGroupSeparators(parentClue.group, storeClues)}
+              onCellGuess={setCellGuess}
               onClose={() => setIsAnagramHelperOpen(false)}
               style={{
                 height: gridHeight,
@@ -273,7 +341,21 @@ export default function Crossword({
                 cellSize={cellSize}
                 clues={storeClues}
                 cols={data.dimensions.cols}
-                guessGrid={guessGrid}
+                guessGrid={
+                  // with custom persistence the local guess grid isn't kept
+                  // up to date, so start from the current cells; otherwise
+                  // remounting (e.g. after the anagram helper) would save a
+                  // stale grid over them
+                  saveGrid !== undefined
+                    ? storeCells.length > 0
+                      ? getGuessGrid(
+                          data.dimensions.cols,
+                          data.dimensions.rows,
+                          storeCells,
+                        )
+                      : (loadGrid ?? guessGrid)
+                    : guessGrid
+                }
                 inputRef={inputRef}
                 onCellChange={onCellChange}
                 onCellFocus={onCellFocus}

@@ -1,21 +1,70 @@
 .MyCrossword .SolutionDisplay {
+  --SolutionDisplay-tileSize: calc(var(--grid-size) * 3);
+
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  row-gap: calc(var(--grid-size) * 0.4);
+}
+.MyCrossword .SolutionDisplay__cell {
+  position: relative;
+  display: flex;
+  margin-right: calc(var(--grid-size) * 0.3);
+}
+.MyCrossword .SolutionDisplay__cell:last-child {
+  margin-right: 0;
+}
+.MyCrossword .SolutionDisplay__cell--hasSpace {
+  margin-right: calc(var(--grid-size) * 1.5);
+}
+.MyCrossword .SolutionDisplay__cell--hasHyphen {
+  margin-right: calc(var(--grid-size) * 1.4);
+}
+.MyCrossword .SolutionDisplay__cell--hasHyphen::after {
+  position: absolute;
+  content: '';
+  top: 50%;
+  right: calc(var(--grid-size) * -1.1);
+  width: calc(var(--grid-size) * 0.8);
+  height: 2px;
+  margin-top: -1px;
+  background-color: var(--grid-color);
 }
 .MyCrossword .SolutionDisplay__letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--SolutionDisplay-tileSize);
+  height: var(--SolutionDisplay-tileSize);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--outline-button-border);
+  border-radius: calc(var(--SolutionDisplay-tileSize) * 0.12);
+  background-color: var(--grid-foreground);
   color: var(--grid-color);
-  border: 1px solid var(--light-grey);
-  padding: calc(var(--grid-size) * 0.4);
-  margin-top: calc(var(--grid-size) * 0.4);
-  margin-right: calc(var(--grid-size) * 0.2);
-  min-width: calc(var(--grid-size) * 1.5);
-  height: calc(var(--grid-size) * 1.5);
+  font-family: inherit;
+  font-size: calc(var(--SolutionDisplay-tileSize) * 0.5);
+  line-height: 1;
+  text-align: center;
   text-transform: uppercase;
   user-select: none;
-  box-sizing: content-box;
-  line-height: 1.2;
+}
+.MyCrossword input.SolutionDisplay__letter {
+  caret-color: transparent;
+  cursor: text;
+  outline: none;
+}
+.MyCrossword input.SolutionDisplay__letter::selection {
+  background: transparent;
+}
+.MyCrossword input.SolutionDisplay__letter:focus {
+  border-color: var(--button-background);
+  box-shadow: 0 0 0 1px var(--button-background);
+}
+.MyCrossword .SolutionDisplay__letter--auto {
+  color: var(--grey);
 }
 .MyCrossword .SolutionDisplay__letter--populated {
   background-color: var(--faint-grey3);
@@ -25,18 +74,4 @@
   color: red;
   border-color: red;
   background-color: rgba(255, 0, 0, 0.1);
-}
-.MyCrossword .SolutionDisplay__letter--hasSpace {
-  margin-right: calc(var(--grid-size) * 1.5);
-}
-.MyCrossword .SolutionDisplay__letter--hasHyphen {
-  position: relative;
-}
-.MyCrossword .SolutionDisplay__letter--hasHyphen::after {
-  position: absolute;
-  content: '—';
-  top: calc(var(--grid-size) * 0.5);
-  left: calc(var(--grid-size) * 2);
-  font-size: var(--font-size-small);
-  font-weight: bold;
 }

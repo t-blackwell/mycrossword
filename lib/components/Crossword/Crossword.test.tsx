@@ -8,6 +8,7 @@ import { GuessGrid } from '~/types';
 import invalidData from './../../testData/test.invalid.1';
 import validData from './../../testData/test.valid.1';
 import Crossword from './Crossword';
+import { useCellsStore } from '~/stores/useCellsStore';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 
 const DEBOUNCE_TIME = 1000;
@@ -232,4 +233,135 @@ test.skip('it conditionally shows sticky clue', async () => {
 
   const lgStickyClue = document.querySelector('.StickyClue');
   expect(lgStickyClue).toBeNull();
+});
+
+test('the anagram helper enters letters in the grid', async () => {
+  const onCellChange = jest.fn();
+  const saveGrid = jest.fn();
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="anagram-test"
+      onCellChange={onCellChange}
+      saveGrid={saveGrid}
+      stickyClue="auto"
+    />,
+  );
+
+  // open the anagram helper for 1 across and shuffle some letters
+  await userEvent.click(screen.getByText('Toy on a string (2-2)'));
+  await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
+  await userEvent.type(screen.getByPlaceholderText('Enter letters...'), 'oyoy');
+  await userEvent.click(screen.getByRole('button', { name: 'Shuffle' }));
+  saveGrid.mockClear();
+
+  // type into the first solution box
+  await userEvent.type(screen.getByLabelText('Letter 1'), 'y');
+
+  const getFirstCell = () =>
+    useCellsStore
+      .getState()
+      .cells.find((cell) => cell.pos.col === 0 && cell.pos.row === 0);
+
+  expect(getFirstCell()?.guess).toBe('Y');
+  expect(onCellChange).toHaveBeenLastCalledWith(
+    expect.objectContaining({ pos: { col: 0, row: 0 }, guess: 'Y' }),
+  );
+  expect(saveGrid).toHaveBeenCalledTimes(1);
+  expect(saveGrid.mock.calls[0][0].value[0][0]).toBe('Y');
+  expect(screen.getByLabelText('Letter 1')).toHaveValue('Y');
+
+  // clearing the box clears the cell
+  await userEvent.clear(screen.getByLabelText('Letter 1'));
+  expect(getFirstCell()?.guess).toBeUndefined();
+});
+
+test('the anagram helper enters letters in the grid before shuffling', async () => {
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="anagram-test-2"
+      saveGrid={jest.fn()}
+      stickyClue="never"
+    />,
+  );
+
+  await userEvent.click(screen.getByText('Toy on a string (2-2)'));
+  await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
+  await userEvent.type(screen.getByLabelText('Letter 2'), 'o');
+
+  const cell = useCellsStore
+    .getState()
+    .cells.find((c) => c.pos.col === 1 && c.pos.row === 0);
+
+  expect(cell?.guess).toBe('O');
+  expect(screen.getByLabelText('Letter 2')).toHaveValue('O');
+
+  // the letters input is still there
+  screen.getByPlaceholderText('Enter letters...');
+});
+
+test("the anagram helper doesn't move on from a rejected letter", async () => {
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="anagram-test-3"
+      saveGrid={jest.fn()}
+      stickyClue="never"
+    />,
+  );
+
+  await userEvent.click(screen.getByText('Toy on a string (2-2)'));
+  await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
+
+  // 1 isn't allowed by the default cell matcher
+  await userEvent.type(screen.getByLabelText('Letter 1'), '1y');
+
+  const getCell = (col: number) =>
+    useCellsStore
+      .getState()
+      .cells.find((c) => c.pos.col === col && c.pos.row === 0);
+
+  expect(getCell(0)?.guess).toBe('Y');
+  expect(getCell(1)?.guess).toBeUndefined();
+  expect(screen.getByLabelText('Letter 2')).toHaveFocus();
+});
+
+test("closing the anagram helper doesn't save a stale grid", async () => {
+  const saveGrid = jest.fn();
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="anagram-test-4"
+      saveGrid={saveGrid}
+      stickyClue="never"
+    />,
+  );
+
+  await userEvent.click(screen.getByText('Toy on a string (2-2)'));
+  await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
+  await userEvent.type(screen.getByLabelText('Letter 1'), 'y');
+  await userEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+  // the remounted grid saves the current letters, not a stale snapshot
+  const lastSaved = saveGrid.mock.calls[saveGrid.mock.calls.length - 1][0];
+  expect(lastSaved.value[0][0]).toBe('Y');
 });

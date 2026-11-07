@@ -1,8 +1,10 @@
 import * as React from 'react';
 import ClueDisplay from './ClueDisplay';
 import SolutionDisplay from './SolutionDisplay';
-import WordWheel from './WordWheel';
-import { Cell, Clue, SeparatorLocations } from '~/types';
+import LetterTiles from './LetterTiles';
+import { shuffleChanged, typedOrder } from './layout';
+import { getSolutionBoxes, getUsedLetters } from './solution';
+import { Cell, Char, Clue, SeparatorLocations } from '~/types';
 import Button from '~/components/Button/Button';
 import { getBem } from '~/utils/bem';
 import CloseIcon from '~/icons/CloseIcon';
@@ -13,6 +15,8 @@ interface AnagramHelperProps {
   clue: Clue;
   groupCells: Cell[];
   groupSeparators: SeparatorLocations;
+  /** Set (or clear) a cell's letter in the grid; returns false if rejected */
+  onCellGuess?: (cell: Cell, guess: Char | undefined) => boolean;
   onClose: () => void;
   style?: React.CSSProperties;
 }
@@ -22,6 +26,7 @@ export default function AnagramHelper({
   clue,
   groupCells,
   groupSeparators,
+  onCellGuess,
   onClose,
   style,
 }: AnagramHelperProps) {
@@ -30,8 +35,16 @@ export default function AnagramHelper({
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [letters, setLetters] = React.useState('');
   const [shuffling, setShuffling] = React.useState(false);
-  const enableButtons = letters !== '' || shuffling;
+  // indices into tileLetters, in wheel order
+  const [order, setOrder] = React.useState<number[]>([]);
+  const tileLetters = letters.toUpperCase().replace(/\s/g, '');
+  const arrangedLetters = order.map((i) => tileLetters[i]).join('');
+  const enableButtons = tileLetters !== '' || shuffling;
   const solutionLength = groupCells.length;
+  const solutionBoxes = getSolutionBoxes(
+    groupCells.map((cell) => cell.guess),
+    shuffling ? arrangedLetters : '',
+  );
 
   React.useEffect(() => {
     if (!shuffling) {
@@ -41,20 +54,15 @@ export default function AnagramHelper({
 
   const reset = () => {
     setLetters('');
+    setOrder([]);
     setShuffling(false);
   };
 
   const shuffle = () => {
-    if (letters !== '') {
-      setLetters((prev) => {
-        const letterArray = prev.split('');
-        for (let i = letterArray.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [letterArray[i], letterArray[j]] = [letterArray[j], letterArray[i]];
-        }
-        return letterArray.join('');
-      });
-
+    if (tileLetters !== '') {
+      setOrder(
+        shuffleChanged(shuffling ? order : typedOrder(tileLetters.length)),
+      );
       setShuffling(true);
       buttonRef.current?.focus({ preventScroll: true });
     }
@@ -87,9 +95,10 @@ export default function AnagramHelper({
       </Button>
       <div className={bem('AnagramHelper__top')}>
         {shuffling ? (
-          <WordWheel
-            letters={letters}
-            populatedLetters={groupCells.map((cell) => cell.guess).join('')}
+          <LetterTiles
+            letters={tileLetters}
+            order={order}
+            usedLetters={getUsedLetters(solutionBoxes)}
           />
         ) : (
           <>
@@ -159,8 +168,17 @@ export default function AnagramHelper({
           />
         </p>
         <SolutionDisplay
+          boxes={solutionBoxes}
           cells={groupCells}
-          letters={letters}
+          onEdit={
+            onCellGuess !== undefined
+              ? (index, letter) =>
+                  onCellGuess(
+                    groupCells[index],
+                    letter !== '' ? (letter as Char) : undefined,
+                  )
+              : undefined
+          }
           separators={groupSeparators}
           shuffling={shuffling}
         />

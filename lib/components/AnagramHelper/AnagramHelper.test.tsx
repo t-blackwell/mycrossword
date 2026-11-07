@@ -23,13 +23,15 @@ test('it renders', async () => {
     useCluesStore.getState().clues,
   );
   const onClose = jest.fn();
+  const onCellGuess = jest.fn(() => true);
 
-  render(
+  const { rerender } = render(
     <AnagramHelper
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       clue={oneAcross}
       groupCells={groupCells}
       groupSeparators={groupSeparators}
+      onCellGuess={onCellGuess}
       onClose={onClose}
     />,
   );
@@ -44,6 +46,11 @@ test('it renders', async () => {
   // input should be empty
   const input = screen.getByPlaceholderText('Enter letters...');
   expect(input).toHaveValue('');
+
+  // solution boxes can be typed in before any letters are entered
+  await userEvent.type(screen.getByLabelText('Letter 1'), 'y');
+  expect(onCellGuess).toHaveBeenLastCalledWith(groupCells[0], 'Y');
+  onCellGuess.mockClear();
 
   // buttons should be disabled
   const reset = screen.getByRole('button', { name: 'Reset' });
@@ -73,11 +80,41 @@ test('it renders', async () => {
   // check clue is now a single string
   screen.getByText('Toy on a string (2-2)');
 
-  // check characters appear twice (word wheel and solution)
-  expect(screen.getAllByText('W').length).toBe(2);
-  expect(screen.getAllByText('X').length).toBe(2);
-  expect(screen.getAllByText('Y').length).toBe(2);
-  expect(screen.getAllByText('Z').length).toBe(2);
+  // there's no row/wheel toggle
+  expect(screen.queryByRole('button', { name: 'Row' })).toBeNull();
+
+  // check characters appear in the wheel and the solution boxes
+  ['W', 'X', 'Y', 'Z'].forEach((letter) => {
+    screen.getByText(letter);
+    screen.getByDisplayValue(letter);
+  });
+
+  // typing in a solution box enters the letter in the grid
+  const boxes = screen.getAllByRole('textbox') as HTMLInputElement[];
+  await userEvent.type(boxes[0], 'z');
+  expect(onCellGuess).toHaveBeenLastCalledWith(groupCells[0], 'Z');
+
+  // the grid letter then shows in the box and fades on the wheel
+  rerender(
+    <AnagramHelper
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      clue={oneAcross}
+      groupCells={groupCells.map((cell, i) =>
+        i === 0 ? { ...cell, guess: 'Z' } : cell,
+      )}
+      groupSeparators={groupSeparators}
+      onCellGuess={onCellGuess}
+      onClose={onClose}
+    />,
+  );
+  expect(screen.getAllByRole('textbox')[0]).toHaveValue('Z');
+  expect(screen.getByText('Z').parentElement).toHaveClass(
+    'LetterTiles__tile--used',
+  );
+
+  // and stays put when shuffling
+  await userEvent.click(shuffle);
+  expect(screen.getAllByRole('textbox')[0]).toHaveValue('Z');
 
   // reset buttons and input
   await userEvent.click(reset);
@@ -98,8 +135,9 @@ test('it renders', async () => {
   // check W isn't include this time
   expect(screen.queryByText('W')).toBeNull();
 
-  // check characters appear twice (word wheel and solution)
-  expect(screen.getAllByText('X').length).toBe(2);
-  expect(screen.getAllByText('Y').length).toBe(2);
-  expect(screen.getAllByText('Z').length).toBe(2);
+  // check characters appear in the wheel and the solution boxes
+  ['X', 'Y', 'Z'].forEach((letter) => {
+    screen.getByText(letter);
+    screen.getByDisplayValue(letter);
+  });
 });

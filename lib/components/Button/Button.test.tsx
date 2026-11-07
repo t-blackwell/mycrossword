@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import Button from './Button';
 
 test('it renders', async () => {
-  const onClick = jest.fn();
+  const onClick = vi.fn();
 
   render(<Button onClick={onClick}>test</Button>);
 
@@ -16,7 +16,7 @@ test('it renders', async () => {
 
 test('it renders outlined', () => {
   render(
-    <Button onClick={jest.fn} variant="outlined">
+    <Button onClick={vi.fn()} variant="outlined">
       test
     </Button>,
   );
@@ -26,7 +26,7 @@ test('it renders outlined', () => {
 });
 
 test('it renders disabled', async () => {
-  const onClick = jest.fn();
+  const onClick = vi.fn();
 
   render(
     <Button disabled onClick={onClick}>
@@ -43,7 +43,7 @@ test('it renders disabled', async () => {
 
 test('it renders with aria label', () => {
   render(
-    <Button ariaLabel="close" onClick={jest.fn} variant="outlined">
+    <Button ariaLabel="close" onClick={vi.fn()} variant="outlined">
       X
     </Button>,
   );

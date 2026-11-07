@@ -20,3 +20,13 @@ export function initialiseStores(
   useCellsStore.setState({ cells });
   useCluesStore.setState({ clues });
 }
+
+type ConsoleMessageType = 'info' | 'log' | 'debug' | 'warn' | 'error';
+
+export function suppressConsoleMessage(type: ConsoleMessageType) {
+  vi.spyOn(console, type).mockImplementation(() => vi.fn());
+}
+
+export function restoreConsoleMessage(type: ConsoleMessageType) {
+  vi.spyOn(console, type).mockRestore();
+}

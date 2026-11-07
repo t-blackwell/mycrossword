@@ -76,7 +76,7 @@ test('it lets the user type into the boxes while shuffling', async () => {
   const cells = getCells(['1-across']).map((cell, i) =>
     i === 0 ? { ...cell, guess: cell.val } : cell,
   );
-  const onEdit = jest.fn(() => true);
+  const onEdit = vi.fn(() => true);
 
   render(
     <SolutionDisplay
@@ -193,7 +193,7 @@ test('the boxes can be edited before shuffling', async () => {
   const cells = getCells(['1-across']).map((cell, i) =>
     i === 0 ? { ...cell, guess: cell.val } : cell,
   );
-  const onEdit = jest.fn(() => true);
+  const onEdit = vi.fn(() => true);
 
   render(
     <SolutionDisplay
@@ -220,7 +220,7 @@ test('the boxes can be edited before shuffling', async () => {
 
 test("focus stays put when a letter isn't accepted", async () => {
   const cells = getCells(['1-across']);
-  const onEdit = jest.fn((_index: number, letter: string) => letter !== '1');
+  const onEdit = vi.fn((_index: number, letter: string) => letter !== '1');
 
   render(
     <SolutionDisplay

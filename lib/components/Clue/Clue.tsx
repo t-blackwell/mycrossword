@@ -11,9 +11,9 @@ interface ClueProps {
   allowedHtmlTags: string[];
   answered: boolean;
   col: number;
-  containerRef?: React.RefObject<HTMLDivElement>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
   id: string;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
   isHighlighted: boolean;
   num: string;
   onCellFocus?: (cellFocus: CellFocus) => void;

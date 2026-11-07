@@ -118,7 +118,7 @@ export function decodeHtmlEntities(html: string): string {
       if (!isNaN(code)) {
         try {
           return String.fromCodePoint(code);
-        } catch (e) {
+        } catch {
           // Return the original entity if the code point is invalid
           return entity;
         }

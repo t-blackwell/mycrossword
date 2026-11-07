@@ -20,7 +20,7 @@ interface GridCellProps {
   cellSize: number;
   clueIds: string[];
   guess?: Char;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
   highlighted: boolean;
   selected: boolean;
   num?: number;

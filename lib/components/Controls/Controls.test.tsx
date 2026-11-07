@@ -4,7 +4,7 @@ import data from '~/testData/test.valid.1';
 import { initialiseGuessGrid } from '~/utils/guess';
 import { initialiseStores } from '~/utils/test';
 import Controls from './Controls';
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useCellsStore } from '~/stores/useCellsStore';
 import { useCluesStore } from '~/stores/useCluesStore';
 
@@ -37,8 +37,8 @@ test('it renders', () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
-      setGuessGrid={jest.fn}
+      onAnagramHelperClick={vi.fn()}
+      setGuessGrid={vi.fn()}
       solutionsAvailable
     />,
   );
@@ -56,8 +56,8 @@ test('it renders without solution controls', () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
-      setGuessGrid={jest.fn}
+      onAnagramHelperClick={vi.fn()}
+      setGuessGrid={vi.fn()}
       solutionsAvailable={false}
     />,
   );
@@ -72,30 +72,7 @@ test('it renders without solution controls', () => {
   screen.getByRole('button', { name: 'Anagram helper' });
 });
 
-// TODO: fix media query test (::after text not found)
-test.skip('it renders with shorter button text', () => {
-  act(() => {
-    window.innerWidth = 500;
-    window.dispatchEvent(new Event('resize'));
-  });
-
-  render(
-    <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
-      gridCols={data.dimensions.cols}
-      gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
-      setGuessGrid={jest.fn}
-      solutionsAvailable={false}
-    />,
-  );
-
-  screen.getByRole('button', { name: 'Anag.' });
-  expect(
-    screen.queryByRole('button', { name: 'Anagram helper' }),
-  ).not.toBeInTheDocument();
-});
+// see Controls.browser.test.tsx for the responsive button text tests
 
 test('it checks incorrect letter', async () => {
   // initialise guess grid with X characters
@@ -123,7 +100,7 @@ test('it checks incorrect letter', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -176,7 +153,7 @@ test('it checks correct letter', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -224,7 +201,7 @@ test('it checks word', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -267,7 +244,7 @@ test('it checks grid', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
     />,
@@ -312,7 +289,7 @@ test('it reveals letter', async () => {
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe('');
 
-  const cellChange = jest.fn();
+  const cellChange = vi.fn();
 
   render(
     <Controls
@@ -320,7 +297,7 @@ test('it reveals letter', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
@@ -368,7 +345,7 @@ test('it reveals word', async () => {
   useCellsStore.getState().select(firstCellPos);
   useCluesStore.getState().select('1-across');
 
-  const cellChange = jest.fn();
+  const cellChange = vi.fn();
 
   render(
     <Controls
@@ -376,7 +353,7 @@ test('it reveals word', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
@@ -420,7 +397,7 @@ test('it reveals grid', async () => {
   setLocalStorageGuessGrid(initGrid);
   initialiseStores(data, getLocalStorageGuessGrid());
 
-  const cellChange = jest.fn();
+  const cellChange = vi.fn();
 
   render(
     <Controls
@@ -428,7 +405,7 @@ test('it reveals grid', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
@@ -474,7 +451,7 @@ test('it clears word', async () => {
   useCellsStore.getState().select({ col: 0, row: 0 });
   useCluesStore.getState().select('1-across');
 
-  const cellChange = jest.fn();
+  const cellChange = vi.fn();
 
   render(
     <Controls
@@ -482,7 +459,7 @@ test('it clears word', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
@@ -531,7 +508,7 @@ test('it clears grid', async () => {
   setLocalStorageGuessGrid(initGrid);
   initialiseStores(data, getLocalStorageGuessGrid());
 
-  const cellChange = jest.fn();
+  const cellChange = vi.fn();
 
   render(
     <Controls
@@ -539,7 +516,7 @@ test('it clears grid', async () => {
       clues={useCluesStore.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
-      onAnagramHelperClick={jest.fn}
+      onAnagramHelperClick={vi.fn()}
       onCellChange={cellChange}
       setGuessGrid={setLocalStorageGuessGrid}
       solutionsAvailable
@@ -578,7 +555,7 @@ test('it calls function on anagram helper button click', async () => {
   setLocalStorageGuessGrid(initGrid);
   initialiseStores(data, getLocalStorageGuessGrid());
 
-  const onAnagramHelperClick = jest.fn();
+  const onAnagramHelperClick = vi.fn();
 
   // mark first cell and clue as selected
   useCellsStore.getState().select({ col: 0, row: 0 });

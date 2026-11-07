@@ -71,7 +71,7 @@ test('it renders highlighted', () => {
 
 test('it selects clue', async () => {
   initialiseStores(testData);
-  const cellFocus = jest.fn();
+  const cellFocus = vi.fn();
 
   render(
     <Clue

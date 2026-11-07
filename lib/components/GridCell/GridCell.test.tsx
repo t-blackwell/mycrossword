@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { CellPosition } from '~/types';
 import testData from '~/testData/test.valid.1';
-import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/jest';
+import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/test';
 import { initialiseStores } from '~/utils/test';
 import GridCell, { getDimensions } from './GridCell';
 import { render } from '@testing-library/react';
@@ -145,7 +145,7 @@ test('it renders selected', () => {
 });
 
 test('it calls onCellFocus on click', async () => {
-  const cellFocus = jest.fn();
+  const cellFocus = vi.fn();
   const { container } = render(
     <svg>
       <GridCell

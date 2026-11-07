@@ -1,14 +1,14 @@
 import * as React from 'react';
 import Clue from '~/components/Clue/Clue';
 import { CellFocus, Clue as ClueType } from '~/types';
-import './Clues.css';
 import useBreakpoint from '~/hooks/useBreakpoint/useBreakpoint';
+import './Clues.css';
 
 interface CluesProps {
   allowedHtmlTags: string[];
   entries: ClueType[];
   gridHeight: number;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
   onCellFocus?: (cellFocus: CellFocus) => void;
   selectedClueId?: string;
 }

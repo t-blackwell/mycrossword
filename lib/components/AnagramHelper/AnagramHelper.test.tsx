@@ -22,8 +22,8 @@ test('it renders', async () => {
     ['1-across'],
     useCluesStore.getState().clues,
   );
-  const onClose = jest.fn();
-  const onCellGuess = jest.fn(() => true);
+  const onClose = vi.fn();
+  const onCellGuess = vi.fn(() => true);
 
   const { rerender } = render(
     <AnagramHelper

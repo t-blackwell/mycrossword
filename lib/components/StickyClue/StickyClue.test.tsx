@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { DEFAULT_HTML_TAGS } from '~/utils/general';
@@ -9,8 +8,8 @@ test('it renders', () => {
     <StickyClue
       allowedTags={DEFAULT_HTML_TAGS}
       num="num"
-      onMoveNext={jest.fn}
-      onMovePrev={jest.fn}
+      onMoveNext={vi.fn()}
+      onMovePrev={vi.fn()}
       show="always"
       text="one & <strong>two</strong>"
     />,
@@ -28,8 +27,8 @@ test('it renders empty', () => {
   render(
     <StickyClue
       allowedTags={DEFAULT_HTML_TAGS}
-      onMoveNext={jest.fn}
-      onMovePrev={jest.fn}
+      onMoveNext={vi.fn()}
+      onMovePrev={vi.fn()}
       show="always"
     />,
   );
@@ -38,13 +37,13 @@ test('it renders empty', () => {
 });
 
 test('it calls onMoveNext', async () => {
-  const onMove = jest.fn();
+  const onMove = vi.fn();
   render(
     <StickyClue
       allowedTags={DEFAULT_HTML_TAGS}
       num="num"
       onMoveNext={onMove}
-      onMovePrev={jest.fn}
+      onMovePrev={vi.fn()}
       show="always"
       text="text"
     />,
@@ -56,12 +55,12 @@ test('it calls onMoveNext', async () => {
 });
 
 test('it calls onMovePrev', async () => {
-  const onMove = jest.fn();
+  const onMove = vi.fn();
   render(
     <StickyClue
       allowedTags={DEFAULT_HTML_TAGS}
       num="num"
-      onMoveNext={jest.fn}
+      onMoveNext={vi.fn()}
       onMovePrev={onMove}
       show="always"
       text="text"

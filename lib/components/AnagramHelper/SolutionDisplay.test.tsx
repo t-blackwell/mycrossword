@@ -76,7 +76,7 @@ test('it lets the user type into the boxes while shuffling', async () => {
   const cells = getCells(['1-across']).map((cell, i) =>
     i === 0 ? { ...cell, guess: cell.val } : cell,
   );
-  const onEdit = jest.fn();
+  const onEdit = jest.fn(() => true);
 
   render(
     <SolutionDisplay
@@ -193,7 +193,7 @@ test('the boxes can be edited before shuffling', async () => {
   const cells = getCells(['1-across']).map((cell, i) =>
     i === 0 ? { ...cell, guess: cell.val } : cell,
   );
-  const onEdit = jest.fn();
+  const onEdit = jest.fn(() => true);
 
   render(
     <SolutionDisplay
@@ -216,4 +216,29 @@ test('the boxes can be edited before shuffling', async () => {
   await userEvent.type(inputs[1], 'o');
   expect(onEdit).toHaveBeenLastCalledWith(1, 'O');
   expect(inputs[2]).toHaveFocus();
+});
+
+test("focus stays put when a letter isn't accepted", async () => {
+  const cells = getCells(['1-across']);
+  const onEdit = jest.fn((_index: number, letter: string) => letter !== '1');
+
+  render(
+    <SolutionDisplay
+      cells={cells}
+      onEdit={onEdit}
+      separators={noSeparators}
+      shuffling={false}
+    />,
+  );
+
+  const inputs = screen.getAllByRole('textbox');
+
+  await userEvent.type(inputs[0], '1');
+  expect(onEdit).toHaveBeenLastCalledWith(0, '1');
+  expect(inputs[0]).toHaveFocus();
+  expect(inputs[0]).toHaveValue('');
+
+  await userEvent.type(inputs[0], 'y');
+  expect(onEdit).toHaveBeenLastCalledWith(0, 'Y');
+  expect(inputs[1]).toHaveFocus();
 });

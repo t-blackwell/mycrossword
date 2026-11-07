@@ -31,8 +31,11 @@ interface SolutionDisplayProps {
   /** Boxes to show; worked out from the cells if not given */
   boxes?: SolutionBox[];
   cells: Cell[];
-  /** Called when the user types in (or clears) a box */
-  onEdit?: (index: number, letter: string) => void;
+  /**
+   * Called when the user types in (or clears) a box. Returns whether the
+   * letter was accepted; focus only moves on if it was.
+   */
+  onEdit?: (index: number, letter: string) => boolean;
   separators: SeparatorLocations;
   shuffling: boolean;
 }
@@ -106,8 +109,7 @@ export default function SolutionDisplay({
 
                   if (event.target.value === '') {
                     onEdit?.(i, '');
-                  } else if (typed !== '') {
-                    onEdit?.(i, typed);
+                  } else if (typed !== '' && onEdit?.(i, typed) === true) {
                     focusBox(findBox(i, 1));
                   }
                 }}

@@ -15,8 +15,8 @@ interface AnagramHelperProps {
   clue: Clue;
   groupCells: Cell[];
   groupSeparators: SeparatorLocations;
-  /** Set (or clear) a cell's letter in the grid */
-  onCellGuess?: (cell: Cell, guess: Char | undefined) => void;
+  /** Set (or clear) a cell's letter in the grid; returns false if rejected */
+  onCellGuess?: (cell: Cell, guess: Char | undefined) => boolean;
   onClose: () => void;
   style?: React.CSSProperties;
 }

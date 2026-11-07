@@ -309,3 +309,59 @@ test('the anagram helper enters letters in the grid before shuffling', async () 
   // the letters input is still there
   screen.getByPlaceholderText('Enter letters...');
 });
+
+test("the anagram helper doesn't move on from a rejected letter", async () => {
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="anagram-test-3"
+      saveGrid={jest.fn()}
+      stickyClue="never"
+    />,
+  );
+
+  await userEvent.click(screen.getByText('Toy on a string (2-2)'));
+  await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
+
+  // 1 isn't allowed by the default cell matcher
+  await userEvent.type(screen.getByLabelText('Letter 1'), '1y');
+
+  const getCell = (col: number) =>
+    useCellsStore
+      .getState()
+      .cells.find((c) => c.pos.col === col && c.pos.row === 0);
+
+  expect(getCell(0)?.guess).toBe('Y');
+  expect(getCell(1)?.guess).toBeUndefined();
+  expect(screen.getByLabelText('Letter 2')).toHaveFocus();
+});
+
+test("closing the anagram helper doesn't save a stale grid", async () => {
+  const saveGrid = jest.fn();
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="anagram-test-4"
+      saveGrid={saveGrid}
+      stickyClue="never"
+    />,
+  );
+
+  await userEvent.click(screen.getByText('Toy on a string (2-2)'));
+  await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
+  await userEvent.type(screen.getByLabelText('Letter 1'), 'y');
+  await userEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+  // the remounted grid saves the current letters, not a stale snapshot
+  const lastSaved = saveGrid.mock.calls[saveGrid.mock.calls.length - 1][0];
+  expect(lastSaved.value[0][0]).toBe('Y');
+});

@@ -182,10 +182,11 @@ export default function Crossword({
   );
 
   // set (or clear) a cell's letter from outside the grid, e.g. the anagram
-  // helper, keeping the clues, saved grid and callbacks up to date
+  // helper, keeping the clues, saved grid and callbacks up to date. Returns
+  // whether the letter was accepted.
   const setCellGuess = (cell: Cell, guess: Char | undefined) => {
     if (guess !== undefined && !isValidChar(guess, cellMatcher)) {
-      return;
+      return false;
     }
 
     const cells = useCellsStore.getState().cells;
@@ -193,8 +194,12 @@ export default function Crossword({
       (c) => c.pos.col === cell.pos.col && c.pos.row === cell.pos.row,
     );
 
-    if (currentCell === undefined || (currentCell.guess || undefined) === guess) {
-      return;
+    if (currentCell === undefined) {
+      return false;
+    }
+
+    if ((currentCell.guess || undefined) === guess) {
+      return true;
     }
 
     if (onCellChange !== undefined) {
@@ -230,6 +235,8 @@ export default function Crossword({
         onComplete();
       }
     }
+
+    return true;
   };
 
   // Validate overriding guess grid if defined
@@ -334,7 +341,21 @@ export default function Crossword({
                 cellSize={cellSize}
                 clues={storeClues}
                 cols={data.dimensions.cols}
-                guessGrid={guessGrid}
+                guessGrid={
+                  // with custom persistence the local guess grid isn't kept
+                  // up to date, so start from the current cells; otherwise
+                  // remounting (e.g. after the anagram helper) would save a
+                  // stale grid over them
+                  saveGrid !== undefined
+                    ? storeCells.length > 0
+                      ? getGuessGrid(
+                          data.dimensions.cols,
+                          data.dimensions.rows,
+                          storeCells,
+                        )
+                      : (loadGrid ?? guessGrid)
+                    : guessGrid
+                }
                 inputRef={inputRef}
                 onCellChange={onCellChange}
                 onCellFocus={onCellFocus}

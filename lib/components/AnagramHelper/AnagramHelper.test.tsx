@@ -23,7 +23,7 @@ test('it renders', async () => {
     useCluesStore.getState().clues,
   );
   const onClose = jest.fn();
-  const onCellGuess = jest.fn();
+  const onCellGuess = jest.fn(() => true);
 
   const { rerender } = render(
     <AnagramHelper

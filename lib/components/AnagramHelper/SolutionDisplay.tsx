@@ -31,7 +31,7 @@ interface SolutionDisplayProps {
   /** Boxes to show; worked out from the cells if not given */
   boxes?: SolutionBox[];
   cells: Cell[];
-  /** Called when the user types in (or clears) a box, while shuffling */
+  /** Called when the user types in (or clears) a box */
   onEdit?: (index: number, letter: string) => void;
   separators: SeparatorLocations;
   shuffling: boolean;
@@ -52,7 +52,7 @@ export default function SolutionDisplay({
       cells.map((cell) => cell.guess),
       '',
     );
-  const editable = shuffling && onEdit !== undefined;
+  const editable = onEdit !== undefined;
 
   const isEditable = (i: number) => editable && boxes[i] !== undefined;
 

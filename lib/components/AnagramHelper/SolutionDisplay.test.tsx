@@ -188,3 +188,32 @@ test('it renders with multiple clues', () => {
     'SolutionDisplay__cell--hasSpace',
   );
 });
+
+test('the boxes can be edited before shuffling', async () => {
+  const cells = getCells(['1-across']).map((cell, i) =>
+    i === 0 ? { ...cell, guess: cell.val } : cell,
+  );
+  const onEdit = jest.fn();
+
+  render(
+    <SolutionDisplay
+      cells={cells}
+      onEdit={onEdit}
+      separators={noSeparators}
+      shuffling={false}
+    />,
+  );
+
+  // only the grid letter shows
+  const inputs = screen.getAllByRole('textbox');
+  expect(inputs.map((input) => (input as HTMLInputElement).value)).toEqual([
+    'Y',
+    '',
+    '',
+    '',
+  ]);
+
+  await userEvent.type(inputs[1], 'o');
+  expect(onEdit).toHaveBeenLastCalledWith(1, 'O');
+  expect(inputs[2]).toHaveFocus();
+});

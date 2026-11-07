@@ -280,3 +280,32 @@ test('the anagram helper enters letters in the grid', async () => {
   await userEvent.clear(screen.getByLabelText('Letter 1'));
   expect(getFirstCell()?.guess).toBeUndefined();
 });
+
+test('the anagram helper enters letters in the grid before shuffling', async () => {
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="anagram-test-2"
+      saveGrid={jest.fn()}
+      stickyClue="never"
+    />,
+  );
+
+  await userEvent.click(screen.getByText('Toy on a string (2-2)'));
+  await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
+  await userEvent.type(screen.getByLabelText('Letter 2'), 'o');
+
+  const cell = useCellsStore
+    .getState()
+    .cells.find((c) => c.pos.col === 1 && c.pos.row === 0);
+
+  expect(cell?.guess).toBe('O');
+  expect(screen.getByLabelText('Letter 2')).toHaveValue('O');
+
+  // the letters input is still there
+  screen.getByPlaceholderText('Enter letters...');
+});

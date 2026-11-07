@@ -47,6 +47,11 @@ test('it renders', async () => {
   const input = screen.getByPlaceholderText('Enter letters...');
   expect(input).toHaveValue('');
 
+  // solution boxes can be typed in before any letters are entered
+  await userEvent.type(screen.getByLabelText('Letter 1'), 'y');
+  expect(onCellGuess).toHaveBeenLastCalledWith(groupCells[0], 'Y');
+  onCellGuess.mockClear();
+
   // buttons should be disabled
   const reset = screen.getByRole('button', { name: 'Reset' });
   expect(reset).toBeDisabled();

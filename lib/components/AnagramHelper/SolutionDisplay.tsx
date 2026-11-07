@@ -21,7 +21,7 @@ function getSeparatorClass(
 
 /** The last letter in `value` that wasn't already there */
 function getTypedLetter(value: string, previous: string) {
-  const letters = value.toUpperCase().replace(/[^A-Z]/g, '');
+  const letters = value.toUpperCase().replace(/[^\p{L}\p{N}]/gu, '');
   const typed = previous !== '' ? letters.replace(previous, '') : letters;
 
   return (typed !== '' ? typed : letters).slice(-1);
@@ -31,7 +31,7 @@ interface SolutionDisplayProps {
   /** Boxes to show; worked out from the cells if not given */
   boxes?: SolutionBox[];
   cells: Cell[];
-  /** Called when the user types in (or clears) an editable box */
+  /** Called when the user types in (or clears) a box, while shuffling */
   onEdit?: (index: number, letter: string) => void;
   separators: SeparatorLocations;
   shuffling: boolean;
@@ -50,13 +50,11 @@ export default function SolutionDisplay({
     boxesProp ??
     getSolutionBoxes(
       cells.map((cell) => cell.guess),
-      [],
       '',
     );
   const editable = shuffling && onEdit !== undefined;
 
-  const isEditable = (i: number) =>
-    editable && boxes[i] !== undefined && boxes[i].source !== 'grid';
+  const isEditable = (i: number) => editable && boxes[i] !== undefined;
 
   // the next editable box in the given direction
   const findBox = (from: number, step: 1 | -1) => {
@@ -85,9 +83,6 @@ export default function SolutionDisplay({
           box.source === 'grid' ? 'SolutionDisplay__letter--populated' : null,
           shuffling && box.source === 'auto'
             ? 'SolutionDisplay__letter--auto'
-            : null,
-          shuffling && box.source === 'typed'
-            ? 'SolutionDisplay__letter--typed'
             : null,
           shuffling && box.missing ? 'SolutionDisplay__letter--missing' : null,
         );
@@ -128,7 +123,7 @@ export default function SolutionDisplay({
                     event.key === 'Backspace' &&
                     (letter === '' || box.source === 'auto')
                   ) {
-                    // nothing typed here, so clear the previous box instead
+                    // nothing in the grid here, so clear the previous box
                     const previous = findBox(i, -1);
 
                     if (previous !== undefined) {

@@ -4,7 +4,7 @@ import SolutionDisplay from './SolutionDisplay';
 import LetterTiles from './LetterTiles';
 import { shuffleChanged, typedOrder } from './layout';
 import { getSolutionBoxes, getUsedLetters } from './solution';
-import { Cell, Clue, SeparatorLocations } from '~/types';
+import { Cell, Char, Clue, SeparatorLocations } from '~/types';
 import Button from '~/components/Button/Button';
 import { getBem } from '~/utils/bem';
 import CloseIcon from '~/icons/CloseIcon';
@@ -15,6 +15,8 @@ interface AnagramHelperProps {
   clue: Clue;
   groupCells: Cell[];
   groupSeparators: SeparatorLocations;
+  /** Set (or clear) a cell's letter in the grid */
+  onCellGuess?: (cell: Cell, guess: Char | undefined) => void;
   onClose: () => void;
   style?: React.CSSProperties;
 }
@@ -24,6 +26,7 @@ export default function AnagramHelper({
   clue,
   groupCells,
   groupSeparators,
+  onCellGuess,
   onClose,
   style,
 }: AnagramHelperProps) {
@@ -34,15 +37,12 @@ export default function AnagramHelper({
   const [shuffling, setShuffling] = React.useState(false);
   // indices into tileLetters, in wheel order
   const [order, setOrder] = React.useState<number[]>([]);
-  // letters the user has typed into the solution boxes
-  const [edits, setEdits] = React.useState<Array<string | undefined>>([]);
   const tileLetters = letters.toUpperCase().replace(/\s/g, '');
   const arrangedLetters = order.map((i) => tileLetters[i]).join('');
   const enableButtons = tileLetters !== '' || shuffling;
   const solutionLength = groupCells.length;
   const solutionBoxes = getSolutionBoxes(
     groupCells.map((cell) => cell.guess),
-    shuffling ? edits : [],
     shuffling ? arrangedLetters : '',
   );
 
@@ -55,7 +55,6 @@ export default function AnagramHelper({
   const reset = () => {
     setLetters('');
     setOrder([]);
-    setEdits([]);
     setShuffling(false);
   };
 
@@ -67,15 +66,6 @@ export default function AnagramHelper({
       setShuffling(true);
       buttonRef.current?.focus({ preventScroll: true });
     }
-  };
-
-  const editSolution = (index: number, letter: string) => {
-    setEdits((prev) => {
-      const next = [...prev];
-      next[index] = letter;
-
-      return next;
-    });
   };
 
   const appendWord = (word: string) => {
@@ -180,7 +170,15 @@ export default function AnagramHelper({
         <SolutionDisplay
           boxes={solutionBoxes}
           cells={groupCells}
-          onEdit={editSolution}
+          onEdit={
+            onCellGuess !== undefined
+              ? (index, letter) =>
+                  onCellGuess(
+                    groupCells[index],
+                    letter !== '' ? (letter as Char) : undefined,
+                  )
+              : undefined
+          }
           separators={groupSeparators}
           shuffling={shuffling}
         />

@@ -23,13 +23,15 @@ test('it renders', async () => {
     useCluesStore.getState().clues,
   );
   const onClose = jest.fn();
+  const onCellGuess = jest.fn();
 
-  render(
+  const { rerender } = render(
     <AnagramHelper
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       clue={oneAcross}
       groupCells={groupCells}
       groupSeparators={groupSeparators}
+      onCellGuess={onCellGuess}
       onClose={onClose}
     />,
   );
@@ -82,16 +84,30 @@ test('it renders', async () => {
     screen.getByDisplayValue(letter);
   });
 
-  // type a letter into the first solution box
+  // typing in a solution box enters the letter in the grid
   const boxes = screen.getAllByRole('textbox') as HTMLInputElement[];
   await userEvent.type(boxes[0], 'z');
-  expect(boxes[0]).toHaveValue('Z');
-  expect(boxes[0]).toHaveClass('SolutionDisplay__letter--typed');
+  expect(onCellGuess).toHaveBeenLastCalledWith(groupCells[0], 'Z');
+
+  // the grid letter then shows in the box and fades on the wheel
+  rerender(
+    <AnagramHelper
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      clue={oneAcross}
+      groupCells={groupCells.map((cell, i) =>
+        i === 0 ? { ...cell, guess: 'Z' } : cell,
+      )}
+      groupSeparators={groupSeparators}
+      onCellGuess={onCellGuess}
+      onClose={onClose}
+    />,
+  );
+  expect(screen.getAllByRole('textbox')[0]).toHaveValue('Z');
   expect(screen.getByText('Z').parentElement).toHaveClass(
     'LetterTiles__tile--used',
   );
 
-  // shuffling keeps the typed letter
+  // and stays put when shuffling
   await userEvent.click(shuffle);
   expect(screen.getAllByRole('textbox')[0]).toHaveValue('Z');
 

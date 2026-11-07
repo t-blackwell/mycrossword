@@ -53,7 +53,6 @@ test('it renders letters while shuffling', () => {
     <SolutionDisplay
       boxes={getSolutionBoxes(
         cells.map((cell) => cell.guess),
-        [],
         'ABCDEF',
       )}
       cells={cells}
@@ -83,7 +82,6 @@ test('it lets the user type into the boxes while shuffling', async () => {
     <SolutionDisplay
       boxes={getSolutionBoxes(
         cells.map((cell) => cell.guess),
-        [],
         'YOYO',
       )}
       cells={cells}
@@ -93,27 +91,35 @@ test('it lets the user type into the boxes while shuffling', async () => {
     />,
   );
 
-  // the grid letter isn't editable, the rest are
-  screen.getByText('Y');
+  // every box is editable, including the one with a grid letter
   const inputs = screen.getAllByRole('textbox');
   expect(inputs.map((input) => (input as HTMLInputElement).value)).toEqual([
+    'Y',
     'O',
     'Y',
     'O',
   ]);
+  expect(inputs[0]).toHaveClass('SolutionDisplay__letter--populated');
+  expect(inputs[1]).toHaveClass('SolutionDisplay__letter--auto');
 
   // typing replaces the letter and moves on to the next box
-  await userEvent.type(inputs[0], 'y');
+  await userEvent.type(inputs[1], 'y');
   expect(onEdit).toHaveBeenLastCalledWith(1, 'Y');
-  expect(inputs[1]).toHaveFocus();
+  expect(inputs[2]).toHaveFocus();
 
   // clearing a box
-  await userEvent.clear(inputs[2]);
-  expect(onEdit).toHaveBeenLastCalledWith(3, '');
+  await userEvent.clear(inputs[0]);
+  expect(onEdit).toHaveBeenLastCalledWith(0, '');
+
+  // backspace in a box that's not in the grid clears the previous box
+  onEdit.mockClear();
+  await userEvent.type(inputs[2], '{backspace}');
+  expect(onEdit).toHaveBeenLastCalledWith(1, '');
+  expect(inputs[1]).toHaveFocus();
 
   // arrow keys move between boxes
-  await userEvent.type(inputs[1], '{arrowleft}');
-  expect(inputs[0]).toHaveFocus();
+  await userEvent.type(inputs[2], '{arrowleft}');
+  expect(inputs[1]).toHaveFocus();
 });
 
 test('it renders with separator', () => {

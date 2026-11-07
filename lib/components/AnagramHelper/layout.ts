@@ -1,5 +1,3 @@
-export type Arrangement = 'row' | 'wheel';
-
 export type BoardSize = { height: number; width: number };
 
 export type Position = { x: number; y: number };
@@ -9,9 +7,6 @@ export const BOARD_PADDING = 8;
 
 /** Smallest tile size, in px */
 export const MIN_TILE_SIZE = 16;
-
-/** Gap between tiles in a row, as a proportion of the tile size */
-const GAP_RATIO = 0.2;
 
 /** Unbiased Fisher-Yates shuffle, returning a new array */
 export function shuffle<T>(items: T[], random = Math.random) {
@@ -45,22 +40,6 @@ export function typedOrder(count: number) {
   return Array.from({ length: count }, (_, i) => i);
 }
 
-function getGap(tileSize: number) {
-  return Math.round(tileSize * GAP_RATIO);
-}
-
-function getRowLayout(count: number, board: BoardSize, tileSize: number) {
-  const gap = getGap(tileSize);
-  const step = tileSize + gap;
-  const perRow = Math.max(
-    Math.floor((board.width - BOARD_PADDING * 2 + gap) / step),
-    1,
-  );
-  const rows = Math.ceil(count / perRow);
-
-  return { gap, perRow, rows, step };
-}
-
 function getWheelRadius(count: number, tileSize: number) {
   // roomy spacing so square corners don't touch
   return Math.max((count * tileSize * 1.5) / (2 * Math.PI), tileSize * 1.2);
@@ -68,15 +47,6 @@ function getWheelRadius(count: number, tileSize: number) {
 
 function getMaxWheelRadius(board: BoardSize, tileSize: number) {
   return Math.min(board.width, board.height) / 2 - tileSize / 2 - BOARD_PADDING;
-}
-
-function rowFits(count: number, board: BoardSize, tileSize: number) {
-  const { gap, rows, step } = getRowLayout(count, board, tileSize);
-
-  return (
-    tileSize <= board.width - BOARD_PADDING * 2 &&
-    rows * step - gap <= board.height - BOARD_PADDING * 2
-  );
 }
 
 function wheelFits(count: number, board: BoardSize, tileSize: number) {
@@ -87,36 +57,15 @@ function wheelFits(count: number, board: BoardSize, tileSize: number) {
   return getWheelRadius(count, tileSize) <= getMaxWheelRadius(board, tileSize);
 }
 
-/**
- * The largest tile size (up to `maxSize`) that fits both a row and a wheel,
- * so switching between the two doesn't resize the tiles.
- */
+/** The largest tile size (up to `maxSize`) that fits the wheel */
 export function getTileSize(count: number, board: BoardSize, maxSize: number) {
   for (let size = Math.floor(maxSize); size > MIN_TILE_SIZE; size--) {
-    if (rowFits(count, board, size) && wheelFits(count, board, size)) {
+    if (wheelFits(count, board, size)) {
       return size;
     }
   }
 
   return MIN_TILE_SIZE;
-}
-
-/** Rows of tiles centred on the board */
-export function getRowPositions(
-  count: number,
-  board: BoardSize,
-  tileSize: number,
-): Position[] {
-  const { gap, perRow, rows, step } = getRowLayout(count, board, tileSize);
-  const top = (board.height - (rows * step - gap)) / 2;
-
-  return Array.from({ length: count }, (_, i) => {
-    const row = Math.floor(i / perRow);
-    const inRow = Math.min(perRow, count - row * perRow);
-    const left = (board.width - (inRow * step - gap)) / 2;
-
-    return { x: left + (i % perRow) * step, y: top + row * step };
-  });
 }
 
 /** Evenly spaced clockwise from the top, with no central letter */
@@ -156,14 +105,10 @@ export function getWheelPositions(
  */
 export function arrangeTiles(
   order: number[],
-  arrangement: Arrangement,
   board: BoardSize,
   tileSize: number,
 ): Position[] {
-  const slots =
-    arrangement === 'wheel'
-      ? getWheelPositions(order.length, board, tileSize)
-      : getRowPositions(order.length, board, tileSize);
+  const slots = getWheelPositions(order.length, board, tileSize);
   const positions: Position[] = [];
 
   order.forEach((tileIndex, slot) => {

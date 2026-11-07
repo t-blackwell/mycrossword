@@ -4,10 +4,9 @@ import LetterTiles from './LetterTiles';
 test('it renders a tile per letter, in typed order', () => {
   const { container } = render(
     <LetterTiles
-      arrangement="wheel"
       letters="abcd"
       order={[2, 0, 3, 1]}
-      populatedLetters=""
+      usedLetters=""
     />,
   );
 
@@ -26,10 +25,9 @@ test('it renders a tile per letter, in typed order', () => {
 test('it staggers the bounce by arranged position', () => {
   render(
     <LetterTiles
-      arrangement="row"
       letters="ab"
       order={[1, 0]}
-      populatedLetters=""
+      usedLetters=""
     />,
   );
 
@@ -41,22 +39,21 @@ test('it staggers the bounce by arranged position', () => {
   });
 });
 
-test('it fades letters already in the grid', () => {
+test('it fades used letters', () => {
   render(
     <LetterTiles
-      arrangement="wheel"
       letters="abcae"
       order={[0, 1, 2, 3, 4]}
-      populatedLetters="DA"
+      usedLetters="DA"
     />,
   );
 
   const [firstA, secondA] = screen.getAllByText('A');
-  expect(firstA.parentElement).toHaveClass('LetterTiles__tile--populated');
+  expect(firstA.parentElement).toHaveClass('LetterTiles__tile--used');
   expect(secondA.parentElement).not.toHaveClass(
-    'LetterTiles__tile--populated',
+    'LetterTiles__tile--used',
   );
   expect(screen.getByText('B').parentElement).not.toHaveClass(
-    'LetterTiles__tile--populated',
+    'LetterTiles__tile--used',
   );
 });

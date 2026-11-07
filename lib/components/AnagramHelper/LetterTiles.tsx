@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { getBem } from '~/utils/bem';
-import { Arrangement, BoardSize, arrangeTiles, getTileSize } from './layout';
+import { BoardSize, arrangeTiles, getTileSize } from './layout';
 import './LetterTiles.css';
 
 const BOUNCE_STAGGER_MS = 8;
@@ -21,20 +21,18 @@ function getMaxTileSize(node: HTMLElement) {
 }
 
 interface LetterTilesProps {
-  arrangement: Arrangement;
   /** Letters in typed order */
   letters: string;
   /** Indices into `letters`, in the order the tiles are arranged */
   order: number[];
-  /** Letters already in the grid, which are shown faded */
-  populatedLetters: string;
+  /** Letters in the grid or typed into the solution, which are shown faded */
+  usedLetters: string;
 }
 
 export default function LetterTiles({
-  arrangement,
   letters,
   order,
-  populatedLetters,
+  usedLetters,
 }: LetterTilesProps) {
   const bem = getBem('LetterTiles');
   const boardRef = React.useRef<HTMLDivElement>(null);
@@ -77,26 +75,26 @@ export default function LetterTiles({
     return () => observer.disconnect();
   }, []);
 
-  // shuffles and arrangement changes bounce; resizes glide
+  // shuffles bounce; resizes glide
   React.useLayoutEffect(() => {
     setMotion('bounce');
-  }, [order, arrangement]);
+  }, [order]);
 
   const upperLetters = letters.toUpperCase();
   const tileSize =
     board !== null ? getTileSize(order.length, board, maxTileSize) : 0;
   const positions =
-    board !== null ? arrangeTiles(order, arrangement, board, tileSize) : [];
+    board !== null ? arrangeTiles(order, board, tileSize) : [];
 
-  // fade letters that are already in the grid, working round in arranged order
-  const populated = new Set<number>();
-  let remaining = populatedLetters.toUpperCase();
+  // fade letters that have been used, working round in wheel order
+  const used = new Set<number>();
+  let remaining = usedLetters.toUpperCase();
   order.forEach((tileIndex) => {
     const letter = upperLetters[tileIndex];
 
     if (letter !== undefined && remaining.includes(letter)) {
       remaining = remaining.replace(letter, '');
-      populated.add(tileIndex);
+      used.add(tileIndex);
     }
   });
 
@@ -125,7 +123,7 @@ export default function LetterTiles({
                 aria-hidden
                 className={bem(
                   'LetterTiles__tile',
-                  populated.has(i) ? 'LetterTiles__tile--populated' : null,
+                  used.has(i) ? 'LetterTiles__tile--used' : null,
                 )}
                 key={i}
                 style={{

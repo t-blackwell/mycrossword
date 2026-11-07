@@ -1,89 +1,154 @@
+import * as React from 'react';
 import { Cell, SeparatorLocations } from '~/types';
 import { getBem } from '~/utils/bem';
+import { SolutionBox, getSolutionBoxes } from './solution';
 import './SolutionDisplay.css';
 
 function getSeparatorClass(
   separators: SeparatorLocations,
   letterIndex: number,
 ) {
-  const spaces = separators[','];
-  if (spaces.includes(letterIndex)) {
-    return 'SolutionDisplay__letter--hasSpace';
+  if (separators[','].includes(letterIndex)) {
+    return 'SolutionDisplay__cell--hasSpace';
   }
 
-  const hyphens = separators['-'];
-  if (hyphens.includes(letterIndex)) {
-    return 'SolutionDisplay__letter--hasHyphen';
+  if (separators['-'].includes(letterIndex)) {
+    return 'SolutionDisplay__cell--hasHyphen';
   }
 
   return undefined;
 }
 
-function filterLetters(letters: string, blacklist: string) {
-  let filteredLetters = letters;
+/** The last letter in `value` that wasn't already there */
+function getTypedLetter(value: string, previous: string) {
+  const letters = value.toUpperCase().replace(/[^A-Z]/g, '');
+  const typed = previous !== '' ? letters.replace(previous, '') : letters;
 
-  blacklist.split('').forEach((badLetter) => {
-    filteredLetters = filteredLetters.replace(badLetter, '');
-  });
-
-  return filteredLetters;
+  return (typed !== '' ? typed : letters).slice(-1);
 }
 
 interface SolutionDisplayProps {
+  /** Boxes to show; worked out from the cells if not given */
+  boxes?: SolutionBox[];
   cells: Cell[];
-  letters?: string;
+  /** Called when the user types in (or clears) an editable box */
+  onEdit?: (index: number, letter: string) => void;
   separators: SeparatorLocations;
   shuffling: boolean;
 }
 
 export default function SolutionDisplay({
+  boxes: boxesProp,
   cells,
-  letters,
+  onEdit,
   separators,
   shuffling,
 }: SolutionDisplayProps) {
   const bem = getBem('SolutionDisplay');
-  // remove the populated grid cells from the anagram fodder
-  const flatCells = cells.map((cell) => cell.guess).join('');
-  const filteredLetters =
-    letters !== undefined
-      ? filterLetters(letters?.toUpperCase(), flatCells)
-      : undefined;
-  let upperLetters = letters?.toUpperCase();
-  let j = 0;
+  const inputRefs = React.useRef<Array<HTMLInputElement | null>>([]);
+  const boxes =
+    boxesProp ??
+    getSolutionBoxes(
+      cells.map((cell) => cell.guess),
+      [],
+      '',
+    );
+  const editable = shuffling && onEdit !== undefined;
+
+  const isEditable = (i: number) =>
+    editable && boxes[i] !== undefined && boxes[i].source !== 'grid';
+
+  // the next editable box in the given direction
+  const findBox = (from: number, step: 1 | -1) => {
+    for (let i = from + step; i >= 0 && i < boxes.length; i += step) {
+      if (isEditable(i)) {
+        return i;
+      }
+    }
+
+    return undefined;
+  };
+
+  const focusBox = (i: number | undefined) => {
+    if (i !== undefined) {
+      inputRefs.current[i]?.focus({ preventScroll: true });
+    }
+  };
 
   return (
-    <div className="SolutionDisplay">
-      {cells.map((cell, i) => {
-        const inLetters =
-          cell.guess !== undefined && upperLetters?.includes(cell.guess);
-        if (inLetters) {
-          upperLetters = upperLetters?.replace(cell.guess!, '');
-        }
+    <div className={bem('SolutionDisplay')}>
+      {boxes.map((box, i) => {
+        const showLetter = shuffling || box.source === 'grid';
+        const letter = showLetter ? box.letter : '';
+        const className = bem(
+          'SolutionDisplay__letter',
+          box.source === 'grid' ? 'SolutionDisplay__letter--populated' : null,
+          shuffling && box.source === 'auto'
+            ? 'SolutionDisplay__letter--auto'
+            : null,
+          shuffling && box.source === 'typed'
+            ? 'SolutionDisplay__letter--typed'
+            : null,
+          shuffling && box.missing ? 'SolutionDisplay__letter--missing' : null,
+        );
 
         return (
           <span
             className={bem(
-              'SolutionDisplay__letter',
-              cell.guess !== undefined
-                ? 'SolutionDisplay__letter--populated'
-                : null,
-              shuffling &&
-                cell.guess !== undefined &&
-                letters !== undefined &&
-                !inLetters
-                ? 'SolutionDisplay__letter--missing'
-                : null,
+              'SolutionDisplay__cell',
               getSeparatorClass(separators, i + 1),
             )}
-            key={`${cell.val}-${i}`}
+            key={`${cells[i]?.val}-${i}`}
           >
-            {cell.guess ??
-              (shuffling &&
-              filteredLetters !== undefined &&
-              filteredLetters[j] !== undefined
-                ? filteredLetters[j++]
-                : null)}
+            {isEditable(i) ? (
+              <input
+                aria-label={`Letter ${i + 1}`}
+                autoCapitalize="characters"
+                autoComplete="off"
+                className={className}
+                onChange={(event) => {
+                  const typed = getTypedLetter(event.target.value, letter);
+
+                  if (event.target.value === '') {
+                    onEdit?.(i, '');
+                  } else if (typed !== '') {
+                    onEdit?.(i, typed);
+                    focusBox(findBox(i, 1));
+                  }
+                }}
+                onFocus={(event) => event.target.select()}
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    focusBox(findBox(i, -1));
+                  } else if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    focusBox(findBox(i, 1));
+                  } else if (
+                    event.key === 'Backspace' &&
+                    (letter === '' || box.source === 'auto')
+                  ) {
+                    // nothing typed here, so clear the previous box instead
+                    const previous = findBox(i, -1);
+
+                    if (previous !== undefined) {
+                      event.preventDefault();
+                      onEdit?.(previous, '');
+                      focusBox(previous);
+                    } else if (letter === '') {
+                      event.preventDefault();
+                    }
+                  }
+                }}
+                ref={(node) => {
+                  inputRefs.current[i] = node;
+                }}
+                spellCheck="false"
+                value={letter}
+              />
+            ) : (
+              <span className={className}>{letter}</span>
+            )}
           </span>
         );
       })}

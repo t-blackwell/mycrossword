@@ -50,8 +50,6 @@ test('it renders', async () => {
   expect(reset).toBeDisabled();
   const shuffle = screen.getByRole('button', { name: 'Shuffle' });
   expect(shuffle).toBeDisabled();
-  const arrangement = screen.getByRole('button', { name: 'Row' });
-  expect(arrangement).toBeDisabled();
 
   // check close button calls function
   const close = screen.getByRole('button', { name: 'Close' });
@@ -65,7 +63,6 @@ test('it renders', async () => {
   screen.getByText('4/4');
   expect(reset).toBeEnabled();
   expect(shuffle).toBeEnabled();
-  expect(arrangement).toBeEnabled();
 
   // shuffle letters into word wheel
   await userEvent.click(shuffle);
@@ -76,27 +73,27 @@ test('it renders', async () => {
   // check clue is now a single string
   screen.getByText('Toy on a string (2-2)');
 
-  // check characters appear twice (word wheel and solution)
-  expect(screen.getAllByText('W').length).toBe(2);
-  expect(screen.getAllByText('X').length).toBe(2);
-  expect(screen.getAllByText('Y').length).toBe(2);
-  expect(screen.getAllByText('Z').length).toBe(2);
+  // there's no row/wheel toggle
+  expect(screen.queryByRole('button', { name: 'Row' })).toBeNull();
 
-  // switch to a row, which shows the letters in typed order
-  await userEvent.click(arrangement);
-  expect(arrangement).toHaveTextContent('Wheel');
-  screen.getByRole('group', { name: 'Letter tiles: W X Y Z' });
+  // check characters appear in the wheel and the solution boxes
+  ['W', 'X', 'Y', 'Z'].forEach((letter) => {
+    screen.getByText(letter);
+    screen.getByDisplayValue(letter);
+  });
 
-  // shuffling the row keeps it a row
+  // type a letter into the first solution box
+  const boxes = screen.getAllByRole('textbox') as HTMLInputElement[];
+  await userEvent.type(boxes[0], 'z');
+  expect(boxes[0]).toHaveValue('Z');
+  expect(boxes[0]).toHaveClass('SolutionDisplay__letter--typed');
+  expect(screen.getByText('Z').parentElement).toHaveClass(
+    'LetterTiles__tile--used',
+  );
+
+  // shuffling keeps the typed letter
   await userEvent.click(shuffle);
-  expect(arrangement).toHaveTextContent('Wheel');
-  expect(
-    screen.queryByRole('group', { name: 'Letter tiles: W X Y Z' }),
-  ).toBeNull();
-
-  // switch back to a wheel
-  await userEvent.click(arrangement);
-  expect(arrangement).toHaveTextContent('Row');
+  expect(screen.getAllByRole('textbox')[0]).toHaveValue('Z');
 
   // reset buttons and input
   await userEvent.click(reset);
@@ -117,8 +114,9 @@ test('it renders', async () => {
   // check W isn't include this time
   expect(screen.queryByText('W')).toBeNull();
 
-  // check characters appear twice (word wheel and solution)
-  expect(screen.getAllByText('X').length).toBe(2);
-  expect(screen.getAllByText('Y').length).toBe(2);
-  expect(screen.getAllByText('Z').length).toBe(2);
+  // check characters appear in the wheel and the solution boxes
+  ['X', 'Y', 'Z'].forEach((letter) => {
+    screen.getByText(letter);
+    screen.getByDisplayValue(letter);
+  });
 });

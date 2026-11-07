@@ -2,7 +2,9 @@ import { render, screen } from '@testing-library/react';
 import data from '~/testData/test.valid.1';
 import { getGroupCells } from '~/utils/clue';
 import { useCellsStore } from '~/stores/useCellsStore';
+import userEvent from '@testing-library/user-event';
 import SolutionDisplay from './SolutionDisplay';
+import { getSolutionBoxes } from './solution';
 import { initialiseStores } from '~/utils/test';
 
 const noSeparators = { ',': [], '-': [] };
@@ -49,8 +51,12 @@ test('it renders letters while shuffling', () => {
 
   render(
     <SolutionDisplay
+      boxes={getSolutionBoxes(
+        cells.map((cell) => cell.guess),
+        [],
+        'ABCDEF',
+      )}
       cells={cells}
-      letters="ABCDEF"
       separators={noSeparators}
       shuffling
     />,
@@ -62,6 +68,52 @@ test('it renders letters while shuffling', () => {
   screen.getByText('D');
   screen.getByText('E');
   screen.getByText('F');
+
+  // without onEdit, the boxes aren't editable
+  expect(screen.queryByRole('textbox')).toBeNull();
+});
+
+test('it lets the user type into the boxes while shuffling', async () => {
+  const cells = getCells(['1-across']).map((cell, i) =>
+    i === 0 ? { ...cell, guess: cell.val } : cell,
+  );
+  const onEdit = jest.fn();
+
+  render(
+    <SolutionDisplay
+      boxes={getSolutionBoxes(
+        cells.map((cell) => cell.guess),
+        [],
+        'YOYO',
+      )}
+      cells={cells}
+      onEdit={onEdit}
+      separators={noSeparators}
+      shuffling
+    />,
+  );
+
+  // the grid letter isn't editable, the rest are
+  screen.getByText('Y');
+  const inputs = screen.getAllByRole('textbox');
+  expect(inputs.map((input) => (input as HTMLInputElement).value)).toEqual([
+    'O',
+    'Y',
+    'O',
+  ]);
+
+  // typing replaces the letter and moves on to the next box
+  await userEvent.type(inputs[0], 'y');
+  expect(onEdit).toHaveBeenLastCalledWith(1, 'Y');
+  expect(inputs[1]).toHaveFocus();
+
+  // clearing a box
+  await userEvent.clear(inputs[2]);
+  expect(onEdit).toHaveBeenLastCalledWith(3, '');
+
+  // arrow keys move between boxes
+  await userEvent.type(inputs[1], '{arrowleft}');
+  expect(inputs[0]).toHaveFocus();
 });
 
 test('it renders with separator', () => {
@@ -87,7 +139,9 @@ test('it renders with separator', () => {
   expect(letterOs.length).toBe(2);
 
   // first O should have a hyphen
-  expect(letterOs[0]).toHaveClass('SolutionDisplay__letter--hasHyphen');
+  expect(letterOs[0].parentElement).toHaveClass(
+    'SolutionDisplay__cell--hasHyphen',
+  );
 });
 
 test('it renders with multiple clues', () => {
@@ -121,6 +175,10 @@ test('it renders with multiple clues', () => {
   expect(letterEs.length).toBe(1);
 
   // first S and third D should have a space
-  expect(letterSs[0]).toHaveClass('SolutionDisplay__letter--hasSpace');
-  expect(letterDs[2]).toHaveClass('SolutionDisplay__letter--hasSpace');
+  expect(letterSs[0].parentElement).toHaveClass(
+    'SolutionDisplay__cell--hasSpace',
+  );
+  expect(letterDs[2].parentElement).toHaveClass(
+    'SolutionDisplay__cell--hasSpace',
+  );
 });

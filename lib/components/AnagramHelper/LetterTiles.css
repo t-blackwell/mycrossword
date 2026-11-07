@@ -35,7 +35,7 @@
     color 150ms ease-out,
     border-color 150ms ease-out;
 }
-.MyCrossword .LetterTiles__tile--populated .LetterTiles__face {
+.MyCrossword .LetterTiles__tile--used .LetterTiles__face {
   border-color: var(--faint-grey2);
   color: var(--light-grey);
 }

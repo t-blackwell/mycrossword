@@ -1,8 +1,6 @@
 import {
-  BOARD_PADDING,
   MIN_TILE_SIZE,
   arrangeTiles,
-  getRowPositions,
   getTileSize,
   getWheelPositions,
   shuffle,
@@ -45,30 +43,6 @@ describe('shuffleChanged', () => {
 test('typedOrder', () => {
   expect(typedOrder(0)).toEqual([]);
   expect(typedOrder(4)).toEqual([0, 1, 2, 3]);
-});
-
-describe('getRowPositions', () => {
-  test('centres a single row', () => {
-    const positions = getRowPositions(3, board, size);
-
-    // 3 tiles of 40px with 8px gaps = 136px wide
-    expect(positions).toEqual([
-      { x: 132, y: 80 },
-      { x: 180, y: 80 },
-      { x: 228, y: 80 },
-    ]);
-  });
-
-  test('wraps onto more rows when needed', () => {
-    const positions = getRowPositions(10, board, size);
-    const rows = new Set(positions.map(({ y }) => y));
-
-    expect(rows.size).toBe(2);
-    positions.forEach(({ x }) => {
-      expect(x).toBeGreaterThanOrEqual(BOARD_PADDING);
-      expect(x + size).toBeLessThanOrEqual(board.width - BOARD_PADDING);
-    });
-  });
 });
 
 describe('getWheelPositions', () => {
@@ -120,9 +94,9 @@ describe('getTileSize', () => {
 });
 
 test('arrangeTiles positions each tile by its place in the order', () => {
-  const slots = getRowPositions(3, board, size);
+  const slots = getWheelPositions(3, board, size);
 
-  expect(arrangeTiles([2, 0, 1], 'row', board, size)).toEqual([
+  expect(arrangeTiles([2, 0, 1], board, size)).toEqual([
     slots[1],
     slots[2],
     slots[0],

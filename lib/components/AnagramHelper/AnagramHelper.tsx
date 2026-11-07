@@ -2,7 +2,8 @@ import * as React from 'react';
 import ClueDisplay from './ClueDisplay';
 import SolutionDisplay from './SolutionDisplay';
 import LetterTiles from './LetterTiles';
-import { Arrangement, shuffleChanged, typedOrder } from './layout';
+import { shuffleChanged, typedOrder } from './layout';
+import { getSolutionBoxes, getUsedLetters } from './solution';
 import { Cell, Clue, SeparatorLocations } from '~/types';
 import Button from '~/components/Button/Button';
 import { getBem } from '~/utils/bem';
@@ -31,15 +32,19 @@ export default function AnagramHelper({
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [letters, setLetters] = React.useState('');
   const [shuffling, setShuffling] = React.useState(false);
-  const [arrangement, setArrangement] = React.useState<Arrangement>('wheel');
-  // indices into tileLetters, in the order the tiles are arranged
+  // indices into tileLetters, in wheel order
   const [order, setOrder] = React.useState<number[]>([]);
+  // letters the user has typed into the solution boxes
+  const [edits, setEdits] = React.useState<Array<string | undefined>>([]);
   const tileLetters = letters.toUpperCase().replace(/\s/g, '');
   const arrangedLetters = order.map((i) => tileLetters[i]).join('');
   const enableButtons = tileLetters !== '' || shuffling;
   const solutionLength = groupCells.length;
-  // the toggle offers the other arrangement
-  const toggleTarget: Arrangement = arrangement === 'wheel' ? 'row' : 'wheel';
+  const solutionBoxes = getSolutionBoxes(
+    groupCells.map((cell) => cell.guess),
+    shuffling ? edits : [],
+    shuffling ? arrangedLetters : '',
+  );
 
   React.useEffect(() => {
     if (!shuffling) {
@@ -50,6 +55,7 @@ export default function AnagramHelper({
   const reset = () => {
     setLetters('');
     setOrder([]);
+    setEdits([]);
     setShuffling(false);
   };
 
@@ -63,15 +69,13 @@ export default function AnagramHelper({
     }
   };
 
-  const toggleArrangement = () => {
-    if (tileLetters !== '') {
-      const typed = typedOrder(tileLetters.length);
+  const editSolution = (index: number, letter: string) => {
+    setEdits((prev) => {
+      const next = [...prev];
+      next[index] = letter;
 
-      // a fresh wheel is shuffled; a row is back in typed order
-      setOrder(toggleTarget === 'wheel' ? shuffleChanged(typed) : typed);
-      setArrangement(toggleTarget);
-      setShuffling(true);
-    }
+      return next;
+    });
   };
 
   const appendWord = (word: string) => {
@@ -102,10 +106,9 @@ export default function AnagramHelper({
       <div className={bem('AnagramHelper__top')}>
         {shuffling ? (
           <LetterTiles
-            arrangement={arrangement}
             letters={tileLetters}
             order={order}
-            populatedLetters={groupCells.map((cell) => cell.guess).join('')}
+            usedLetters={getUsedLetters(solutionBoxes)}
           />
         ) : (
           <>
@@ -161,19 +164,6 @@ export default function AnagramHelper({
           >
             Shuffle
           </Button>
-          <Button
-            className={bem('AnagramHelper__arrangementButton')}
-            disabled={!enableButtons}
-            onClick={toggleArrangement}
-            onKeyDown={(event) => {
-              if (event.code === 'Escape') {
-                reset();
-              }
-            }}
-            variant="outlined"
-          >
-            {toggleTarget === 'wheel' ? 'Wheel' : 'Row'}
-          </Button>
         </div>
         <p className={bem('AnagramHelper__clue')}>
           <span
@@ -188,8 +178,9 @@ export default function AnagramHelper({
           />
         </p>
         <SolutionDisplay
+          boxes={solutionBoxes}
           cells={groupCells}
-          letters={shuffling ? arrangedLetters : letters}
+          onEdit={editSolution}
           separators={groupSeparators}
           shuffling={shuffling}
         />

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import GridCell, { getDimensions } from '~/components/GridCell/GridCell';
+import GridCell from '~/components/GridCell/GridCell';
+import { getDimensions } from '~/components/GridCell/dimensions';
 import GridInput from '~/components/GridInput/GridInput';
 import { isValidChar } from '~/utils/general';
 import useDebounce from '~/hooks/useDebounce/useDebounce';
@@ -100,7 +101,7 @@ export default function Grid({
 
       setViewBoxScale(minScale);
     }
-  }, [svgRef.current]);
+  }, [width, height]);
 
   React.useEffect(() => {
     window.addEventListener('resize', updateViewBoxScale);

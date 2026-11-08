@@ -83,10 +83,29 @@ Existing code that already imports `mycrossword/style.css` will continue to work
 | `onCellChange`          | `(cellChange: CellChange) => void \| undefined`<br />Optional function. Called after a grid cell has changed its guess. The object contains the properties `pos`, `guess` and `previousGuess`.                                                                                                                                                                                                                                                                                                       |
 | `onCellFocus`           | `(cellFocus: CellFocus) => void \| undefined`<br />Optional function. Called after the focus switches to a new cell. The object returned contains the properties `pos` and `clueId`.                                                                                                                                                                                                                                                                                                                 |
 | `onComplete`            | `() => void \| undefined`<br />Optional function. Called when every cell in the grid matches its solution, whether entered or revealed. It's called at most once while the crossword is shown, and not for a grid that's already complete when loaded.                                                                                                                                                                                                                                               |
-| `saveGrid`              | `(value: GuessGrid \| ((val: GuessGrid) => GuessGrid)) => void \| undefined`<br />Optional function to override the storage mechanism: when given, progress isn't saved to local storage. Called with the [guess grid](#guess-grid) after the grid has changed. Letters typed into the grid are saved after a one second pause in typing; other changes (e.g. check, reveal or clear) are saved straight away.                                                                                       |
+| `saveGrid`              | `(value: GuessGrid) => void \| undefined`<br />Optional function to override the storage mechanism: when given, progress isn't saved to local storage. Called with the [guess grid](#guess-grid) after the grid has changed. Letters typed into the grid are saved after a one second pause in typing; other changes (e.g. check, reveal or clear) are saved straight away.                                                                                                                          |
 | `stickyClue`            | `'always' \| 'never' \| 'auto'` = 'auto'<br />Optional value to define when to show the sticky clue above the grid. Defaults to `'auto'` (shown on `xs` and `sm` breakpoints).                                                                                                                                                                                                                                                                                                                       |
 | `theme`                 | `'red' \| 'pink' \| 'purple' \| 'deepPurple' \| 'indigo' \| 'blue' \| 'lightBlue' \| 'cyan' \| 'teal' \| 'green' \| 'deepOrange' \| 'blueGrey'` = 'blue'<br />Optional value to override the main colour applied to the highlighted cells and clues. Defaults to `'blue'`.                                                                                                                                                                                                                           |
 | `urlHash`               | `boolean` = false<br />Optional flag to sync the selected clue with the URL hash, e.g. `#1-across`. When enabled, the selected clue is written to the hash (using `history.replaceState`, keeping the existing `history.state`) and a clue named in the hash is selected on load. Defaults to `false`, so the component leaves the page URL alone.                                                                                                                                                   |
+
+## TypeScript
+
+The types used by the props are exported, e.g. for typing your own `saveGrid` or `onCellChange` functions:
+
+```ts
+import type {
+  CellChange, // the object passed to onCellChange
+  CellFocus, // the object passed to onCellFocus
+  CellPosition, // a cell's { col, row } position
+  Char, // a letter or digit in a cell
+  Direction, // 'across' or 'down'
+  GuardianClue, // a clue in the crossword data
+  GuardianCrossword, // the crossword data
+  GuessGrid, // the user's guesses (see below)
+  MyCrosswordProps, // the component's props
+  Theme, // the theme prop's values
+} from 'mycrossword';
+```
 
 ## Crossword data
 

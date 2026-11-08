@@ -74,11 +74,12 @@ function expectSelectionsAndRerender(
   );
 }
 
-describe('Grid', () => {
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+// some tests use fake timers to skip the debounce delay before saving
+afterEach(() => {
+  vi.useRealTimers();
+});
 
+describe('Grid', () => {
   test('it renders', () => {
     stores.render(
       <Grid

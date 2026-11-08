@@ -78,7 +78,7 @@ function Clue({
         });
       }
     }
-  }, [scrollTo]);
+  }, [scrollTo, containerRef]);
 
   return (
     <button

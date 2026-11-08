@@ -4,6 +4,7 @@ import { getDimensions } from '~/components/GridCell/dimensions';
 import GridInput from '~/components/GridInput/GridInput';
 import { isValidChar } from '~/utils/general';
 import useDebounce from '~/hooks/useDebounce/useDebounce';
+import { useEventCallback } from '~/hooks/useEventCallback/useEventCallback';
 import GridSeparators from '~/components/GridSeparators/GridSeparators';
 import {
   Cell,
@@ -129,10 +130,15 @@ export default function Grid({
     };
   }, [updateViewBoxScale]);
 
+  // a stable reference to the latest setGuessGrid, as it may be a consumer's
+  // saveGrid that changes on every render: saving whenever it changed would
+  // write the debounced (possibly stale) guesses over newer ones
+  const saveGuessGrid = useEventCallback(setGuessGrid);
+
   React.useEffect(() => {
     // only update local storage after debounce delay
-    setGuessGrid(debouncedGuesses);
-  }, [debouncedGuesses]);
+    saveGuessGrid(debouncedGuesses);
+  }, [debouncedGuesses, saveGuessGrid]);
 
   /**
    * Announce the selected cell (and its clue if the clue has changed) if it

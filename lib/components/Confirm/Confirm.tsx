@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Button from '../Button/Button';
 import { getBem } from '~/utils/bem';
+import { useEventCallback } from '~/hooks/useEventCallback/useEventCallback';
 import './Confirm.css';
 
 export const DEFAULT_TIMEOUT = 10;
@@ -33,10 +34,14 @@ export default function Confirm({
     cancelRef.current?.focus();
   }, []);
 
+  // a stable reference to the latest onCancel, so the countdown isn't
+  // restarted whenever the parent re-renders with a new function
+  const cancel = useEventCallback(onCancel);
+
   React.useEffect(() => {
     const timer = setTimeout(() => {
       if (seconds <= 1) {
-        onCancel();
+        cancel();
       } else {
         setSeconds((secs) => secs - 1);
       }
@@ -45,7 +50,7 @@ export default function Confirm({
     return function cleanup() {
       clearTimeout(timer);
     };
-  }, [seconds]);
+  }, [seconds, cancel]);
 
   return (
     <div

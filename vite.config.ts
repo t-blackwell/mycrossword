@@ -81,7 +81,12 @@ export default defineConfig(({ mode }) => ({
     libraryStyles(),
     dts({
       include: ['lib'],
-      exclude: ['lib/**/*.test.*', 'lib/testData', 'lib/utils/test.ts'],
+      exclude: [
+        'lib/**/*.test.*',
+        'lib/testData',
+        'lib/utils/test.ts',
+        'lib/utils/testBrowser.ts',
+      ],
     }),
   ],
   resolve: {

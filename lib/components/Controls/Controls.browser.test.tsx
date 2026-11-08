@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { page } from 'vitest/browser';
+import { setViewport } from '~/utils/testBrowser';
 import data from '~/testData/test.valid.1';
 import { initialiseStores } from '~/utils/test';
 import { useCellsStore } from '~/stores/useCellsStore';
@@ -33,7 +33,7 @@ function renderControls() {
 }
 
 test('it renders with full button text', async () => {
-  await page.viewport(1200, 800);
+  await setViewport(1200, 800);
 
   const getButtonText = renderControls();
 
@@ -41,7 +41,7 @@ test('it renders with full button text', async () => {
 });
 
 test('it renders with shorter button text', async () => {
-  await page.viewport(500, 800);
+  await setViewport(500, 800);
 
   const getButtonText = renderControls();
 

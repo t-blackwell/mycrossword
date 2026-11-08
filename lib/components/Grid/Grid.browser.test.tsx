@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { page } from 'vitest/browser';
+import { setViewport } from '~/utils/testBrowser';
 import testData from '~/testData/test.valid.1';
 import { useCellsStore } from '~/stores/useCellsStore';
 import { useCluesStore } from '~/stores/useCluesStore';
@@ -53,7 +53,7 @@ test.each([
 ])(
   'the input covers the selected cell when the cell size changes ($screen screen)',
   async ({ width }) => {
-    await page.viewport(width, 800);
+    await setViewport(width, 800);
 
     initialiseStores(testData);
     useCellsStore.getState().select({ col: 0, row: 0 });

@@ -13,6 +13,7 @@ test('it renders', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       col={0}
+      direction="across"
       id="1-across"
       isHighlighted={false}
       num="1"
@@ -33,6 +34,7 @@ test('it renders answered', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered
       col={0}
+      direction="across"
       id="1-across"
       isHighlighted={false}
       num="1"
@@ -54,6 +56,7 @@ test('it renders highlighted', () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       col={0}
+      direction="across"
       id="1-across"
       isHighlighted
       num="1"
@@ -78,6 +81,7 @@ test('it selects clue', async () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       col={0}
+      direction="across"
       id="1-across"
       isHighlighted
       num="1"
@@ -112,6 +116,7 @@ test('it uses the latest props when clicked', async () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       col={0}
+      direction="across"
       id="1-across"
       isHighlighted={false}
       num="1"
@@ -126,6 +131,7 @@ test('it uses the latest props when clicked', async () => {
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
       col={0}
+      direction="across"
       id="4-across"
       isHighlighted={false}
       num="4"
@@ -149,4 +155,77 @@ test('it uses the latest props when clicked', async () => {
     col: 0,
     row: 2,
   });
+});
+
+test('it is a button announcing its direction and state', () => {
+  const { rerender } = render(
+    <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      answered={false}
+      col={0}
+      direction="down"
+      id="1-down"
+      isHighlighted={false}
+      num="1"
+      row={0}
+      text="Colour (6)"
+    />,
+  );
+
+  const clue = screen.getByRole('button', { name: /1\s*down\s*Colour \(6\)/ });
+  expect(clue.tagName).toBe('BUTTON');
+  expect(clue).toHaveAttribute('type', 'button');
+  expect(clue).toHaveAttribute('data-clue-id', '1-down');
+  expect(clue).not.toHaveAttribute('aria-current');
+  expect(clue).not.toHaveAccessibleName(/answered/);
+
+  rerender(
+    <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      answered
+      col={0}
+      direction="down"
+      id="1-down"
+      isHighlighted
+      num="1"
+      row={0}
+      text="Colour (6)"
+    />,
+  );
+
+  expect(clue).toHaveAttribute('aria-current', 'true');
+  expect(clue).toHaveAccessibleName(/\(answered\)$/);
+});
+
+test('it can be selected with the keyboard', async () => {
+  initialiseStores(testData);
+  const cellFocus = vi.fn();
+
+  render(
+    <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      answered={false}
+      col={0}
+      direction="down"
+      id="1-down"
+      isHighlighted={false}
+      num="1"
+      onCellFocus={cellFocus}
+      row={0}
+      text="Colour (6)"
+    />,
+  );
+
+  await userEvent.tab();
+  expect(screen.getByRole('button')).toHaveFocus();
+
+  // Space as well as Enter now that it's a real button
+  await userEvent.keyboard(' ');
+  expect(cellFocus).toHaveBeenCalledWith({
+    pos: { col: 0, row: 0 },
+    clueId: '1-down',
+  });
+  expect(useCluesStore.getState().clues.find((c) => c.selected)?.id).toBe(
+    '1-down',
+  );
 });

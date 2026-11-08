@@ -475,3 +475,50 @@ test("closing the anagram helper doesn't save a stale grid", async () => {
   const lastSaved = saveGrid.mock.calls[saveGrid.mock.calls.length - 1][0];
   expect(lastSaved.value[0][0]).toBe('Y');
 });
+
+test('keyboard users can move between the grid and the clue list', async () => {
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test"
+      stickyClue="never"
+    />,
+  );
+
+  const grid = screen.getByRole('textbox', { name: 'Crossword grid' });
+
+  // the grid is the first stop and selects the first clue
+  await userEvent.tab();
+  expect(grid).toHaveFocus();
+  expect(screen.getByTestId('grid-announcement')).toHaveTextContent(
+    '1 across: Toy on a string (2-2). Letter 1 of 4, blank.',
+  );
+
+  // Tab moves between clues within the grid
+  await userEvent.tab();
+  expect(grid).toHaveFocus();
+  expect(screen.getByTestId('grid-announcement')).toHaveTextContent(
+    '4 across: Have a rest (3,4). Letter 1 of 7, blank.',
+  );
+
+  // Escape moves focus to the selected clue in the list
+  await userEvent.keyboard('{Escape}');
+  const clue = screen.getByRole('button', { name: /^4\s*across/ });
+  expect(clue).toHaveFocus();
+  expect(clue).toHaveAttribute('aria-current', 'true');
+
+  // and Tab continues through the clue list
+  await userEvent.tab();
+  expect(screen.getByRole('button', { name: /^1\s*down/ })).toHaveFocus();
+
+  // selecting a clue returns to the grid
+  await userEvent.keyboard('{Enter}');
+  expect(grid).toHaveFocus();
+  expect(screen.getByTestId('grid-announcement')).toHaveTextContent(
+    '1 down: Colour (6). Letter 1 of 6, blank.',
+  );
+});

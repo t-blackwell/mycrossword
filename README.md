@@ -13,11 +13,22 @@ React crossword component built to work with Guardian crossword data.
 - Grouped clues span multiple columns or rows
 - Tab key cycles between clues
 - Arrow keys navigate between cells
+- Accessible to keyboard and screen reader users (see [Accessibility](#accessibility))
 - Displays attempted clues as greyed out
 - Autosaves progress to local storage
 - Smart clearing only removes cells not part of other completed solutions
 - Check and reveal solution functions (provided `solutionsAvailable: true` )
 - Anagram helper
+
+## Accessibility
+
+The grid is drawn as an SVG, so it is presented to assistive technologies through a single labelled text input ("Crossword grid") rather than through the SVG itself:
+
+- As the selected cell changes, a polite live region announces the clue (when it changes), the position in the answer and the cell's contents, e.g. "1 across: Toy on a string (2-2). Letter 1 of 4, blank.", then "Letter 2 of 4, Y." Checked letters are announced as correct or incorrect.
+- The grid can be reached with the Tab key. If no clue is selected, the first clue is selected.
+- In the grid, Tab and Shift+Tab move between clues, so Escape leaves the grid, moving focus to the selected clue in the clue list. Pressing Enter on a clue returns to the grid.
+- Clues are buttons in lists labelled "Across" and "Down". The selected clue is marked as current and answered clues are announced as answered.
+- The Check, Reveal and Clear menus are disclosure buttons and close with Escape. Confirmations take focus and return it to their menu button when closed.
 
 ## Install
 

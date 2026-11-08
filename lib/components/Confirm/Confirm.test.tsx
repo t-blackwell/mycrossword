@@ -85,3 +85,19 @@ test('it should throw error with invalid timeout', () => {
 
   restoreConsoleMessage('error');
 });
+
+test('it moves focus to cancel and describes the timeout', () => {
+  render(
+    <Confirm
+      buttonText="Confirm clear grid"
+      onCancel={vi.fn()}
+      onConfirm={vi.fn()}
+    />,
+  );
+
+  const group = screen.getByRole('group', { name: 'Confirm clear grid' });
+  expect(group).toHaveAccessibleDescription(
+    `This will automatically cancel in ${DEFAULT_TIMEOUT}`,
+  );
+  expect(screen.getByRole('button', { name: 'Cancel' })).toHaveFocus();
+});

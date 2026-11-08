@@ -62,3 +62,54 @@ test('it throws when less than two menu items', () => {
 
   restoreConsoleMessage('error');
 });
+
+test('it is a disclosure button controlling a list of buttons', async () => {
+  render(<DropdownButton id="test" menu={menu} text="Test" />);
+  const button = screen.getByRole('button', { name: 'Test' });
+
+  expect(button).not.toHaveAttribute('aria-haspopup');
+  expect(button).toHaveAttribute('aria-controls', 'test-menu');
+  expect(document.getElementById('test-menu')).toBeInTheDocument();
+  expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Three' })).toBeDisabled();
+});
+
+test('Escape closes the menu and returns focus to the button', async () => {
+  render(<DropdownButton menu={menu} text="Test" />);
+  const button = screen.getByRole('button', { name: 'Test' });
+
+  await userEvent.tab();
+  await userEvent.keyboard('{Enter}');
+  expect(button).toHaveAttribute('aria-expanded', 'true');
+
+  await userEvent.tab();
+  expect(screen.getByRole('button', { name: 'One' })).toHaveFocus();
+
+  await userEvent.keyboard('{Escape}');
+  expect(button).toHaveAttribute('aria-expanded', 'false');
+  expect(button).toHaveFocus();
+});
+
+test('it closes the menu when focus moves elsewhere', async () => {
+  render(
+    <>
+      <DropdownButton menu={menu} text="Test" />
+      <button type="button">Elsewhere</button>
+    </>,
+  );
+  const button = screen.getByRole('button', { name: 'Test' });
+
+  await userEvent.click(button);
+  expect(button).toHaveAttribute('aria-expanded', 'true');
+
+  // moving between the menu items keeps it open
+  await userEvent.tab();
+  await userEvent.tab();
+  expect(screen.getByRole('button', { name: 'Two' })).toHaveFocus();
+  expect(button).toHaveAttribute('aria-expanded', 'true');
+
+  // tabbing out (past the disabled item) closes it
+  await userEvent.tab();
+  expect(screen.getByRole('button', { name: 'Elsewhere' })).toHaveFocus();
+  expect(button).toHaveAttribute('aria-expanded', 'false');
+});

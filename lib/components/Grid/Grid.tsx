@@ -21,6 +21,7 @@ import { mergeCell } from '~/utils/cell';
 import { isCluePopulated } from '~/utils/clue';
 import { useCluesStore } from '~/stores/useCluesStore';
 import { getBem } from '~/utils/bem';
+import { describeCell, VISUALLY_HIDDEN_CLASS } from '~/utils/a11y';
 import './Grid.css';
 
 const ARROWS_KEYS = [
@@ -55,6 +56,8 @@ interface GridProps {
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   onComplete?: () => void;
+  /** Called when the user presses Escape to leave the grid */
+  onEscape?: () => void;
   rawClues: GuardianClue[];
   rows: number;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
@@ -71,6 +74,7 @@ export default function Grid({
   onCellChange,
   onCellFocus,
   onComplete,
+  onEscape,
   rawClues,
   rows,
   setGuessGrid,
@@ -84,6 +88,15 @@ export default function Grid({
   const debouncedGuesses: GuessGrid = useDebounce<GuessGrid>(guesses, 1000);
   const svgRef = React.useRef<SVGSVGElement>(null);
   const [viewBoxScale, setViewBoxScale] = React.useState<number>(1);
+  const localInputRef = React.useRef<HTMLInputElement>(null);
+  const gridInputRef = inputRef ?? localInputRef;
+  const instructionsId = React.useId();
+
+  // screen reader announcement of the selected cell, made via a live region
+  // as focus stays on the same input while the selection moves
+  const [announcement, setAnnouncement] = React.useState('');
+  const lastAnnouncedRef = React.useRef<string | undefined>(undefined);
+  const lastAnnouncedGroupRef = React.useRef<string | undefined>(undefined);
 
   const selectCells = useCellsStore((state) => state.select);
   const setCells = useCellsStore((state) => state.setCells);
@@ -116,6 +129,98 @@ export default function Grid({
     // only update local storage after debounce delay
     setGuessGrid(debouncedGuesses);
   }, [debouncedGuesses]);
+
+  /**
+   * Announce the selected cell (and its clue if the clue has changed) if it
+   * differs from the last announcement.
+   */
+  const announceSelection = React.useCallback(
+    (currentCells: Cell[], currentClues: Clue[]) => {
+      const cell = currentCells.find((c) => c.selected);
+      const clue = currentClues.find((c) => c.selected);
+
+      if (cell === undefined || clue === undefined) {
+        return;
+      }
+
+      const key = [
+        clue.id,
+        cell.pos.col,
+        cell.pos.row,
+        cell.guess ?? '',
+        cell.checked === true,
+      ].join('|');
+
+      if (key === lastAnnouncedRef.current) {
+        return;
+      }
+
+      const group = clue.group[0] ?? clue.id;
+
+      setAnnouncement(
+        describeCell({
+          cell,
+          cells: currentCells,
+          clue,
+          clues: currentClues,
+          includeClue: group !== lastAnnouncedGroupRef.current,
+        }),
+      );
+
+      lastAnnouncedRef.current = key;
+      lastAnnouncedGroupRef.current = group;
+    },
+    [],
+  );
+
+  // announce changes to the selected cell while the grid has focus
+  React.useEffect(() => {
+    if (
+      gridInputRef.current !== null &&
+      document.activeElement === gridInputRef.current
+    ) {
+      announceSelection(cells, clues);
+    }
+  }, [cells, clues, gridInputRef, announceSelection]);
+
+  const handleFocus = () => {
+    // read from the stores as they may have been updated (e.g. by clicking a
+    // cell or clue) since this component last rendered
+    const currentCells = useCellsStore.getState().cells;
+    const currentClues = useCluesStore.getState().clues;
+
+    // select the first clue when focusing the grid using the keyboard
+    if (
+      currentClues.length > 0 &&
+      !currentCells.some((cell) => cell.selected)
+    ) {
+      const firstClue =
+        currentClues.find((clue) => clue.selected) ?? currentClues[0];
+      const firstCluePos = {
+        col: firstClue.position.x,
+        row: firstClue.position.y,
+      };
+
+      selectClue(firstClue.id);
+      selectCells(firstCluePos);
+      cellFocus(firstCluePos, firstClue.id);
+    }
+
+    // always announce the clue and cell when the grid gains focus
+    lastAnnouncedRef.current = undefined;
+    lastAnnouncedGroupRef.current = undefined;
+    announceSelection(
+      useCellsStore.getState().cells,
+      useCluesStore.getState().clues,
+    );
+  };
+
+  const handleBlur = () => {
+    // clear the announcement so it's repeated when the grid regains focus
+    setAnnouncement('');
+    lastAnnouncedRef.current = undefined;
+    lastAnnouncedGroupRef.current = undefined;
+  };
 
   const cellChange = (cell: Cell, newGuess: Char | undefined) => {
     if (onCellChange !== undefined && cell.guess !== newGuess) {
@@ -360,6 +465,19 @@ export default function Grid({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // leave the grid (Tab is used to move between clues)
+    if (event.key === 'Escape') {
+      event.preventDefault();
+
+      if (onEscape !== undefined) {
+        onEscape();
+      } else {
+        event.currentTarget.blur();
+      }
+
+      return;
+    }
+
     if (selectedClue === undefined || selectedCell === undefined) {
       return;
     }
@@ -502,7 +620,10 @@ export default function Grid({
         aspectRatio: `${cols} / ${rows}`,
       }}
     >
+      {/* the grid is presented to assistive technologies via the input */}
       <svg
+        aria-hidden="true"
+        focusable="false"
         preserveAspectRatio="xMinYMin"
         ref={svgRef}
         viewBox={`0 0 ${width} ${height}`}
@@ -511,12 +632,7 @@ export default function Grid({
           className={bem('Grid__background')}
           onMouseDown={(event) => {
             event.preventDefault();
-
-            const inputElement =
-              document.querySelector<HTMLInputElement>('.GridInput');
-            if (inputElement !== null) {
-              inputElement.blur();
-            }
+            gridInputRef.current?.blur();
           }}
           width={width}
           height={height}
@@ -540,7 +656,7 @@ export default function Grid({
               clueIds={clueIds}
               guess={guess}
               highlighted={isHighlighted}
-              inputRef={inputRef}
+              inputRef={gridInputRef}
               key={`${pos.col},${pos.row}`}
               num={num}
               onCellFocus={onCellFocus}
@@ -571,11 +687,27 @@ export default function Grid({
         }}
       >
         <GridInput
+          ariaDescribedBy={instructionsId}
+          ariaLabel="Crossword grid"
+          onBlur={handleBlur}
           onChange={handleChange}
+          onFocus={handleFocus}
           onKeyDown={handleKeyDown}
-          ref={inputRef}
+          ref={gridInputRef}
           visible={selectedCell !== undefined}
         />
+      </div>
+      <p className={VISUALLY_HIDDEN_CLASS} id={instructionsId}>
+        Type to enter letters. Use the arrow keys to move between cells, Tab and
+        Shift+Tab to move between clues, and Escape to leave the grid.
+      </p>
+      <div
+        aria-atomic="true"
+        aria-live="polite"
+        className={VISUALLY_HIDDEN_CLASS}
+        data-testid="grid-announcement"
+      >
+        {announcement}
       </div>
     </div>
   );

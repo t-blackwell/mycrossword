@@ -41,20 +41,14 @@ export default function ClueDisplay({
       {words.map((word, i) => {
         if (i % 2 === 1) {
           return (
-            <span
+            <button
               className={className}
               key={`${word}-${i}`}
               onClick={() => onClick(normalizeAccents(word))}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  onClick(normalizeAccents(word));
-                }
-              }}
-              role="button"
-              tabIndex={0}
+              type="button"
             >
               {word}
-            </span>
+            </button>
           );
         }
 

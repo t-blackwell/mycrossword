@@ -24,6 +24,14 @@ export default function Confirm({
 
   const bem = getBem('Confirm');
   const [seconds, setSeconds] = React.useState(timeout);
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  const timeoutId = React.useId();
+
+  // the control that opened this has been replaced, so move focus here
+  // (to the least destructive option)
+  React.useEffect(() => {
+    cancelRef.current?.focus();
+  }, []);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,16 +48,21 @@ export default function Confirm({
   }, [seconds]);
 
   return (
-    <div className={bem('Confirm')}>
+    <div
+      aria-describedby={timeoutId}
+      aria-label={buttonText}
+      className={bem('Confirm')}
+      role="group"
+    >
       <div className={bem('Confirm__buttonContainer')}>
-        <Button onClick={onCancel} variant="outlined">
+        <Button onClick={onCancel} ref={cancelRef} variant="outlined">
           Cancel
         </Button>
         <Button className={bem('Confirm__button')} onClick={onConfirm}>
           {buttonText}
         </Button>
       </div>
-      <span className={bem('Confirm__timeout')}>
+      <span className={bem('Confirm__timeout')} id={timeoutId}>
         This will automatically cancel in {seconds}
       </span>
     </div>

@@ -5,6 +5,8 @@ interface CaretDownIconProps {
 export default function CaretDownIcon({ className }: CaretDownIconProps) {
   return (
     <svg
+      aria-hidden="true"
+      focusable="false"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       width="8"

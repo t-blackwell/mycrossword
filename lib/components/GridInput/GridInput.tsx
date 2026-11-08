@@ -3,16 +3,34 @@ import { getBem } from '~/utils/bem';
 import './GridInput.css';
 
 interface GridInputProps {
+  ariaDescribedBy?: string;
+  ariaLabel: string;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   visible: boolean;
 }
 
 const GridInput = React.forwardRef<HTMLInputElement, GridInputProps>(
-  ({ onChange, onKeyDown, visible }, ref) => {
+  (
+    {
+      ariaDescribedBy,
+      ariaLabel,
+      onBlur,
+      onChange,
+      onFocus,
+      onKeyDown,
+      visible,
+    },
+    ref,
+  ) => {
     const bem = getBem('GridInput');
     return (
       <input
+        aria-describedby={ariaDescribedBy}
+        aria-label={ariaLabel}
+        autoCapitalize="characters"
         autoComplete="off"
         autoCorrect="off"
         autoFocus={false}
@@ -21,11 +39,12 @@ const GridInput = React.forwardRef<HTMLInputElement, GridInputProps>(
           !visible ? 'GridInput--inclusivelyHidden' : null,
         )}
         maxLength={1}
+        onBlur={onBlur}
         onChange={onChange}
+        onFocus={onFocus}
         onKeyDown={onKeyDown}
         ref={ref}
         spellCheck="false"
-        tabIndex={-1}
         type="text"
         value=""
       />

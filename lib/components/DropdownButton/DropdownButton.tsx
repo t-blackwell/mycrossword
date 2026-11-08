@@ -67,18 +67,42 @@ function DropdownButton({ className, id, menu, text }: DropdownButtonProps) {
     setMenuExpanded((val) => !val);
   };
 
+  // close the menu with Escape, returning focus to the button
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Escape' && menuExpanded) {
+      event.preventDefault();
+      setMenuExpanded(false);
+      buttonRef.current?.focus();
+    }
+  };
+
+  // close the menu when focus moves elsewhere e.g. tabbing past the last item
+  // (clicks outside are handled above; relatedTarget is null for those in
+  // browsers that don't focus buttons on click, e.g. Safari)
+  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    const isOutside =
+      event.relatedTarget !== null &&
+      !event.currentTarget.contains(event.relatedTarget as Node);
+
+    if (menuExpanded && isOutside) {
+      setMenuExpanded(false);
+    }
+  };
+
   return (
     <div
       className={classNames(
         bem('DropdownButton', menuExpanded ? 'DropdownButton--expanded' : null),
         className,
       )}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
       ref={componentRef}
     >
+      {/* a disclosure button: the menu is a list of buttons, shown or hidden */}
       <button
-        aria-controls={id !== undefined ? `${id}-listbox` : undefined}
+        aria-controls={id !== undefined ? `${id}-menu` : undefined}
         aria-expanded={menuExpanded ? 'true' : 'false'}
-        aria-haspopup="true"
         className={bem('DropdownButton__button')}
         id={id}
         onClick={toggleMenuExpanded}
@@ -91,9 +115,8 @@ function DropdownButton({ className, id, menu, text }: DropdownButtonProps) {
       <ul
         aria-label={`${text} menu`}
         className={bem('DropdownButton__menu')}
-        id={id !== undefined ? `${id}-listbox` : undefined}
+        id={id !== undefined ? `${id}-menu` : undefined}
         ref={menuRef}
-        role="listbox"
       >
         {menu.map((item) => (
           <li key={item.text}>

@@ -1,4 +1,15 @@
 .MyCrossword .Clue {
+  /* reset button styles */
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  font: inherit;
+  margin: 0;
+  text-align: left;
+  width: 100%;
+
   cursor: pointer;
   display: flex;
   line-height: var(--line-height);
@@ -6,6 +17,10 @@
   padding: calc(var(--grid-size) * 0.4) calc(var(--grid-size) * 1.2)
     calc(var(--grid-size) * 0.4) calc(var(--grid-size) * 0.7);
   user-select: none;
+}
+.MyCrossword .Clue:focus-visible {
+  outline: 2px solid var(--grid-color);
+  outline-offset: -2px;
 }
 .MyCrossword .Clue--answered {
   opacity: 0.6;

@@ -24,6 +24,14 @@ const Arrows = {
   RIGHT: { key: 'ArrowRight', code: 'ArrowRight' },
 };
 
+function getGrid() {
+  return document.querySelector<HTMLElement>('.Grid')!;
+}
+
+function getAnnouncementRegion() {
+  return getGrid().querySelector<HTMLElement>('[aria-live]')!;
+}
+
 function getCells() {
   return stores.cells.getState().cells;
 }
@@ -96,7 +104,7 @@ describe('Grid', () => {
 
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
-    const grid = screen.getByTestId('grid');
+    const grid = getGrid();
     const cells = grid.querySelectorAll('.GridCell');
     expect(cells.length).toBe(23);
   });
@@ -778,20 +786,19 @@ describe('Grid accessibility', () => {
     );
   }
 
-  const getAnnouncement = () =>
-    screen.getByTestId('grid-announcement').textContent;
+  const getAnnouncement = () => getAnnouncementRegion().textContent;
 
   test('the grid is presented via a labelled input', () => {
     stores.render(<ConnectedGrid />);
 
-    const svg = screen.getByTestId('grid').querySelector('svg');
+    const svg = getGrid().querySelector('svg');
     expect(svg).toHaveAttribute('aria-hidden', 'true');
 
     const input = screen.getByRole('textbox', { name: 'Crossword grid' });
     expect(input).toHaveAccessibleDescription(/arrow keys/i);
     expect(input).toHaveAccessibleDescription(/escape to leave the grid/i);
 
-    const liveRegion = screen.getByTestId('grid-announcement');
+    const liveRegion = getAnnouncementRegion();
     expect(liveRegion).toHaveAttribute('aria-live', 'polite');
     expect(liveRegion).toBeEmptyDOMElement();
   });

@@ -4,6 +4,20 @@ import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
+import pkg from './package.json' with { type: 'json' };
+
+// the library's dependencies are left for the app to install (and dedupe),
+// rather than bundled, including subpaths e.g. `zustand/vanilla`
+const externalPackages = Object.keys({
+  ...pkg.dependencies,
+  ...pkg.peerDependencies,
+});
+
+function isExternal(id: string) {
+  return externalPackages.some(
+    (name) => id === name || id.startsWith(`${name}/`),
+  );
+}
 
 const STYLES_MODULE_ID = 'virtual:mycrossword/styles';
 const RESOLVED_STYLES_MODULE_ID = `\0${STYLES_MODULE_ID}`;
@@ -107,7 +121,7 @@ export default defineConfig(({ mode }) => ({
       cssFileName: 'style',
     },
     rolldownOptions: {
-      external: ['react', 'react/jsx-runtime', 'react-dom'],
+      external: isExternal,
     },
   },
   test: {

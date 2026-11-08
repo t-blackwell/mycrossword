@@ -24,44 +24,34 @@ export default function Intro({
   const [countdownValue, setCountdownValue] = React.useState(
     countdown !== undefined ? countdown.seconds : 0,
   );
+  const [countdownFor, setCountdownFor] = React.useState({ countdown, node });
+  const canContinue = countdown === undefined || countdownValue <= 0;
 
-  const [canContinue, setCanContinue] = React.useState(countdown === undefined);
-  const timerRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const handleClearTimer = () => {
-    if (timerRef.current !== null) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  };
+  // restart the countdown when the intro changes (while rendering, so the
+  // previous countdown's value is never shown)
+  if (countdownFor.countdown !== countdown || countdownFor.node !== node) {
+    setCountdownFor({ countdown, node });
+    setCountdownValue(countdown !== undefined ? countdown.seconds : 0);
+  }
 
   React.useEffect(() => {
     if (countdown === undefined) {
-      setCanContinue(true);
       return;
     }
 
-    setCountdownValue(countdown.seconds);
-    setCanContinue(false);
-    handleClearTimer();
-
     const start = Date.now();
-
-    timerRef.current = setInterval(() => {
+    const timer = setInterval(() => {
       const elapsed = Date.now() - start;
       const remaining = Math.max(0, countdown.seconds * 1000 - elapsed);
 
       setCountdownValue(Math.ceil(remaining / 1000));
 
       if (remaining <= 0) {
-        setCanContinue(true);
-        handleClearTimer();
+        clearInterval(timer);
       }
     }, 250);
 
-    return () => {
-      handleClearTimer();
-    };
+    return () => clearInterval(timer);
   }, [countdown, node]);
 
   return (

@@ -5,6 +5,7 @@ import {
   DEFAULT_HTML_TAGS,
 } from '../../utils/general';
 import { GuessGrid } from '~/types';
+import { initialiseGuessGrid } from '~/utils/guess';
 import invalidData from './../../testData/test.invalid.1';
 import validData from './../../testData/test.valid.1';
 import Crossword from './Crossword';
@@ -12,6 +13,10 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import { createTestStores } from '~/utils/test';
 
 const DEBOUNCE_TIME = 1000;
+
+function getGridAnnouncementRegion() {
+  return document.querySelector<HTMLElement>('.Grid [aria-live]')!;
+}
 
 test('it renders', () => {
   createTestStores().render(
@@ -501,14 +506,14 @@ test('keyboard users can move between the grid and the clue list', async () => {
   // the grid is the first stop and selects the first clue
   await userEvent.tab();
   expect(grid).toHaveFocus();
-  expect(screen.getByTestId('grid-announcement')).toHaveTextContent(
+  expect(getGridAnnouncementRegion()).toHaveTextContent(
     '1 across: Toy on a string (2-2). Letter 1 of 4, blank.',
   );
 
   // Tab moves between clues within the grid
   await userEvent.tab();
   expect(grid).toHaveFocus();
-  expect(screen.getByTestId('grid-announcement')).toHaveTextContent(
+  expect(getGridAnnouncementRegion()).toHaveTextContent(
     '4 across: Have a rest (3,4). Letter 1 of 7, blank.',
   );
 
@@ -525,7 +530,54 @@ test('keyboard users can move between the grid and the clue list', async () => {
   // selecting a clue returns to the grid
   await userEvent.keyboard('{Enter}');
   expect(grid).toHaveFocus();
-  expect(screen.getByTestId('grid-announcement')).toHaveTextContent(
+  expect(getGridAnnouncementRegion()).toHaveTextContent(
     '1 down: Colour (6). Letter 1 of 6, blank.',
   );
+});
+
+test('it restores saved progress when the data changes', () => {
+  const props = {
+    allowedHtmlTags: DEFAULT_HTML_TAGS,
+    allowMissingSolutions: false,
+    cellMatcher: DEFAULT_CELL_MATCHER,
+    cellSize: DEFAULT_CELL_SIZE,
+    id: 'data-change-test',
+    stickyClue: 'never' as const,
+  };
+  const getGuesses = () =>
+    Array.from(
+      document.querySelectorAll('.GridCell__text'),
+      (text) => text.textContent,
+    ).join('');
+
+  const { rerender } = createTestStores().render(
+    <Crossword {...props} data={validData} />,
+  );
+  expect(getGuesses()).toBe('');
+
+  // e.g. saved by another tab
+  const savedGrid = initialiseGuessGrid(
+    validData.dimensions.cols,
+    validData.dimensions.rows,
+  );
+  savedGrid.value[0][0] = 'Y';
+  localStorage.setItem(
+    'crosswords.data-change-test',
+    JSON.stringify(savedGrid),
+  );
+
+  rerender(<Crossword {...props} data={structuredClone(validData)} />);
+  expect(getGuesses()).toBe('Y');
+
+  // saved progress that doesn't match the grid is ignored
+  localStorage.setItem(
+    'crosswords.data-change-test',
+    JSON.stringify({ value: [['Y']] }),
+  );
+
+  rerender(<Crossword {...props} data={structuredClone(validData)} />);
+  expect(getGuesses()).toBe('');
+  expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
+
+  localStorage.removeItem('crosswords.data-change-test');
 });

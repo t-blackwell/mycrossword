@@ -37,9 +37,7 @@ export default function LetterTiles({
   const bem = getBem('LetterTiles');
   const boardRef = React.useRef<HTMLDivElement>(null);
   const [board, setBoard] = React.useState<BoardSize | null>(null);
-  const [maxTileSize, setMaxTileSize] = React.useState(
-    DEFAULT_GRID_SIZE * 4,
-  );
+  const [maxTileSize, setMaxTileSize] = React.useState(DEFAULT_GRID_SIZE * 4);
   const [motion, setMotion] = React.useState<'bounce' | 'glide'>('bounce');
 
   // measure before the first paint, so tiles appear in place, then keep the
@@ -62,9 +60,7 @@ export default function LetterTiles({
       const next = measure(node);
 
       setBoard((prev) =>
-        prev?.height === next.height && prev.width === next.width
-          ? prev
-          : next,
+        prev?.height === next.height && prev.width === next.width ? prev : next,
       );
       setMaxTileSize(getMaxTileSize(node));
       setMotion('glide');
@@ -75,16 +71,18 @@ export default function LetterTiles({
     return () => observer.disconnect();
   }, []);
 
+  const [prevOrder, setPrevOrder] = React.useState(order);
+
   // shuffles bounce; resizes glide
-  React.useLayoutEffect(() => {
+  if (order !== prevOrder) {
+    setPrevOrder(order);
     setMotion('bounce');
-  }, [order]);
+  }
 
   const upperLetters = letters.toUpperCase();
   const tileSize =
     board !== null ? getTileSize(order.length, board, maxTileSize) : 0;
-  const positions =
-    board !== null ? arrangeTiles(order, board, tileSize) : [];
+  const positions = board !== null ? arrangeTiles(order, board, tileSize) : [];
 
   // fade letters that have been used, working round in wheel order
   const used = new Set<number>();

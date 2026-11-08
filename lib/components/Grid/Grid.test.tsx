@@ -2,12 +2,11 @@ import userEvent from '@testing-library/user-event';
 import { CellFocus, CellPosition, GuessGrid } from '~/types';
 import testData from '~/testData/test.valid.1';
 import { initialiseGuessGrid } from '~/utils/guess';
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import { initialiseStores } from '~/utils/test';
+import { act, fireEvent, screen } from '@testing-library/react';
+import { createTestStores, TestStores } from '~/utils/test';
 import Grid from './Grid';
-import { useCellsStore } from '~/stores/useCellsStore';
-import { useCluesStore } from '~/stores/useCluesStore';
 import { DEFAULT_CELL_SIZE } from '~/utils/general';
+import { useCellsStore, useCluesStore } from '~/stores/stores';
 
 const cellMatcher = /[A-Z]/;
 
@@ -18,6 +17,12 @@ const emptyGuessGrid = initialiseGuessGrid(
   testData.dimensions.rows,
 );
 
+let stores: TestStores;
+
+beforeEach(() => {
+  stores = createTestStores(testData);
+});
+
 const Arrows = {
   UP: { key: 'ArrowUp', code: 'ArrowUp' },
   DOWN: { key: 'ArrowDown', code: 'ArrowDown' },
@@ -26,11 +31,11 @@ const Arrows = {
 };
 
 function getCells() {
-  return useCellsStore.getState().cells;
+  return stores.cells.getState().cells;
 }
 
 function getClues() {
-  return useCluesStore.getState().clues;
+  return stores.clues.getState().clues;
 }
 
 function getSelectedCell() {
@@ -82,9 +87,7 @@ describe('Grid', () => {
   });
 
   test('it renders', () => {
-    initialiseStores(testData);
-
-    render(
+    stores.render(
       <Grid
         cellMatcher={cellMatcher}
         cellSize={DEFAULT_CELL_SIZE}
@@ -106,12 +109,11 @@ describe('Grid', () => {
   });
 
   test('arrows move between cells', async () => {
-    initialiseStores(testData);
     const setGuessGrid = vi.fn();
     const cellFocus = vi.fn();
     let cellFocusCounter = 0;
 
-    const { rerender } = render(
+    const { rerender } = stores.render(
       <Grid
         cellMatcher={cellMatcher}
         cellSize={DEFAULT_CELL_SIZE}
@@ -248,14 +250,12 @@ describe('Grid', () => {
   });
   test('display characters and update cell positions', async () => {
     vi.useFakeTimers();
-
-    initialiseStores(testData);
     const setGuessGrid = vi.fn();
     const cellFocus = vi.fn();
     let guessGridCounter = 0;
     let cellFocusCounter = 0;
 
-    const { rerender } = render(
+    const { rerender } = stores.render(
       <Grid
         cellMatcher={cellMatcher}
         cellSize={DEFAULT_CELL_SIZE}
@@ -682,11 +682,10 @@ describe('Grid', () => {
   });
 
   test('onCellChange called', async () => {
-    initialiseStores(testData);
     const onCellChange = vi.fn();
     const setGuessGrid = vi.fn();
 
-    const { rerender } = render(
+    const { rerender } = stores.render(
       <Grid
         cellMatcher={cellMatcher}
         cellSize={DEFAULT_CELL_SIZE}
@@ -793,8 +792,7 @@ describe('Grid accessibility', () => {
     screen.getByTestId('grid-announcement').textContent;
 
   test('the grid is presented via a labelled input', () => {
-    initialiseStores(testData);
-    render(<ConnectedGrid />);
+    stores.render(<ConnectedGrid />);
 
     const svg = screen.getByTestId('grid').querySelector('svg');
     expect(svg).toHaveAttribute('aria-hidden', 'true');
@@ -809,9 +807,8 @@ describe('Grid accessibility', () => {
   });
 
   test('tabbing to the grid selects and announces the first clue', async () => {
-    initialiseStores(testData);
     const cellFocus = vi.fn();
-    render(<ConnectedGrid onCellFocus={cellFocus} />);
+    stores.render(<ConnectedGrid onCellFocus={cellFocus} />);
 
     await userEvent.tab();
 
@@ -828,10 +825,9 @@ describe('Grid accessibility', () => {
   });
 
   test('tabbing to the grid keeps an existing selection', async () => {
-    initialiseStores(testData);
-    useCluesStore.getState().select('4-across');
-    useCellsStore.getState().select({ col: 2, row: 2 });
-    render(<ConnectedGrid />);
+    stores.clues.getState().select('4-across');
+    stores.cells.getState().select({ col: 2, row: 2 });
+    stores.render(<ConnectedGrid />);
 
     await userEvent.tab();
 
@@ -843,8 +839,7 @@ describe('Grid accessibility', () => {
   });
 
   test('clicking a cell announces it', async () => {
-    initialiseStores(testData);
-    render(<ConnectedGrid />);
+    stores.render(<ConnectedGrid />);
 
     // the 4 across cell number
     await userEvent.click(screen.getByText('4').parentElement!);
@@ -856,8 +851,7 @@ describe('Grid accessibility', () => {
   });
 
   test('announces moving and typing within and between clues', async () => {
-    initialiseStores(testData);
-    render(<ConnectedGrid />);
+    stores.render(<ConnectedGrid />);
 
     await userEvent.tab();
     const input = screen.getByRole('textbox');
@@ -889,8 +883,7 @@ describe('Grid accessibility', () => {
   });
 
   test('announces checked cells', async () => {
-    initialiseStores(testData);
-    render(<ConnectedGrid />);
+    stores.render(<ConnectedGrid />);
 
     await userEvent.tab();
     const input = screen.getByRole('textbox');
@@ -899,7 +892,7 @@ describe('Grid accessibility', () => {
     expect(getAnnouncement()).toBe('Letter 1 of 4, X.');
 
     act(() => {
-      const { cells, setCells } = useCellsStore.getState();
+      const { cells, setCells } = stores.cells.getState();
       setCells(
         cells.map((cell) =>
           cell.guess !== undefined ? { ...cell, checked: true } : cell,
@@ -910,8 +903,7 @@ describe('Grid accessibility', () => {
   });
 
   test('the announcement is cleared on blur and repeated on refocus', async () => {
-    initialiseStores(testData);
-    render(<ConnectedGrid />);
+    stores.render(<ConnectedGrid />);
 
     await userEvent.tab();
     const input = screen.getByRole('textbox');
@@ -928,21 +920,19 @@ describe('Grid accessibility', () => {
   });
 
   test('changes are not announced while the grid is not focused', () => {
-    initialiseStores(testData);
-    render(<ConnectedGrid />);
+    stores.render(<ConnectedGrid />);
 
     act(() => {
-      useCluesStore.getState().select('1-across');
-      useCellsStore.getState().select({ col: 0, row: 0 });
+      stores.clues.getState().select('1-across');
+      stores.cells.getState().select({ col: 0, row: 0 });
     });
 
     expect(getAnnouncement()).toBe('');
   });
 
   test('Escape leaves the grid', async () => {
-    initialiseStores(testData);
     const onEscape = vi.fn();
-    const { rerender } = render(<ConnectedGrid onEscape={onEscape} />);
+    const { rerender } = stores.render(<ConnectedGrid onEscape={onEscape} />);
 
     await userEvent.tab();
     await userEvent.keyboard('{Escape}');

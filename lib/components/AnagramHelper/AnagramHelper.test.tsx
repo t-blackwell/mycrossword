@@ -3,24 +3,19 @@ import userEvent from '@testing-library/user-event';
 import { DEFAULT_HTML_TAGS } from '~/utils/general';
 import data from '~/testData/test.valid.1';
 import { getGroupCells, getGroupSeparators } from '~/utils/clue';
-import { initialiseStores } from '~/utils/test';
+import { createTestStores } from '~/utils/test';
 import AnagramHelper from './AnagramHelper';
-import { useCluesStore } from '~/stores/useCluesStore';
-import { useCellsStore } from '~/stores/useCellsStore';
 
 test('it renders', async () => {
-  initialiseStores(data);
+  const stores = createTestStores(data);
 
-  const oneAcross = useCluesStore
+  const oneAcross = stores.clues
     .getState()
     .clues.find((clue) => clue.id === '1-across')!;
-  const groupCells = getGroupCells(
-    ['1-across'],
-    useCellsStore.getState().cells,
-  );
+  const groupCells = getGroupCells(['1-across'], stores.cells.getState().cells);
   const groupSeparators = getGroupSeparators(
     ['1-across'],
-    useCluesStore.getState().clues,
+    stores.clues.getState().clues,
   );
   const onClose = vi.fn();
   const onCellGuess = vi.fn(() => true);

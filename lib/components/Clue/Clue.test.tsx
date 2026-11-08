@@ -1,14 +1,12 @@
 import userEvent from '@testing-library/user-event';
 import { DEFAULT_HTML_TAGS } from '~/utils/general';
 import testData from '~/testData/test.valid.1';
-import { initialiseStores } from '~/utils/test';
+import { createTestStores } from '~/utils/test';
 import Clue from './Clue';
-import { render, screen } from '@testing-library/react';
-import { useCluesStore } from '~/stores/useCluesStore';
-import { useCellsStore } from '~/stores/useCellsStore';
+import { screen } from '@testing-library/react';
 
 test('it renders', () => {
-  render(
+  createTestStores().render(
     <Clue
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
@@ -29,7 +27,7 @@ test('it renders', () => {
 });
 
 test('it renders answered', () => {
-  render(
+  createTestStores().render(
     <Clue
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered
@@ -51,7 +49,7 @@ test('it renders answered', () => {
 });
 
 test('it renders highlighted', () => {
-  render(
+  createTestStores().render(
     <Clue
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
@@ -73,10 +71,10 @@ test('it renders highlighted', () => {
 });
 
 test('it selects clue', async () => {
-  initialiseStores(testData);
+  const stores = createTestStores(testData);
   const cellFocus = vi.fn();
 
-  render(
+  stores.render(
     <Clue
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
@@ -96,22 +94,22 @@ test('it selects clue', async () => {
 
   expect(cellFocus).toHaveBeenCalledTimes(1);
 
-  const selectedClue = useCluesStore.getState().clues.find((c) => c.selected);
+  const selectedClue = stores.clues.getState().clues.find((c) => c.selected);
   expect(selectedClue).toBeDefined();
   expect(selectedClue?.id).toBe('1-across');
 
-  const selectedCell = useCellsStore.getState().cells.find((c) => c.selected);
+  const selectedCell = stores.cells.getState().cells.find((c) => c.selected);
   expect(selectedCell).toBeDefined();
   expect(selectedCell?.pos.col).toBe(0);
   expect(selectedCell?.pos.row).toBe(0);
 });
 
 test('it uses the latest props when clicked', async () => {
-  initialiseStores(testData);
+  const stores = createTestStores(testData);
   const firstOnCellFocus = vi.fn();
   const latestOnCellFocus = vi.fn();
 
-  const { rerender } = render(
+  const { rerender } = stores.render(
     <Clue
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
@@ -148,17 +146,17 @@ test('it uses the latest props when clicked', async () => {
     pos: { col: 0, row: 2 },
     clueId: '4-across',
   });
-  expect(useCluesStore.getState().clues.find((c) => c.selected)?.id).toBe(
+  expect(stores.clues.getState().clues.find((c) => c.selected)?.id).toBe(
     '4-across',
   );
-  expect(useCellsStore.getState().cells.find((c) => c.selected)?.pos).toEqual({
+  expect(stores.cells.getState().cells.find((c) => c.selected)?.pos).toEqual({
     col: 0,
     row: 2,
   });
 });
 
 test('it is a button announcing its direction and state', () => {
-  const { rerender } = render(
+  const { rerender } = createTestStores().render(
     <Clue
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
@@ -198,10 +196,10 @@ test('it is a button announcing its direction and state', () => {
 });
 
 test('it can be selected with the keyboard', async () => {
-  initialiseStores(testData);
+  const stores = createTestStores(testData);
   const cellFocus = vi.fn();
 
-  render(
+  stores.render(
     <Clue
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       answered={false}
@@ -225,7 +223,7 @@ test('it can be selected with the keyboard', async () => {
     pos: { col: 0, row: 0 },
     clueId: '1-down',
   });
-  expect(useCluesStore.getState().clues.find((c) => c.selected)?.id).toBe(
+  expect(stores.clues.getState().clues.find((c) => c.selected)?.id).toBe(
     '1-down',
   );
 });

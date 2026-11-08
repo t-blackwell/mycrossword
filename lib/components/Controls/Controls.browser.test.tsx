@@ -1,18 +1,16 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { setViewport } from '~/utils/testBrowser';
 import data from '~/testData/test.valid.1';
-import { initialiseStores } from '~/utils/test';
-import { useCellsStore } from '~/stores/useCellsStore';
-import { useCluesStore } from '~/stores/useCluesStore';
+import { createTestStores } from '~/utils/test';
 import Controls from './Controls';
 
 function renderControls() {
-  initialiseStores(data);
+  const stores = createTestStores(data);
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}

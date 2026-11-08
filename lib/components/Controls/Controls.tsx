@@ -11,8 +11,7 @@ import Confirm from '~/components/Confirm/Confirm';
 import DropdownButton from '~/components/DropdownButton/DropdownButton';
 import Button from '~/components/Button/Button';
 import { getBem } from '~/utils/bem';
-import { useCellsStore } from '~/stores/useCellsStore';
-import { useCluesStore } from '~/stores/useCluesStore';
+import { useCellsStore, useCluesStore } from '~/stores/stores';
 import './Controls.css';
 
 interface ControlsProps {

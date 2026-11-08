@@ -1,20 +1,17 @@
-import { render } from '@testing-library/react';
 import { setViewport } from '~/utils/testBrowser';
 import testData from '~/testData/test.valid.1';
-import { useCellsStore } from '~/stores/useCellsStore';
-import { useCluesStore } from '~/stores/useCluesStore';
 import { initialiseGuessGrid } from '~/utils/guess';
-import { initialiseStores } from '~/utils/test';
+import { createTestStores, TestStores } from '~/utils/test';
 import Grid from './Grid';
 
-function renderGrid(cellSize: number) {
+function renderGrid(stores: TestStores, cellSize: number) {
   return (
     <div className="MyCrossword">
       <Grid
         cellMatcher={/[A-Z]/}
         cellSize={cellSize}
-        cells={useCellsStore.getState().cells}
-        clues={useCluesStore.getState().clues}
+        cells={stores.cells.getState().cells}
+        clues={stores.clues.getState().clues}
         cols={testData.dimensions.cols}
         guessGrid={initialiseGuessGrid(
           testData.dimensions.cols,
@@ -55,14 +52,14 @@ test.each([
   async ({ width }) => {
     await setViewport(width, 800);
 
-    initialiseStores(testData);
-    useCellsStore.getState().select({ col: 0, row: 0 });
-    useCluesStore.getState().select('1-across');
+    const stores = createTestStores(testData);
+    stores.cells.getState().select({ col: 0, row: 0 });
+    stores.clues.getState().select('1-across');
 
-    const { rerender } = render(renderGrid(31));
+    const { rerender } = stores.render(renderGrid(stores, 31));
     await expectInputToCoverSelectedCell();
 
-    rerender(renderGrid(50));
+    rerender(renderGrid(stores, 50));
     await expectInputToCoverSelectedCell();
   },
 );

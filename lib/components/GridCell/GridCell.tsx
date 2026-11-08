@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { CellFocus, CellPosition, Char } from '~/types';
-import { useCluesStore } from '~/stores/useCluesStore';
-import { useCellsStore } from '~/stores/useCellsStore';
+import { useCellsStore, useCluesStore } from '~/stores/stores';
 import { getBem } from '~/utils/bem';
 import { getDimensions } from './dimensions';
 import './GridCell.css';

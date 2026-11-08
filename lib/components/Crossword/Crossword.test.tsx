@@ -8,13 +8,13 @@ import { GuessGrid } from '~/types';
 import invalidData from './../../testData/test.invalid.1';
 import validData from './../../testData/test.valid.1';
 import Crossword from './Crossword';
-import { useCellsStore } from '~/stores/useCellsStore';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
+import { createTestStores } from '~/utils/test';
 
 const DEBOUNCE_TIME = 1000;
 
 test('it renders', () => {
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -43,7 +43,7 @@ test('it renders', () => {
 });
 
 test('it displays error with invalid data', () => {
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -78,7 +78,7 @@ test('it displays valid guess grid', () => {
     ],
   };
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -95,7 +95,7 @@ test('it displays valid guess grid', () => {
 });
 
 test('it displays error with invalid guess grid', () => {
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -117,7 +117,7 @@ test('it calls saveGrid', () => {
 
   try {
     const saveGrid = vi.fn();
-    render(
+    createTestStores().render(
       <Crossword
         allowedHtmlTags={DEFAULT_HTML_TAGS}
         allowMissingSolutions={false}
@@ -155,7 +155,7 @@ test('it always shows sticky clue', async () => {
     window.dispatchEvent(new Event('resize'));
   });
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -177,7 +177,7 @@ test('it never shows sticky clue', async () => {
     window.dispatchEvent(new Event('resize'));
   });
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -198,7 +198,7 @@ test('it never shows sticky clue', async () => {
 test("it doesn't change the URL hash by default", async () => {
   const user = userEvent.setup();
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -218,7 +218,7 @@ test("it doesn't change the URL hash by default", async () => {
 test('it ignores the URL hash on load by default', () => {
   window.history.replaceState(null, '', '#4-across');
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -238,7 +238,7 @@ test('it writes the selected clue to the URL hash, keeping history.state', async
   const routerState = { key: 'abc123', idx: 2 };
   window.history.replaceState(routerState, '');
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -260,7 +260,7 @@ test('it writes the selected clue to the URL hash, keeping history.state', async
 test('it restores the URL hash when the same clue is selected again', async () => {
   const user = userEvent.setup();
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -286,7 +286,7 @@ test('it restores the URL hash when the same clue is selected again', async () =
 test("a remounted crossword doesn't write the previous crossword's clue to the URL hash", async () => {
   const user = userEvent.setup();
 
-  const { rerender } = render(
+  const { rerender } = createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -327,7 +327,7 @@ test("a remounted crossword doesn't write the previous crossword's clue to the U
 test('it selects the clue in the URL hash on load', () => {
   window.history.replaceState(null, '', '#4-across');
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -346,10 +346,12 @@ test('it selects the clue in the URL hash on load', () => {
 });
 
 test('the anagram helper enters letters in the grid', async () => {
+  const stores = createTestStores();
+
   const onCellChange = vi.fn();
   const saveGrid = vi.fn();
 
-  render(
+  stores.render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -374,7 +376,7 @@ test('the anagram helper enters letters in the grid', async () => {
   await userEvent.type(screen.getByLabelText('Letter 1'), 'y');
 
   const getFirstCell = () =>
-    useCellsStore
+    stores.cells
       .getState()
       .cells.find((cell) => cell.pos.col === 0 && cell.pos.row === 0);
 
@@ -392,7 +394,9 @@ test('the anagram helper enters letters in the grid', async () => {
 });
 
 test('the anagram helper enters letters in the grid before shuffling', async () => {
-  render(
+  const stores = createTestStores();
+
+  stores.render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -409,7 +413,7 @@ test('the anagram helper enters letters in the grid before shuffling', async () 
   await userEvent.click(screen.getByRole('button', { name: 'Anagram helper' }));
   await userEvent.type(screen.getByLabelText('Letter 2'), 'o');
 
-  const cell = useCellsStore
+  const cell = stores.cells
     .getState()
     .cells.find((c) => c.pos.col === 1 && c.pos.row === 0);
 
@@ -421,7 +425,9 @@ test('the anagram helper enters letters in the grid before shuffling', async () 
 });
 
 test("the anagram helper doesn't move on from a rejected letter", async () => {
-  render(
+  const stores = createTestStores();
+
+  stores.render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -441,7 +447,7 @@ test("the anagram helper doesn't move on from a rejected letter", async () => {
   await userEvent.type(screen.getByLabelText('Letter 1'), '1y');
 
   const getCell = (col: number) =>
-    useCellsStore
+    stores.cells
       .getState()
       .cells.find((c) => c.pos.col === col && c.pos.row === 0);
 
@@ -453,7 +459,7 @@ test("the anagram helper doesn't move on from a rejected letter", async () => {
 test("closing the anagram helper doesn't save a stale grid", async () => {
   const saveGrid = vi.fn();
 
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}
@@ -477,7 +483,7 @@ test("closing the anagram helper doesn't save a stale grid", async () => {
 });
 
 test('keyboard users can move between the grid and the clue list', async () => {
-  render(
+  createTestStores().render(
     <Crossword
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       allowMissingSolutions={false}

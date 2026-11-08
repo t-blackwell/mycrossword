@@ -1,20 +1,21 @@
 import { DEFAULT_HTML_TAGS } from '~/utils/general';
 import testData from '~/testData/test.valid.1';
-import { initialiseStores } from '~/utils/test';
+import { createTestStores, TestStores } from '~/utils/test';
 import Clues from './Clues';
-import { render, screen, within } from '@testing-library/react';
-import { useCluesStore } from '~/stores/useCluesStore';
+import { screen, within } from '@testing-library/react';
 
 const DEFAULT_GRID_HEIGHT = 481;
 
+let stores: TestStores;
+
 beforeEach(() => {
-  initialiseStores(testData);
+  stores = createTestStores(testData);
 });
 
 test('it renders', () => {
-  const clues = useCluesStore.getState().clues;
+  const clues = stores.clues.getState().clues;
 
-  render(
+  stores.render(
     <Clues
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       entries={clues}
@@ -38,9 +39,9 @@ test('it renders', () => {
 });
 
 test('it highlights selected clue', () => {
-  const clues = useCluesStore.getState().clues;
+  const clues = stores.clues.getState().clues;
 
-  render(
+  stores.render(
     <Clues
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       entries={clues}
@@ -54,9 +55,9 @@ test('it highlights selected clue', () => {
 });
 
 test('it highlights linked clues', () => {
-  const clues = useCluesStore.getState().clues;
+  const clues = stores.clues.getState().clues;
 
-  render(
+  stores.render(
     <Clues
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       entries={clues}
@@ -73,9 +74,9 @@ test('it highlights linked clues', () => {
 });
 
 test('it renders the clues as lists labelled by direction', () => {
-  const clues = useCluesStore.getState().clues;
+  const clues = stores.clues.getState().clues;
 
-  render(
+  stores.render(
     <Clues
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       entries={clues}

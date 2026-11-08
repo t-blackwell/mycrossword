@@ -2,11 +2,9 @@ import userEvent from '@testing-library/user-event';
 import { CellPosition, GuessGrid } from '~/types';
 import data from '~/testData/test.valid.1';
 import { initialiseGuessGrid } from '~/utils/guess';
-import { initialiseStores } from '~/utils/test';
+import { createTestStores } from '~/utils/test';
 import Controls from './Controls';
-import { render, screen } from '@testing-library/react';
-import { useCellsStore } from '~/stores/useCellsStore';
-import { useCluesStore } from '~/stores/useCluesStore';
+import { screen } from '@testing-library/react';
 
 const FIRST_SOLUTION = 'YOYO';
 
@@ -31,10 +29,12 @@ beforeEach(() => {
 });
 
 test('it renders', () => {
-  render(
+  const stores = createTestStores();
+
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -50,10 +50,12 @@ test('it renders', () => {
 });
 
 test('it renders without solution controls', () => {
-  render(
+  const stores = createTestStores();
+
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -84,20 +86,20 @@ test('it checks incorrect letter', async () => {
   );
   setLocalStorageGuessGrid(initGrid);
   const guessGrid = getLocalStorageGuessGrid();
-  initialiseStores(data, guessGrid);
+  const stores = createTestStores(data, guessGrid);
 
   // mark first cell and clue as selected
   const firstCellPos: CellPosition = { col: 0, row: 0 };
-  useCellsStore.getState().select(firstCellPos);
-  useCluesStore.getState().select('1-across');
+  stores.cells.getState().select(firstCellPos);
+  stores.clues.getState().select('1-across');
 
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe(gridChar);
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -114,7 +116,7 @@ test('it checks incorrect letter', async () => {
   await userEvent.click(menuItem);
 
   // check the incorrect 'X' has been marked as checked
-  const firstCell = useCellsStore
+  const firstCell = stores.cells
     .getState()
     .cells.find(
       (cell) =>
@@ -137,20 +139,20 @@ test('it checks correct letter', async () => {
   );
   setLocalStorageGuessGrid(initGrid);
   const guessGrid = getLocalStorageGuessGrid();
-  initialiseStores(data, guessGrid);
+  const stores = createTestStores(data, guessGrid);
 
   // mark first cell and clue as selected
   const firstCellPos: CellPosition = { col: 0, row: 0 };
-  useCellsStore.getState().select(firstCellPos);
-  useCluesStore.getState().select('1-across');
+  stores.cells.getState().select(firstCellPos);
+  stores.clues.getState().select('1-across');
 
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe(gridChar);
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -167,7 +169,7 @@ test('it checks correct letter', async () => {
   await userEvent.click(menuItem);
 
   // check the correct 'Y' (solution = YO-YO) has been kept in the cells
-  const firstCell = useCellsStore
+  const firstCell = stores.cells
     .getState()
     .cells.find(
       (cell) =>
@@ -189,16 +191,16 @@ test('it checks word', async () => {
     gridChar,
   );
   setLocalStorageGuessGrid(initGrid);
-  initialiseStores(data, getLocalStorageGuessGrid());
+  const stores = createTestStores(data, getLocalStorageGuessGrid());
 
   // mark first cell and clue as selected
-  useCellsStore.getState().select({ col: 0, row: 0 });
-  useCluesStore.getState().select('1-across');
+  stores.cells.getState().select({ col: 0, row: 0 });
+  stores.clues.getState().select('1-across');
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -216,7 +218,7 @@ test('it checks word', async () => {
 
   for (let i = 0; i < FIRST_SOLUTION.length; i += 1) {
     // check cells in store
-    const currentCell = useCellsStore
+    const currentCell = stores.cells
       .getState()
       .cells.find((cell) => cell.pos.col === i && cell.pos.row === 0);
 
@@ -236,12 +238,12 @@ test('it checks grid', async () => {
     gridChar,
   );
   setLocalStorageGuessGrid(initGrid);
-  initialiseStores(data, getLocalStorageGuessGrid());
+  const stores = createTestStores(data, getLocalStorageGuessGrid());
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -264,7 +266,7 @@ test('it checks grid', async () => {
   await userEvent.click(confirmButton);
 
   // traverse cells and check they've all been marked as checked
-  useCellsStore.getState().cells.forEach((cell) => {
+  stores.cells.getState().cells.forEach((cell) => {
     expect(cell).toBeDefined();
     expect(cell?.checked).toBe(true);
     expect(cell?.guess).toBe(gridChar);
@@ -279,22 +281,22 @@ test('it reveals letter', async () => {
   );
   setLocalStorageGuessGrid(initGrid);
   const guessGrid = getLocalStorageGuessGrid();
-  initialiseStores(data, guessGrid);
+  const stores = createTestStores(data, guessGrid);
 
   // mark first cell and clue as selected
   const firstCellPos: CellPosition = { col: 0, row: 0 };
-  useCellsStore.getState().select(firstCellPos);
-  useCluesStore.getState().select('1-across');
+  stores.cells.getState().select(firstCellPos);
+  stores.clues.getState().select('1-across');
 
   // check the first cell in local storage
   expect(guessGrid.value[firstCellPos.col][firstCellPos.row]).toBe('');
 
   const cellChange = vi.fn();
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -315,7 +317,7 @@ test('it reveals letter', async () => {
 
   // check the correct 'Y' (solution = YO-YO) has added
   const expectedChar = 'Y';
-  const firstCell = useCellsStore
+  const firstCell = stores.cells
     .getState()
     .cells.find(
       (cell) =>
@@ -338,19 +340,19 @@ test('it reveals word', async () => {
   );
   setLocalStorageGuessGrid(initGrid);
   const guessGrid = getLocalStorageGuessGrid();
-  initialiseStores(data, guessGrid);
+  const stores = createTestStores(data, guessGrid);
 
   // mark first cell and clue as selected
   const firstCellPos: CellPosition = { col: 0, row: 0 };
-  useCellsStore.getState().select(firstCellPos);
-  useCluesStore.getState().select('1-across');
+  stores.cells.getState().select(firstCellPos);
+  stores.clues.getState().select('1-across');
 
   const cellChange = vi.fn();
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -376,7 +378,7 @@ test('it reveals word', async () => {
     const expectedChar = solution[i];
 
     // check cells in store
-    const currentCell = useCellsStore
+    const currentCell = stores.cells
       .getState()
       .cells.find((cell) => cell.pos.col === i && cell.pos.row === 0);
     expect(currentCell).toBeDefined();
@@ -395,14 +397,14 @@ test('it reveals grid', async () => {
     data.dimensions.rows,
   );
   setLocalStorageGuessGrid(initGrid);
-  initialiseStores(data, getLocalStorageGuessGrid());
+  const stores = createTestStores(data, getLocalStorageGuessGrid());
 
   const cellChange = vi.fn();
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -430,7 +432,7 @@ test('it reveals grid', async () => {
   const guessGrid = getLocalStorageGuessGrid();
 
   // traverse cells and check they've all been populated
-  useCellsStore.getState().cells.forEach((cell) => {
+  stores.cells.getState().cells.forEach((cell) => {
     expect(cell.guess).toBe(cell.val);
     expect(guessGrid.value[cell.pos.col][cell.pos.row]).toBe(cell.val);
   });
@@ -445,18 +447,18 @@ test('it clears word', async () => {
     gridChar,
   );
   setLocalStorageGuessGrid(initGrid);
-  initialiseStores(data, getLocalStorageGuessGrid());
+  const stores = createTestStores(data, getLocalStorageGuessGrid());
 
   // mark first cell and clue as selected
-  useCellsStore.getState().select({ col: 0, row: 0 });
-  useCluesStore.getState().select('1-across');
+  stores.cells.getState().select({ col: 0, row: 0 });
+  stores.clues.getState().select('1-across');
 
   const cellChange = vi.fn();
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -480,7 +482,7 @@ test('it clears word', async () => {
   // part of selected word at 1-across should have been cleared
   for (let i = 0; i < 4; i += 1) {
     // check cells in store
-    const currentCell = useCellsStore
+    const currentCell = stores.cells
       .getState()
       .cells.find((cell) => cell.pos.col === i && cell.pos.row === 0);
     const currentCellLs = localStorageGuessGrid.value[i][0];
@@ -506,14 +508,14 @@ test('it clears grid', async () => {
     gridChar,
   );
   setLocalStorageGuessGrid(initGrid);
-  initialiseStores(data, getLocalStorageGuessGrid());
+  const stores = createTestStores(data, getLocalStorageGuessGrid());
 
   const cellChange = vi.fn();
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}
@@ -541,7 +543,7 @@ test('it clears grid', async () => {
   const guessGrid = getLocalStorageGuessGrid();
 
   // traverse cells and check they've all been cleared
-  useCellsStore.getState().cells.forEach((cell) => {
+  stores.cells.getState().cells.forEach((cell) => {
     expect(cell.guess).toBeUndefined();
     expect(guessGrid.value[cell.pos.col][cell.pos.row]).toBe('');
   });
@@ -553,18 +555,18 @@ test('it calls function on anagram helper button click', async () => {
     data.dimensions.rows,
   );
   setLocalStorageGuessGrid(initGrid);
-  initialiseStores(data, getLocalStorageGuessGrid());
+  const stores = createTestStores(data, getLocalStorageGuessGrid());
 
   const onAnagramHelperClick = vi.fn();
 
   // mark first cell and clue as selected
-  useCellsStore.getState().select({ col: 0, row: 0 });
-  useCluesStore.getState().select('1-across');
+  stores.cells.getState().select({ col: 0, row: 0 });
+  stores.clues.getState().select('1-across');
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={onAnagramHelperClick}
@@ -581,12 +583,12 @@ test('it calls function on anagram helper button click', async () => {
 });
 
 test('focus returns to the control after a confirmation closes', async () => {
-  initialiseStores(data);
+  const stores = createTestStores(data);
 
-  render(
+  stores.render(
     <Controls
-      cells={useCellsStore.getState().cells}
-      clues={useCluesStore.getState().clues}
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
       gridCols={data.dimensions.cols}
       gridRows={data.dimensions.rows}
       onAnagramHelperClick={vi.fn()}

@@ -13,8 +13,11 @@ import {
   GuardianCrossword,
   GuessGrid,
 } from '~/types';
-import { useCluesStore } from '~/stores/useCluesStore';
-import { useCellsStore } from '~/stores/useCellsStore';
+import {
+  useCellsStore,
+  useCluesStore,
+  useCrosswordStores,
+} from '~/stores/stores';
 import GridError from '~/components/GridError/GridError';
 import StickyClue from '~/components/StickyClue/StickyClue';
 import Grid from '~/components/Grid/Grid';
@@ -77,6 +80,7 @@ export default function Crossword({
   const crosswordRef = React.useRef<HTMLDivElement>(null);
 
   // Access store methods
+  const stores = useCrosswordStores();
   const storeCells = useCellsStore((store) => store.cells);
   const storeClues = useCluesStore((store) => store.clues);
   const setCells = useCellsStore((store) => store.setCells);
@@ -162,9 +166,9 @@ export default function Crossword({
     }
 
     // Read the selection from the live store rather than this render's
-    // clues: on remount this render can still hold the previous crossword's
-    // clues, which the reset effect above has just cleared
-    const selectedClueId = useCluesStore
+    // clues: when the data changes this render can still hold the previous
+    // crossword's clues, which the reset effect above has just cleared
+    const selectedClueId = stores.clues
       .getState()
       .clues.find((clue) => clue.selected)?.id;
 
@@ -178,7 +182,7 @@ export default function Crossword({
     window.history.replaceState(window.history.state, '', `#${selectedClueId}`);
     // run on every clues change (not only when the selected id changes) so
     // reselecting a clue restores its hash if something else changed it
-  }, [urlHash, storeClues]);
+  }, [urlHash, storeClues, stores]);
 
   const cellFocus = React.useCallback(
     (pos: CellPosition, clueId: string) => {
@@ -221,7 +225,7 @@ export default function Crossword({
   // on leaving the grid, move focus to the selected clue in the clue list so
   // keyboard users can continue from there (pressing Enter returns to the grid)
   const focusSelectedClue = () => {
-    const selectedClueId = useCluesStore
+    const selectedClueId = stores.clues
       .getState()
       .clues.find((clue) => clue.selected)?.id;
     const clueButton =
@@ -246,7 +250,7 @@ export default function Crossword({
       return false;
     }
 
-    const cells = useCellsStore.getState().cells;
+    const cells = stores.cells.getState().cells;
     const currentCell = cells.find(
       (c) => c.pos.col === cell.pos.col && c.pos.row === cell.pos.row,
     );

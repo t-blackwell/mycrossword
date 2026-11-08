@@ -16,10 +16,13 @@ import {
   GuessGrid,
 } from '~/types';
 import { getGuessGrid } from '~/utils/guess';
-import { useCellsStore } from '~/stores/useCellsStore';
+import {
+  useCellsStore,
+  useCluesStore,
+  useCrosswordStores,
+} from '~/stores/stores';
 import { mergeCell } from '~/utils/cell';
 import { isCluePopulated } from '~/utils/clue';
-import { useCluesStore } from '~/stores/useCluesStore';
 import { getBem } from '~/utils/bem';
 import { describeCell, VISUALLY_HIDDEN_CLASS } from '~/utils/a11y';
 import './Grid.css';
@@ -98,6 +101,7 @@ export default function Grid({
   const lastAnnouncedRef = React.useRef<string | undefined>(undefined);
   const lastAnnouncedGroupRef = React.useRef<string | undefined>(undefined);
 
+  const stores = useCrosswordStores();
   const selectCells = useCellsStore((state) => state.select);
   const setCells = useCellsStore((state) => state.setCells);
   const selectClue = useCluesStore((state) => state.select);
@@ -186,8 +190,8 @@ export default function Grid({
   const handleFocus = () => {
     // read from the stores as they may have been updated (e.g. by clicking a
     // cell or clue) since this component last rendered
-    const currentCells = useCellsStore.getState().cells;
-    const currentClues = useCluesStore.getState().clues;
+    const currentCells = stores.cells.getState().cells;
+    const currentClues = stores.clues.getState().clues;
 
     // select the first clue when focusing the grid using the keyboard
     if (
@@ -210,8 +214,8 @@ export default function Grid({
     lastAnnouncedRef.current = undefined;
     lastAnnouncedGroupRef.current = undefined;
     announceSelection(
-      useCellsStore.getState().cells,
-      useCluesStore.getState().clues,
+      stores.cells.getState().cells,
+      stores.clues.getState().clues,
     );
   };
 

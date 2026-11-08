@@ -152,10 +152,19 @@ export default function Crossword({
   // Write the selected clue to the URL hash (opt-in). The existing
   // history.state is kept, as routers (e.g. React Router/Remix) store their
   // own navigation and scroll restoration data there.
-  const selectedClueId = storeClues.find((clue) => clue.selected)?.id;
   React.useEffect(() => {
+    if (!urlHash) {
+      return;
+    }
+
+    // Read the selection from the live store rather than this render's
+    // clues: on remount this render can still hold the previous crossword's
+    // clues, which the reset effect above has just cleared
+    const selectedClueId = useCluesStore
+      .getState()
+      .clues.find((clue) => clue.selected)?.id;
+
     if (
-      !urlHash ||
       selectedClueId === undefined ||
       window.location.hash === `#${selectedClueId}`
     ) {
@@ -163,7 +172,9 @@ export default function Crossword({
     }
 
     window.history.replaceState(window.history.state, '', `#${selectedClueId}`);
-  }, [urlHash, selectedClueId]);
+    // run on every clues change (not only when the selected id changes) so
+    // reselecting a clue restores its hash if something else changed it
+  }, [urlHash, storeClues]);
 
   const cellFocus = (pos: CellPosition, clueId: string) => {
     if (onCellFocus !== undefined) {

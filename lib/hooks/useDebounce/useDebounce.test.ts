@@ -6,7 +6,7 @@ test('it should be defined', () => {
 });
 
 test('it updates value after delay', () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 
   const { result, rerender } = renderHook(
     ({ value }) => useDebounce(value, 100),
@@ -15,7 +15,7 @@ test('it updates value after delay', () => {
   expect(result.current).toBe('one');
 
   act(() => {
-    jest.advanceTimersByTime(50);
+    vi.advanceTimersByTime(50);
   });
   expect(result.current).toBe('one');
 
@@ -24,9 +24,9 @@ test('it updates value after delay', () => {
   expect(result.current).toBe('one');
 
   act(() => {
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
   });
   expect(result.current).toBe('three');
 
-  jest.useRealTimers();
+  vi.useRealTimers();
 });

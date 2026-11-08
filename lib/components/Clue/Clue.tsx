@@ -11,9 +11,9 @@ interface ClueProps {
   allowedHtmlTags: string[];
   answered: boolean;
   col: number;
-  containerRef?: React.RefObject<HTMLDivElement>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
   id: string;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
   isHighlighted: boolean;
   num: string;
   onCellFocus?: (cellFocus: CellFocus) => void;
@@ -42,25 +42,18 @@ function Clue({
   const selectCells = useCellsStore((state) => state.select);
   const selectClue = useCluesStore((state) => state.select);
 
-  const cellFocus = (pos: CellPosition, clueId: string) => {
-    if (onCellFocus !== undefined) {
-      onCellFocus({
-        pos,
-        clueId,
-      });
-    }
-  };
-
-  const updateSelectedClue = React.useCallback(() => {
-    const pos = { col, row };
+  // not memoised: it's only passed to a DOM element, and must use the latest
+  // props (e.g. a new onCellFocus) rather than those from the first render
+  const updateSelectedClue = () => {
+    const pos: CellPosition = { col, row };
     selectClue(id);
     selectCells(pos);
 
     // TODO: don't call if on current clue's first cell
-    cellFocus(pos, id);
+    onCellFocus?.({ pos, clueId: id });
 
     inputRef?.current?.focus({ preventScroll: true });
-  }, [inputRef]);
+  };
 
   // scroll to ensure the clue is visible
   React.useEffect(() => {

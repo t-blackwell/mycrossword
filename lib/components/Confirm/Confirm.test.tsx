@@ -1,11 +1,11 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/jest';
+import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/test';
 import Confirm, { DEFAULT_TIMEOUT } from './Confirm';
 
 test('it renders', async () => {
-  const onCancel = jest.fn();
-  const onConfirm = jest.fn();
+  const onCancel = vi.fn();
+  const onConfirm = vi.fn();
 
   render(
     <Confirm buttonText="Confirm" onCancel={onCancel} onConfirm={onConfirm} />,
@@ -26,8 +26,8 @@ test('it renders with timeout override', () => {
   render(
     <Confirm
       buttonText="Confirm"
-      onCancel={jest.fn()}
-      onConfirm={jest.fn()}
+      onCancel={vi.fn()}
+      onConfirm={vi.fn()}
       timeout={3}
     />,
   );
@@ -36,12 +36,12 @@ test('it renders with timeout override', () => {
 });
 
 test('it automatically cancels after timeout', () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 
-  const onCancel = jest.fn();
+  const onCancel = vi.fn();
 
   render(
-    <Confirm buttonText="Confirm" onCancel={onCancel} onConfirm={jest.fn()} />,
+    <Confirm buttonText="Confirm" onCancel={onCancel} onConfirm={vi.fn()} />,
   );
 
   expect(onCancel).toHaveBeenCalledTimes(0);
@@ -49,13 +49,13 @@ test('it automatically cancels after timeout', () => {
   for (let i = DEFAULT_TIMEOUT; i > 0; i -= 1) {
     screen.getByText(`This will automatically cancel in ${i}`);
     act(() => {
-      jest.runOnlyPendingTimers();
+      vi.runOnlyPendingTimers();
     });
   }
 
   expect(onCancel).toHaveBeenCalledTimes(1);
 
-  jest.useRealTimers();
+  vi.useRealTimers();
 });
 
 test('it should throw error with invalid timeout', () => {
@@ -65,8 +65,8 @@ test('it should throw error with invalid timeout', () => {
     render(
       <Confirm
         buttonText="Confirm"
-        onCancel={jest.fn()}
-        onConfirm={jest.fn()}
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
         timeout={0}
       />,
     ),
@@ -76,8 +76,8 @@ test('it should throw error with invalid timeout', () => {
     render(
       <Confirm
         buttonText="Confirm"
-        onCancel={jest.fn()}
-        onConfirm={jest.fn()}
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
         timeout={-1}
       />,
     ),

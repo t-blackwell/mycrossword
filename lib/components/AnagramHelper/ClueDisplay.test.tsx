@@ -10,7 +10,7 @@ test('it renders', () => {
     <ClueDisplay
       allowedHtmlTags={DEFAULT_HTML_TAGS}
       clue={clueText}
-      onClick={jest.fn}
+      onClick={vi.fn()}
     />,
   );
 
@@ -19,8 +19,8 @@ test('it renders', () => {
   expect(eight.tagName).toBe('EM');
 });
 
-test('it renders with split words', () => {
-  const onClick = jest.fn();
+test('it renders with split words', async () => {
+  const onClick = vi.fn();
   render(
     <ClueDisplay
       allowedHtmlTags={DEFAULT_HTML_TAGS}
@@ -32,11 +32,21 @@ test('it renders with split words', () => {
 
   expect(screen.queryByText(clueText)).not.toBeInTheDocument();
 
-  ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'].forEach(
-    async (word, i) => {
-      const button = screen.getByRole('button', { name: word });
-      await userEvent.click(button);
-      expect(onClick).toHaveBeenCalledTimes(i + 1);
-    },
-  );
+  const words = [
+    'one',
+    'two',
+    'three',
+    'four',
+    'five',
+    'six',
+    'seven',
+    'eight',
+  ];
+
+  for (const [i, word] of words.entries()) {
+    const button = screen.getByRole('button', { name: word });
+    await userEvent.click(button);
+    expect(onClick).toHaveBeenCalledTimes(i + 1);
+    expect(onClick).toHaveBeenLastCalledWith(word);
+  }
 });

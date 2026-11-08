@@ -1,5 +1,4 @@
-import { MyCrossword } from '../dist/main';
-import '../dist/style.css';
+import { MyCrossword } from 'mycrossword';
 import data28505 from './examples/guardian.cryptic.28505';
 import data25220 from './examples/guardian.prize.25220';
 import dataMini from './examples/mini';

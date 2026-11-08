@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import Crossword from '~/components/Crossword/Crossword';
 import * as React from 'react';
 import Intro, { IntroProps } from '~/components/Intro/Intro';
+import { injectStyles } from '~/utils/styles';
 import './MyCrossword.css';
 
 type Theme =
@@ -57,6 +58,12 @@ export default function MyCrossword({
   intro,
 }: MyCrosswordProps) {
   const bem = getBem('MyCrossword');
+
+  // add the stylesheet before the crossword is painted
+  React.useInsertionEffect(() => {
+    injectStyles();
+  }, []);
+
   const [showIntro, setShowIntro] = React.useState(intro !== undefined);
 
   const handleIntroContinue = () => {

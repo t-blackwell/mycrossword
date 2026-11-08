@@ -31,12 +31,12 @@ test('it staggers the bounce by arranged position', () => {
     />,
   );
 
-  expect(screen.getByText('A').parentElement).toHaveStyle({
-    transitionDelay: '8ms',
-  });
-  expect(screen.getByText('B').parentElement).toHaveStyle({
-    transitionDelay: '0ms',
-  });
+  expect(screen.getByText('A').parentElement?.style.transitionDelay).toBe(
+    '8ms',
+  );
+  expect(screen.getByText('B').parentElement?.style.transitionDelay).toBe(
+    '0ms',
+  );
 });
 
 test('it fades used letters', () => {

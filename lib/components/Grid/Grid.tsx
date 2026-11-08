@@ -1,5 +1,6 @@
 import * as React from 'react';
-import GridCell, { getDimensions } from '~/components/GridCell/GridCell';
+import GridCell from '~/components/GridCell/GridCell';
+import { getDimensions } from '~/components/GridCell/dimensions';
 import GridInput from '~/components/GridInput/GridInput';
 import { isValidChar } from '~/utils/general';
 import useDebounce from '~/hooks/useDebounce/useDebounce';
@@ -50,7 +51,7 @@ interface GridProps {
   clues: Clue[];
   cols: number;
   guessGrid: GuessGrid;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   onComplete?: () => void;
@@ -100,7 +101,7 @@ export default function Grid({
 
       setViewBoxScale(minScale);
     }
-  }, [svgRef.current]);
+  }, [width, height]);
 
   React.useEffect(() => {
     window.addEventListener('resize', updateViewBoxScale);
@@ -233,10 +234,15 @@ export default function Grid({
 
   /**
    * Find the next cell on the current row/column (wrap on grid overflow)
+   * @param {CellPosition} from - Position to start from
    * @param {number} colDelta - Horizontal delta (-1, 0, 1)
    * @param {number} rowDelta - Vertical delta (-1, 0, 1)
    */
-  const findNextCell = (colDelta: number, rowDelta: number) => {
+  const findNextCell = (
+    from: CellPosition,
+    colDelta: number,
+    rowDelta: number,
+  ) => {
     const nextPos = (i: number, amount: number, max: number) => {
       const j = i + amount;
 
@@ -250,10 +256,9 @@ export default function Grid({
       return j;
     };
 
-    let { col, row } = selectedCell?.pos!;
+    let { col, row } = from;
 
     // loop won't be infinite as it will always wrap and find the selected cell on the same row/col
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       if (colDelta === 1 || colDelta === -1) {
         col = nextPos(col, colDelta, cols);
@@ -262,7 +267,6 @@ export default function Grid({
       }
 
       const tempCell = cells.find(
-        // eslint-disable-next-line @typescript-eslint/no-loop-func
         (cell) => cell.pos.col === col && cell.pos.row === row,
       );
 
@@ -320,16 +324,16 @@ export default function Grid({
 
     switch (direction) {
       case 'ArrowUp':
-        nextCell = findNextCell(0, -1);
+        nextCell = findNextCell(selectedCell.pos, 0, -1);
         break;
       case 'ArrowDown':
-        nextCell = findNextCell(0, 1);
+        nextCell = findNextCell(selectedCell.pos, 0, 1);
         break;
       case 'ArrowLeft':
-        nextCell = findNextCell(-1, 0);
+        nextCell = findNextCell(selectedCell.pos, -1, 0);
         break;
       case 'ArrowRight':
-        nextCell = findNextCell(1, 0);
+        nextCell = findNextCell(selectedCell.pos, 1, 0);
         break;
       default:
         nextCell = undefined;
@@ -414,7 +418,7 @@ export default function Grid({
     } else if (event.key === 'Tab') {
       // cycle through the clues
       const index = clues.findIndex((clue) => clue.selected);
-      let nextIndex = 0;
+      let nextIndex: number;
 
       // forwards or backwards
       if (event.shiftKey) {

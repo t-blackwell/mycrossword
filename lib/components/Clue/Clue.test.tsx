@@ -71,7 +71,7 @@ test('it renders highlighted', () => {
 
 test('it selects clue', async () => {
   initialiseStores(testData);
-  const cellFocus = jest.fn();
+  const cellFocus = vi.fn();
 
   render(
     <Clue
@@ -100,4 +100,53 @@ test('it selects clue', async () => {
   expect(selectedCell).toBeDefined();
   expect(selectedCell?.pos.col).toBe(0);
   expect(selectedCell?.pos.row).toBe(0);
+});
+
+test('it uses the latest props when clicked', async () => {
+  initialiseStores(testData);
+  const firstOnCellFocus = vi.fn();
+  const latestOnCellFocus = vi.fn();
+
+  const { rerender } = render(
+    <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      answered={false}
+      col={0}
+      id="1-across"
+      isHighlighted={false}
+      num="1"
+      onCellFocus={firstOnCellFocus}
+      row={0}
+      text="Toy on a string (2-2)"
+    />,
+  );
+
+  rerender(
+    <Clue
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      answered={false}
+      col={0}
+      id="4-across"
+      isHighlighted={false}
+      num="4"
+      onCellFocus={latestOnCellFocus}
+      row={2}
+      text="Have a rest (3,4)"
+    />,
+  );
+
+  await userEvent.click(screen.getByRole('button'));
+
+  expect(firstOnCellFocus).not.toHaveBeenCalled();
+  expect(latestOnCellFocus).toHaveBeenCalledWith({
+    pos: { col: 0, row: 2 },
+    clueId: '4-across',
+  });
+  expect(useCluesStore.getState().clues.find((c) => c.selected)?.id).toBe(
+    '4-across',
+  );
+  expect(useCellsStore.getState().cells.find((c) => c.selected)?.pos).toEqual({
+    col: 0,
+    row: 2,
+  });
 });

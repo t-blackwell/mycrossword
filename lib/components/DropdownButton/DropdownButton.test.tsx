@@ -1,16 +1,15 @@
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/jest';
+import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/test';
 import DropdownButton, { DropdownMenuItem } from './DropdownButton';
 
 // TODO: check menu items are shown/hidden rather than using the button `aria-expanded` attribute
 // need to find out why `expect(menuUl).toBeVisible()` doesn't work
 
 const menu: DropdownMenuItem[] = [
-  { onClick: () => jest.fn(), text: 'One' },
-  { onClick: () => jest.fn(), text: 'Two' },
-  { disabled: true, onClick: () => jest.fn(), text: 'Three' },
+  { onClick: () => vi.fn(), text: 'One' },
+  { onClick: () => vi.fn(), text: 'Two' },
+  { disabled: true, onClick: () => vi.fn(), text: 'Three' },
 ];
 
 test('it renders', () => {
@@ -55,7 +54,7 @@ test('it throws when less than two menu items', () => {
   expect(() =>
     render(
       <DropdownButton
-        menu={[{ onClick: () => jest.fn(), text: 'Only one' }]}
+        menu={[{ onClick: () => vi.fn(), text: 'Only one' }]}
         text="Test"
       />,
     ),

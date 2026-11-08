@@ -28,8 +28,7 @@ npm install mycrossword
 ## Usage
 
 ```js
-import MyCrossword from 'mycrossword';
-import 'mycrossword/style.css';
+import { MyCrossword } from 'mycrossword';
 
 const data = {
   /* ... crossword data (see below) ... */
@@ -39,6 +38,21 @@ export default function MyPage() {
   return <MyCrossword id="crossword-1" data={data} />;
 }
 ```
+
+## Styles
+
+The styles are built in, so there's no need to import a CSS file. The stylesheet is added to the document's `<head>` when a crossword is first rendered (in the browser) and is inserted before any existing styles so that your own styles can override it.
+
+A standalone stylesheet is still published as `mycrossword/style.css`. You don't need it, but you may want to import it if:
+
+- you render on the server and want the styles in the initial HTML to avoid a flash of unstyled content before hydration
+- your Content Security Policy doesn't allow inline `<style>` elements
+
+```js
+import 'mycrossword/style.css';
+```
+
+Existing code that already imports `mycrossword/style.css` will continue to work.
 
 ## Props
 
@@ -198,7 +212,7 @@ While the project has been created from scratch, it should be considered as a co
 - Simplified global state management using Zustand
 - More modular component hierarchy
 - Scoped CSS
-- Full unit test coverage
+- Full unit test coverage using Vitest (plus real-browser tests for responsive styles)
 - CI using GitHub actions
 
 ### Functional improvements
@@ -220,13 +234,23 @@ While the project has been created from scratch, it should be considered as a co
 
 ## Working with this project
 
-`npm i` to install dependencies
+Use the Node.js version in [.nvmrc](./.nvmrc) (`nvm use`).
 
-`npm run test` to run unit tests
+| Command                           | Description                                                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm i`                           | Install dependencies                                                                                                                  |
+| `npx playwright install chromium` | Install the browser used by the browser tests (once)                                                                                  |
+| `npm run dev`                     | Run the example application in [src](./src). It uses the library source in [lib](./lib) directly, so changes are hot reloaded         |
+| `npm run dev:dist`                | Build the library and run the example application against the built package in `dist`                                                 |
+| `npm test`                        | Run all tests                                                                                                                         |
+| `npm run test:watch`              | Run tests in watch mode                                                                                                               |
+| `npm run test:unit`               | Run the unit tests (`*.test.ts(x)`) in [jsdom](https://github.com/jsdom/jsdom)                                                        |
+| `npm run test:browser`            | Run the browser tests (`*.browser.test.ts(x)`) in headless Chromium. Use these for anything jsdom can't do, such as CSS media queries |
+| `npm run lint`                    | Lint with ESLint                                                                                                                      |
+| `npm run typecheck`               | Type check with TypeScript                                                                                                            |
+| `npm run build`                   | Package for publishing                                                                                                                |
 
-`npm run build` to package for publishing
-
-`npm run dev` to run the example application
+Tests use [Vitest](https://vitest.dev) and [Testing Library](https://testing-library.com). To use an existing Chromium installation for the browser tests, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable.
 
 ## Licence
 

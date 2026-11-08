@@ -3,24 +3,14 @@ import { CellFocus, CellPosition, Char } from '~/types';
 import { useCluesStore } from '~/stores/useCluesStore';
 import { useCellsStore } from '~/stores/useCellsStore';
 import { getBem } from '~/utils/bem';
+import { getDimensions } from './dimensions';
 import './GridCell.css';
-
-export const getDimensions = (cellSize: number, cellPos: CellPosition) => {
-  const xRect = 1 + (cellSize + 1) * cellPos.col;
-  const yRect = 1 + (cellSize + 1) * cellPos.row;
-  const xNum = xRect + 1;
-  const yNum = yRect + Math.ceil(cellSize * 0.29);
-  const xText = xRect + Math.ceil(cellSize * 0.5);
-  const yText = yRect + Math.ceil(cellSize * 0.675);
-
-  return { xRect, yRect, xNum, yNum, xText, yText };
-};
 
 interface GridCellProps {
   cellSize: number;
   clueIds: string[];
   guess?: Char;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
   highlighted: boolean;
   selected: boolean;
   num?: number;

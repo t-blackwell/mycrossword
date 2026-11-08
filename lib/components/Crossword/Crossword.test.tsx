@@ -112,38 +112,41 @@ test('it displays error with invalid guess grid', () => {
   screen.getByText('Error loading grid');
 });
 
-// TODO: update test to work with input element
-test.skip('it calls saveGrid', () => {
-  jest.useFakeTimers();
+test('it calls saveGrid', () => {
+  vi.useFakeTimers();
 
-  const saveGrid = jest.fn();
-  render(
-    <Crossword
-      allowedHtmlTags={DEFAULT_HTML_TAGS}
-      allowMissingSolutions={false}
-      cellMatcher={DEFAULT_CELL_MATCHER}
-      cellSize={DEFAULT_CELL_SIZE}
-      data={validData}
-      id="test"
-      saveGrid={saveGrid}
-      stickyClue="auto"
-    />,
-  );
-  expect(saveGrid).toHaveBeenCalledTimes(1);
+  try {
+    const saveGrid = vi.fn();
+    render(
+      <Crossword
+        allowedHtmlTags={DEFAULT_HTML_TAGS}
+        allowMissingSolutions={false}
+        cellMatcher={DEFAULT_CELL_MATCHER}
+        cellSize={DEFAULT_CELL_SIZE}
+        data={validData}
+        id="test"
+        saveGrid={saveGrid}
+        stickyClue="auto"
+      />,
+    );
+    expect(saveGrid).toHaveBeenCalledTimes(1);
 
-  const grid = screen.getByTestId('grid');
+    // click first cell and type 'A'
+    const gridCells = document.querySelectorAll('.GridCell');
+    fireEvent.click(gridCells[0]);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'a' } });
 
-  // click first cell and type 'A'
-  const gridCells = document.querySelectorAll('.GridCell');
-  userEvent.click(gridCells[0]);
-  fireEvent.keyDown(grid, { key: 'A', code: 'KeyA' });
+    // saving is debounced
+    expect(saveGrid).toHaveBeenCalledTimes(1);
 
-  act(() => {
-    jest.advanceTimersByTime(DEBOUNCE_TIME);
-  });
-  expect(saveGrid).toHaveBeenCalledTimes(2);
-
-  jest.useRealTimers();
+    act(() => {
+      vi.advanceTimersByTime(DEBOUNCE_TIME);
+    });
+    expect(saveGrid).toHaveBeenCalledTimes(2);
+    expect(saveGrid.mock.calls[1][0].value[0][0]).toBe('A');
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 test('it always shows sticky clue', async () => {
@@ -190,54 +193,11 @@ test('it never shows sticky clue', async () => {
   expect(stickyClue).toBeNull();
 });
 
-// TODO: update to work with media queries
-test.skip('it conditionally shows sticky clue', async () => {
-  // show on xs viewport
-  act(() => {
-    window.innerWidth = 500;
-    window.dispatchEvent(new Event('resize'));
-  });
-
-  const { rerender } = render(
-    <Crossword
-      allowedHtmlTags={DEFAULT_HTML_TAGS}
-      allowMissingSolutions={false}
-      cellMatcher={DEFAULT_CELL_MATCHER}
-      cellSize={DEFAULT_CELL_SIZE}
-      data={validData}
-      id="test"
-      stickyClue="auto"
-    />,
-  );
-
-  const xsStickyClue = document.querySelector('.StickyClue');
-  expect(xsStickyClue).not.toBeNull();
-
-  // don't show on lg viewport
-  act(() => {
-    window.innerWidth = 1100;
-    window.dispatchEvent(new Event('resize'));
-  });
-
-  rerender(
-    <Crossword
-      allowedHtmlTags={DEFAULT_HTML_TAGS}
-      allowMissingSolutions={false}
-      cellMatcher={DEFAULT_CELL_MATCHER}
-      cellSize={DEFAULT_CELL_SIZE}
-      data={validData}
-      id="test"
-      stickyClue="auto"
-    />,
-  );
-
-  const lgStickyClue = document.querySelector('.StickyClue');
-  expect(lgStickyClue).toBeNull();
-});
+// see Crossword.browser.test.tsx for the 'auto' sticky clue tests
 
 test('the anagram helper enters letters in the grid', async () => {
-  const onCellChange = jest.fn();
-  const saveGrid = jest.fn();
+  const onCellChange = vi.fn();
+  const saveGrid = vi.fn();
 
   render(
     <Crossword
@@ -290,7 +250,7 @@ test('the anagram helper enters letters in the grid before shuffling', async () 
       cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="anagram-test-2"
-      saveGrid={jest.fn()}
+      saveGrid={vi.fn()}
       stickyClue="never"
     />,
   );
@@ -319,7 +279,7 @@ test("the anagram helper doesn't move on from a rejected letter", async () => {
       cellSize={DEFAULT_CELL_SIZE}
       data={validData}
       id="anagram-test-3"
-      saveGrid={jest.fn()}
+      saveGrid={vi.fn()}
       stickyClue="never"
     />,
   );
@@ -341,7 +301,7 @@ test("the anagram helper doesn't move on from a rejected letter", async () => {
 });
 
 test("closing the anagram helper doesn't save a stale grid", async () => {
-  const saveGrid = jest.fn();
+  const saveGrid = vi.fn();
 
   render(
     <Crossword

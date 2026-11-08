@@ -15,19 +15,12 @@ export const useCluesStore = create<CluesStore>((set) => ({
     set(() => ({ clues }));
   },
   select: (clueId) => {
-    set((state) => {
-      // append clue to URL e.g. #1-across
-      if (typeof window !== 'undefined') {
-        window.history.replaceState(null, '', `#${clueId}`);
-      }
-
-      return {
-        clues: state.clues.map((clue) => ({
-          ...clue,
-          selected: clue.id === clueId,
-        })),
-      };
-    });
+    set((state) => ({
+      clues: state.clues.map((clue) => ({
+        ...clue,
+        selected: clue.id === clueId,
+      })),
+    }));
   },
   answerAll: (answered) => {
     set((state) => {

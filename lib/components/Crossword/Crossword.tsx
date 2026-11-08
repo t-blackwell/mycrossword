@@ -47,6 +47,7 @@ interface CrosswordProps {
   onComplete?: () => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   stickyClue: 'always' | 'never' | 'auto';
+  urlHash?: boolean;
 }
 
 export default function Crossword({
@@ -62,6 +63,7 @@ export default function Crossword({
   onComplete,
   saveGrid,
   stickyClue,
+  urlHash = false,
 }: CrosswordProps) {
   const bem = getBem('Crossword');
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
@@ -130,9 +132,10 @@ export default function Crossword({
     storeClues.length,
   ]);
 
-  // Handle location hash changes
+  // Select the clue named in the URL hash e.g. #1-across (opt-in)
   React.useEffect(() => {
     if (
+      urlHash &&
       locationHash !== undefined &&
       locationHash !== '' &&
       storeClues.length > 0
@@ -144,7 +147,23 @@ export default function Crossword({
         selectClue(clueId);
       }
     }
-  }, [locationHash, storeClues, selectClue]);
+  }, [urlHash, locationHash, storeClues, selectClue]);
+
+  // Write the selected clue to the URL hash (opt-in). The existing
+  // history.state is kept, as routers (e.g. React Router/Remix) store their
+  // own navigation and scroll restoration data there.
+  const selectedClueId = storeClues.find((clue) => clue.selected)?.id;
+  React.useEffect(() => {
+    if (
+      !urlHash ||
+      selectedClueId === undefined ||
+      window.location.hash === `#${selectedClueId}`
+    ) {
+      return;
+    }
+
+    window.history.replaceState(window.history.state, '', `#${selectedClueId}`);
+  }, [urlHash, selectedClueId]);
 
   const cellFocus = (pos: CellPosition, clueId: string) => {
     if (onCellFocus !== undefined) {

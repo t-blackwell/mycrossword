@@ -4,8 +4,8 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/vitest';
 
-// selecting a clue updates the URL hash and progress is autosaved to local
-// storage, so reset both to keep tests isolated
+// selecting a clue can update the URL hash (with the urlHash prop) and progress
+// is autosaved to local storage, so reset both to keep tests isolated
 afterEach(() => {
   window.history.replaceState(
     null,

@@ -38,6 +38,7 @@ export interface MyCrosswordProps {
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   stickyClue?: 'always' | 'never' | 'auto';
   theme?: Theme;
+  urlHash?: boolean;
 }
 
 export default function MyCrossword({
@@ -55,6 +56,7 @@ export default function MyCrossword({
   saveGrid,
   stickyClue = 'auto',
   theme = 'blue',
+  urlHash = false,
   intro,
 }: MyCrosswordProps) {
   const bem = getBem('MyCrossword');
@@ -103,6 +105,7 @@ export default function MyCrossword({
           onComplete={onComplete}
           saveGrid={saveGrid}
           stickyClue={stickyClue}
+          urlHash={urlHash}
         />
       )}
     </div>

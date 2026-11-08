@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { blankNeighbours, mergeCell } from '~/utils/cell';
+import { blankNeighbours, getCellKey, mergeCell } from '~/utils/cell';
 import {
   getCrossingClueIds,
   getGroupCells,
@@ -131,13 +131,13 @@ export default function Controls({
       onClick: () => {
         if (selectedClue !== undefined) {
           // Mark all cells in the clue as checked only if they have a guess
-          const groupCells = getGroupCells(selectedClue.group, cells);
+          const groupCellKeys = new Set(
+            getGroupCells(selectedClue.group, cells).map((cell) =>
+              getCellKey(cell.pos),
+            ),
+          );
           const updatedCells = cells.map((cell) => {
-            const inGroup = groupCells.some(
-              (groupCell) =>
-                groupCell.pos.col === cell.pos.col &&
-                groupCell.pos.row === cell.pos.row,
-            );
+            const inGroup = groupCellKeys.has(getCellKey(cell.pos));
 
             if (inGroup && cell.guess !== undefined && cell.guess !== '') {
               return {

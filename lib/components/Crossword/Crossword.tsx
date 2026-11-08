@@ -91,7 +91,7 @@ export default function Crossword({
     setCells([]);
     setClues([]);
     resetComplete();
-  }, [id, data, setCells, setClues]);
+  }, [id, data, setCells, setClues, resetComplete]);
 
   // Initialize cells and clues once
   React.useEffect(() => {
@@ -130,6 +130,9 @@ export default function Crossword({
     allowMissingSolutions,
     storeCells.length,
     storeClues.length,
+    setCells,
+    setClues,
+    checkComplete,
   ]);
 
   // Select the clue named in the URL hash e.g. #1-across (opt-in)
@@ -176,11 +179,14 @@ export default function Crossword({
     // reselecting a clue restores its hash if something else changed it
   }, [urlHash, storeClues]);
 
-  const cellFocus = (pos: CellPosition, clueId: string) => {
-    if (onCellFocus !== undefined) {
-      onCellFocus({ pos, clueId });
-    }
-  };
+  const cellFocus = React.useCallback(
+    (pos: CellPosition, clueId: string) => {
+      if (onCellFocus !== undefined) {
+        onCellFocus({ pos, clueId });
+      }
+    },
+    [onCellFocus],
+  );
 
   const moveToNextClue = React.useCallback(
     (forwards: boolean) => {

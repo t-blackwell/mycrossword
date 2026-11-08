@@ -93,3 +93,77 @@ test('it stops the countdown when unmounted', () => {
   unmount();
   expect(vi.getTimerCount()).toBe(0);
 });
+
+test('it restarts the countdown when the countdown changes', () => {
+  vi.useFakeTimers();
+
+  const { rerender } = render(
+    <Intro node="Intro" countdown={{ seconds: 3 }} onContinue={vi.fn()} />,
+  );
+
+  act(() => {
+    vi.advanceTimersByTime(2000);
+  });
+  screen.getByRole('button', { name: 'Skip in 1' });
+
+  rerender(
+    <Intro node="Intro" countdown={{ seconds: 5 }} onContinue={vi.fn()} />,
+  );
+
+  // the new countdown starts from its own value, with only its timer running
+  expect(screen.getByRole('button', { name: 'Skip in 5' })).toBeDisabled();
+  expect(vi.getTimerCount()).toBe(1);
+
+  // the previous countdown would have finished by now
+  act(() => {
+    vi.advanceTimersByTime(1000);
+  });
+  expect(screen.getByRole('button', { name: 'Skip in 4' })).toBeDisabled();
+
+  act(() => {
+    vi.advanceTimersByTime(4000);
+  });
+  expect(
+    screen.getByRole('button', { name: 'Continue to crossword' }),
+  ).toBeEnabled();
+  expect(vi.getTimerCount()).toBe(0);
+});
+
+test('it restarts the countdown when the intro content changes', () => {
+  vi.useFakeTimers();
+  const countdown = { seconds: 3 };
+
+  const { rerender } = render(
+    <Intro node="First" countdown={countdown} onContinue={vi.fn()} />,
+  );
+
+  act(() => {
+    vi.advanceTimersByTime(2000);
+  });
+  screen.getByRole('button', { name: 'Skip in 1' });
+
+  rerender(<Intro node="Second" countdown={countdown} onContinue={vi.fn()} />);
+
+  screen.getByText('Second');
+  expect(screen.getByRole('button', { name: 'Skip in 3' })).toBeDisabled();
+  expect(vi.getTimerCount()).toBe(1);
+});
+
+test('it can continue straight away when the countdown is removed', () => {
+  vi.useFakeTimers();
+  const onContinue = vi.fn();
+
+  const { rerender } = render(
+    <Intro node="Intro" countdown={{ seconds: 3 }} onContinue={onContinue} />,
+  );
+  expect(vi.getTimerCount()).toBe(1);
+
+  rerender(<Intro node="Intro" onContinue={onContinue} />);
+
+  const button = screen.getByRole('button', { name: 'Continue to crossword' });
+  expect(button).toBeEnabled();
+  expect(vi.getTimerCount()).toBe(0);
+
+  fireEvent.click(button);
+  expect(onContinue).toHaveBeenCalledTimes(1);
+});

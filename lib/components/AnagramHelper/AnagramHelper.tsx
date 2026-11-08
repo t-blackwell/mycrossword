@@ -37,6 +37,17 @@ export default function AnagramHelper({
   const [shuffling, setShuffling] = React.useState(false);
   // indices into tileLetters, in wheel order
   const [order, setOrder] = React.useState<number[]>([]);
+  const [clueId, setClueId] = React.useState(clue.id);
+
+  // start afresh when the clue changes (while rendering, so the previous
+  // clue's letters are never shown against the new clue)
+  if (clue.id !== clueId) {
+    setClueId(clue.id);
+    setLetters('');
+    setOrder([]);
+    setShuffling(false);
+  }
+
   const tileLetters = letters.toUpperCase().replace(/\s/g, '');
   const arrangedLetters = order.map((i) => tileLetters[i]).join('');
   const enableButtons = tileLetters !== '' || shuffling;
@@ -72,10 +83,6 @@ export default function AnagramHelper({
     setLetters((prev) => (prev + word).substring(0, solutionLength));
     inputRef.current?.focus({ preventScroll: true });
   };
-
-  React.useEffect(() => {
-    reset();
-  }, [clue.id]);
 
   return (
     <div

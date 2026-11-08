@@ -1,9 +1,5 @@
 import * as React from 'react';
-import {
-  getGuessGrid,
-  initialiseGuessGrid,
-  validateGuessGrid,
-} from '~/utils/guess';
+import { getGuessGrid, validateGuessGrid } from '~/utils/guess';
 import {
   Cell,
   CellChange,
@@ -24,7 +20,6 @@ import StickyClue from '~/components/StickyClue/StickyClue';
 import Grid from '~/components/Grid/Grid';
 import Clues from '~/components/Clues/Clues';
 import AnagramHelper from '~/components/AnagramHelper/AnagramHelper';
-import useLocalStorage from '~/hooks/useLocalStorage/useLocalStorage';
 import { useEventCallback } from '~/hooks/useEventCallback/useEventCallback';
 import { useIsomorphicLayoutEffect } from '~/hooks/useIsomorphicLayoutEffect/useIsomorphicLayoutEffect';
 import { initialiseCells, mergeCell } from '~/utils/cell';
@@ -129,12 +124,17 @@ export default function Crossword({
 }: CrosswordProps) {
   const bem = getBem('Crossword');
   const guessGridKey = `crosswords.${id}`;
-  // not read when first rendering, so the server and the browser's first
-  // render (which hydrates the server HTML) match; see restoreSavedProgress
-  const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
-    guessGridKey,
-    initialiseGuessGrid(data.dimensions.cols, data.dimensions.rows),
-    { initializeWithValue: false },
+  // progress is saved in localStorage unless the consumer saves it; it's
+  // read back by restoreSavedProgress
+  const setGuessGrid = React.useCallback(
+    (guessGrid: GuessGrid) => {
+      try {
+        window.localStorage.setItem(guessGridKey, JSON.stringify(guessGrid));
+      } catch (error) {
+        console.warn(`Error saving localStorage key “${guessGridKey}”:`, error);
+      }
+    },
+    [guessGridKey],
   );
   const [locationHash] = useLocationHash();
   const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
@@ -155,13 +155,11 @@ export default function Crossword({
   // so that server rendered HTML includes the whole puzzle. They're set up
   // again if the crossword changes.
   const [puzzle, setPuzzle] = React.useState(() =>
-    setUpPuzzle(id, data, allowMissingSolutions, loadGrid ?? guessGrid),
+    setUpPuzzle(id, data, allowMissingSolutions, loadGrid),
   );
 
   if (puzzle.id !== id || puzzle.data !== data) {
-    setPuzzle(
-      setUpPuzzle(id, data, allowMissingSolutions, loadGrid ?? guessGrid),
-    );
+    setPuzzle(setUpPuzzle(id, data, allowMissingSolutions, loadGrid));
   }
 
   // The puzzle the stores were last set to. Until they're set (on the server
@@ -206,7 +204,7 @@ export default function Crossword({
 
   useIsomorphicLayoutEffect(() => {
     restoreSavedProgress();
-  }, [restoreSavedProgress, guessGridKey]);
+  }, [restoreSavedProgress, guessGridKey, data]);
 
   // Select the clue named in the URL hash e.g. #1-across (opt-in)
   React.useEffect(() => {

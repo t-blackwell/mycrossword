@@ -136,3 +136,31 @@ test('it renders', async () => {
     screen.getByDisplayValue(letter);
   });
 });
+
+test('it clears the letters when the clue changes', async () => {
+  const stores = createTestStores(data);
+  const clues = stores.clues.getState().clues;
+  const cells = stores.cells.getState().cells;
+  const renderHelper = (clueId: string) => (
+    <AnagramHelper
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      clue={clues.find((clue) => clue.id === clueId)!}
+      groupCells={getGroupCells([clueId], cells)}
+      groupSeparators={getGroupSeparators([clueId], clues)}
+      onClose={vi.fn()}
+    />
+  );
+
+  const { rerender } = render(renderHelper('1-across'));
+
+  await userEvent.type(screen.getByPlaceholderText('Enter letters...'), 'yo');
+  await userEvent.click(screen.getByRole('button', { name: 'Shuffle' }));
+  expect(
+    screen.queryByPlaceholderText('Enter letters...'),
+  ).not.toBeInTheDocument();
+
+  rerender(renderHelper('4-across'));
+
+  expect(screen.getByPlaceholderText('Enter letters...')).toHaveValue('');
+  screen.getByText('4 across');
+});

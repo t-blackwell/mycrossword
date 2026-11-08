@@ -63,7 +63,7 @@ interface GridProps {
   onEscape?: () => void;
   rawClues: GuardianClue[];
   rows: number;
-  setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
+  setGuessGrid: (value: GuessGrid) => void;
 }
 
 export default function Grid({
@@ -642,7 +642,6 @@ export default function Grid({
   return (
     <div
       className={bem('Grid')}
-      data-testid="grid"
       style={{
         minWidth: width,
         minHeight: height,
@@ -736,7 +735,6 @@ export default function Grid({
         aria-atomic="true"
         aria-live="polite"
         className={VISUALLY_HIDDEN_CLASS}
-        data-testid="grid-announcement"
       >
         {announcement}
       </div>

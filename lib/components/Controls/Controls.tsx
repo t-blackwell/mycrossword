@@ -22,7 +22,7 @@ interface ControlsProps {
   onAnagramHelperClick: () => void;
   onCellChange?: (cellChange: CellChange) => void;
   onComplete?: () => void;
-  setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
+  setGuessGrid: (value: GuessGrid) => void;
   solutionsAvailable: boolean;
 }
 

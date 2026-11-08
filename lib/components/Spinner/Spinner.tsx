@@ -8,5 +8,11 @@ interface SpinnerProps {
 export default function Spinner({ size }: SpinnerProps) {
   const bem = getBem('Spinner');
 
-  return <div className={bem('Spinner', `Spinner--${size}`)} role="status" />;
+  return (
+    <div
+      aria-label="Loading"
+      className={bem('Spinner', `Spinner--${size}`)}
+      role="status"
+    />
+  );
 }

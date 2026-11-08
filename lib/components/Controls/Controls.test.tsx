@@ -579,3 +579,44 @@ test('it calls function on anagram helper button click', async () => {
   await userEvent.click(anagramHelperButton);
   expect(onAnagramHelperClick).toHaveBeenCalledTimes(1);
 });
+
+test('focus returns to the control after a confirmation closes', async () => {
+  initialiseStores(data);
+
+  render(
+    <Controls
+      cells={useCellsStore.getState().cells}
+      clues={useCluesStore.getState().clues}
+      gridCols={data.dimensions.cols}
+      gridRows={data.dimensions.rows}
+      onAnagramHelperClick={vi.fn()}
+      setGuessGrid={setLocalStorageGuessGrid}
+      solutionsAvailable
+    />,
+  );
+
+  // open the clear menu with the keyboard and choose clear grid (clear word
+  // is disabled without a selected clue)
+  const clearButton = screen.getByRole('button', { name: 'Clear' });
+  clearButton.focus();
+  await userEvent.keyboard('{Enter}');
+  await userEvent.tab();
+  expect(screen.getByRole('button', { name: 'Clear grid' })).toHaveFocus();
+  await userEvent.keyboard('{Enter}');
+
+  // focus moves to cancel rather than being lost
+  expect(screen.getByRole('button', { name: 'Cancel' })).toHaveFocus();
+  await userEvent.keyboard('{Enter}');
+  expect(screen.getByRole('button', { name: 'Clear' })).toHaveFocus();
+
+  // and the same after confirming
+  await userEvent.keyboard('{Enter}');
+  await userEvent.tab();
+  await userEvent.keyboard('{Enter}');
+  await userEvent.tab();
+  expect(
+    screen.getByRole('button', { name: 'Confirm clear grid' }),
+  ).toHaveFocus();
+  await userEvent.keyboard('{Enter}');
+  expect(screen.getByRole('button', { name: 'Clear' })).toHaveFocus();
+});

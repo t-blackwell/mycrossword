@@ -25,6 +25,9 @@ export default function Clues({
   const cluesContainerRef = React.useRef<HTMLDivElement>(null);
   const acrossContainerRef = React.useRef<HTMLDivElement>(null);
   const downContainerRef = React.useRef<HTMLDivElement>(null);
+  const id = React.useId();
+  const acrossHeaderId = `${id}-across`;
+  const downHeaderId = `${id}-down`;
 
   const across = entries
     .filter((entry) => entry.direction === 'across')
@@ -56,52 +59,60 @@ export default function Clues({
       style={{ maxHeight: gridHeight }}
     >
       <div className="Clues__list Clues__list--across" ref={acrossContainerRef}>
-        <h3 className="Clues__listHeader">Across</h3>
-        <div className="Clues__listBody">
+        <h3 className="Clues__listHeader" id={acrossHeaderId}>
+          Across
+        </h3>
+        <ul aria-labelledby={acrossHeaderId} className="Clues__listBody">
           {across.map((entry) => (
-            <Clue
-              allowedHtmlTags={allowedHtmlTags}
-              answered={entry.answered}
-              col={entry.position.x}
-              containerRef={
-                breakpoint === 'md' ? cluesContainerRef : acrossContainerRef
-              }
-              id={entry.id}
-              inputRef={inputRef}
-              isHighlighted={isHighlighted(entry)}
-              key={entry.id}
-              num={entry.humanNumber}
-              onCellFocus={onCellFocus}
-              row={entry.position.y}
-              scrollTo={scrollTo(entry)}
-              text={entry.clue}
-            />
+            <li key={entry.id}>
+              <Clue
+                allowedHtmlTags={allowedHtmlTags}
+                answered={entry.answered}
+                col={entry.position.x}
+                containerRef={
+                  breakpoint === 'md' ? cluesContainerRef : acrossContainerRef
+                }
+                direction={entry.direction}
+                id={entry.id}
+                inputRef={inputRef}
+                isHighlighted={isHighlighted(entry)}
+                num={entry.humanNumber}
+                onCellFocus={onCellFocus}
+                row={entry.position.y}
+                scrollTo={scrollTo(entry)}
+                text={entry.clue}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
       <div className="Clues__list Clues__list--down" ref={downContainerRef}>
-        <h3 className="Clues__listHeader">Down</h3>
-        <div className="Clues__listBody">
+        <h3 className="Clues__listHeader" id={downHeaderId}>
+          Down
+        </h3>
+        <ul aria-labelledby={downHeaderId} className="Clues__listBody">
           {down.map((entry) => (
-            <Clue
-              allowedHtmlTags={allowedHtmlTags}
-              answered={entry.answered}
-              col={entry.position.x}
-              containerRef={
-                breakpoint === 'md' ? cluesContainerRef : downContainerRef
-              }
-              id={entry.id}
-              inputRef={inputRef}
-              isHighlighted={isHighlighted(entry)}
-              key={entry.id}
-              num={entry.humanNumber}
-              onCellFocus={onCellFocus}
-              row={entry.position.y}
-              scrollTo={scrollTo(entry)}
-              text={entry.clue}
-            />
+            <li key={entry.id}>
+              <Clue
+                allowedHtmlTags={allowedHtmlTags}
+                answered={entry.answered}
+                col={entry.position.x}
+                containerRef={
+                  breakpoint === 'md' ? cluesContainerRef : downContainerRef
+                }
+                direction={entry.direction}
+                id={entry.id}
+                inputRef={inputRef}
+                isHighlighted={isHighlighted(entry)}
+                num={entry.humanNumber}
+                onCellFocus={onCellFocus}
+                row={entry.position.y}
+                scrollTo={scrollTo(entry)}
+                text={entry.clue}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   );

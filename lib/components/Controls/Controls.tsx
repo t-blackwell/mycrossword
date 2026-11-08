@@ -45,12 +45,43 @@ export default function Controls({
   const [showRevealGridConfirm, setShowRevealGridConfirm] =
     React.useState(false);
   const [showClearGridConfirm, setShowClearGridConfirm] = React.useState(false);
+  const controlsRef = React.useRef<HTMLDivElement>(null);
+  const restoreFocusToRef = React.useRef<string | null>(null);
 
   const answerAllCells = useCellsStore((store) => store.answerAll);
   const setCells = useCellsStore((store) => store.setCells);
   const checkComplete = useCellsStore((store) => store.checkComplete);
   const answerAllClues = useCluesStore((store) => store.answerAll);
   const answerSomeClues = useCluesStore((store) => store.answerSome);
+
+  // when a confirmation closes, return focus to the control that opened it
+  // (if focus was within the controls, so it isn't taken from elsewhere)
+  const closeConfirm = (close: () => void, controlId: string) => {
+    if (
+      controlsRef.current !== null &&
+      controlsRef.current.contains(document.activeElement)
+    ) {
+      restoreFocusToRef.current = controlId;
+    }
+
+    close();
+  };
+
+  React.useEffect(() => {
+    const controlId = restoreFocusToRef.current;
+
+    if (
+      controlId !== null &&
+      !showCheckGridConfirm &&
+      !showRevealGridConfirm &&
+      !showClearGridConfirm
+    ) {
+      restoreFocusToRef.current = null;
+      controlsRef.current
+        ?.querySelector<HTMLElement>(`[id="${controlId}"]`)
+        ?.focus();
+    }
+  }, [showCheckGridConfirm, showRevealGridConfirm, showClearGridConfirm]);
 
   const updateGuessGrid = (updatedCells: Cell[]) => {
     setGuessGrid(getGuessGrid(gridCols, gridRows, updatedCells));
@@ -272,10 +303,12 @@ export default function Controls({
 
   if (showCheckGridConfirm) {
     return (
-      <div className={bem('Controls')}>
+      <div className={bem('Controls')} ref={controlsRef}>
         <Confirm
           buttonText="Confirm check grid"
-          onCancel={() => setShowCheckGridConfirm(false)}
+          onCancel={() =>
+            closeConfirm(() => setShowCheckGridConfirm(false), 'check-control')
+          }
           onConfirm={() => {
             // Mark all cells as checked only if they have a guess
             const updatedCells = cells.map((cell) =>
@@ -285,7 +318,7 @@ export default function Controls({
             );
 
             setCells(updatedCells);
-            setShowCheckGridConfirm(false);
+            closeConfirm(() => setShowCheckGridConfirm(false), 'check-control');
           }}
         />
       </div>
@@ -294,10 +327,15 @@ export default function Controls({
 
   if (showRevealGridConfirm) {
     return (
-      <div className={bem('Controls')}>
+      <div className={bem('Controls')} ref={controlsRef}>
         <Confirm
           buttonText="Confirm reveal grid"
-          onCancel={() => setShowRevealGridConfirm(false)}
+          onCancel={() =>
+            closeConfirm(
+              () => setShowRevealGridConfirm(false),
+              'reveal-control',
+            )
+          }
           onConfirm={() => {
             // handle cell changes
             if (onCellChange !== undefined) {
@@ -310,7 +348,10 @@ export default function Controls({
 
             answerAllCells(true);
             answerAllClues(true);
-            setShowRevealGridConfirm(false);
+            closeConfirm(
+              () => setShowRevealGridConfirm(false),
+              'reveal-control',
+            );
 
             if (onComplete !== undefined) {
               if (checkComplete() === true) {
@@ -333,10 +374,12 @@ export default function Controls({
 
   if (showClearGridConfirm) {
     return (
-      <div className={bem('Controls')}>
+      <div className={bem('Controls')} ref={controlsRef}>
         <Confirm
           buttonText="Confirm clear grid"
-          onCancel={() => setShowClearGridConfirm(false)}
+          onCancel={() =>
+            closeConfirm(() => setShowClearGridConfirm(false), 'clear-control')
+          }
           onConfirm={() => {
             // handle cell changes
             if (onCellChange !== undefined) {
@@ -349,7 +392,7 @@ export default function Controls({
 
             answerAllCells(false);
             answerAllClues(false);
-            setShowClearGridConfirm(false);
+            closeConfirm(() => setShowClearGridConfirm(false), 'clear-control');
 
             // clear guesses in local storage
             updateGuessGrid([]);
@@ -360,7 +403,7 @@ export default function Controls({
   }
 
   return (
-    <div className={bem('Controls')}>
+    <div className={bem('Controls')} ref={controlsRef}>
       {solutionsAvailable ? (
         <>
           <DropdownButton id="check-control" menu={checkMenu} text="Check" />

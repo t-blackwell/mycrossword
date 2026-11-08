@@ -2,7 +2,7 @@ import { DEFAULT_HTML_TAGS } from '~/utils/general';
 import testData from '~/testData/test.valid.1';
 import { initialiseStores } from '~/utils/test';
 import Clues from './Clues';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { useCluesStore } from '~/stores/useCluesStore';
 
 const DEFAULT_GRID_HEIGHT = 481;
@@ -70,4 +70,33 @@ test('it highlights linked clues', () => {
 
   const clueTextTwo = screen.getByText('See 2');
   expect(clueTextTwo.parentElement).toHaveClass('Clue--highlighted');
+});
+
+test('it renders the clues as lists labelled by direction', () => {
+  const clues = useCluesStore.getState().clues;
+
+  render(
+    <Clues
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      entries={clues}
+      gridHeight={DEFAULT_GRID_HEIGHT}
+      selectedClueId="3-down"
+    />,
+  );
+
+  const across = screen.getByRole('list', { name: 'Across' });
+  const down = screen.getByRole('list', { name: 'Down' });
+
+  expect(within(across).getAllByRole('listitem')).toHaveLength(2);
+  expect(within(down).getAllByRole('listitem')).toHaveLength(3);
+
+  within(across).getByRole('button', { name: /^1\s*across\s*Toy on a string/ });
+  within(down).getByRole('button', { name: /^1\s*down\s*Colour/ });
+
+  // the selected clue's group is marked as current
+  const current = screen
+    .getAllByRole('button')
+    .filter((button) => button.getAttribute('aria-current') === 'true')
+    .map((button) => button.getAttribute('data-clue-id'));
+  expect(current).toEqual(['2-down', '3-down']);
 });

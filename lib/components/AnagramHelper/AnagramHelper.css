@@ -74,10 +74,21 @@
   height: calc(var(--grid-size) * 3);
 }
 .MyCrossword .AnagramHelper__clickableWord {
+  /* reset button styles so words display inline as text */
+  appearance: none;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+
   cursor: pointer;
   user-select: none;
 }
-.MyCrossword .AnagramHelper__clickableWord:hover {
+.MyCrossword .AnagramHelper__clickableWord:hover,
+.MyCrossword .AnagramHelper__clickableWord:focus-visible {
   text-decoration: underline;
 }
 

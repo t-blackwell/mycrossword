@@ -74,6 +74,7 @@ export default function Crossword({
   const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const crosswordRef = React.useRef<HTMLDivElement>(null);
 
   // Access store methods
   const storeCells = useCellsStore((store) => store.cells);
@@ -217,6 +218,26 @@ export default function Crossword({
     [storeClues, selectClue, selectCells, cellFocus],
   );
 
+  // on leaving the grid, move focus to the selected clue in the clue list so
+  // keyboard users can continue from there (pressing Enter returns to the grid)
+  const focusSelectedClue = () => {
+    const selectedClueId = useCluesStore
+      .getState()
+      .clues.find((clue) => clue.selected)?.id;
+    const clueButton =
+      selectedClueId !== undefined
+        ? crosswordRef.current?.querySelector<HTMLButtonElement>(
+            `[data-clue-id="${selectedClueId}"]`,
+          )
+        : null;
+
+    if (clueButton !== null && clueButton !== undefined) {
+      clueButton.focus();
+    } else {
+      inputRef.current?.blur();
+    }
+  };
+
   // set (or clear) a cell's letter from outside the grid, e.g. the anagram
   // helper, keeping the clues, saved grid and callbacks up to date. Returns
   // whether the letter was accepted.
@@ -332,7 +353,7 @@ export default function Crossword({
   }
 
   return (
-    <div className={bem('Crossword')}>
+    <div className={bem('Crossword')} ref={crosswordRef}>
       <div className={bem('Crossword__gridAndControls')}>
         <div
           className={bem('Crossword__gridContainer')}
@@ -396,6 +417,7 @@ export default function Crossword({
                 onCellChange={onCellChange}
                 onCellFocus={onCellFocus}
                 onComplete={onComplete}
+                onEscape={focusSelectedClue}
                 rawClues={data.entries}
                 rows={data.dimensions.rows}
                 setGuessGrid={saveGrid ?? setGuessGrid}

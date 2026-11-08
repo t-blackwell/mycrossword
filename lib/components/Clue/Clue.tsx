@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { getBem } from '~/utils/bem';
-import type { CellFocus, CellPosition } from '~/types';
+import type { CellFocus, CellPosition, Direction } from '~/types';
 import { useCellsStore } from '~/stores/useCellsStore';
 import { useCluesStore } from '~/stores/useCluesStore';
 import { isInPerimeterRect } from '~/utils/general';
 import { decodeHtmlEntities, sanitize } from '~/utils/html';
+import { VISUALLY_HIDDEN_CLASS } from '~/utils/a11y';
 import './Clue.css';
 
 interface ClueProps {
@@ -12,6 +13,7 @@ interface ClueProps {
   answered: boolean;
   col: number;
   containerRef?: React.RefObject<HTMLDivElement | null>;
+  direction: Direction;
   id: string;
   inputRef?: React.RefObject<HTMLInputElement | null>;
   isHighlighted: boolean;
@@ -27,6 +29,7 @@ function Clue({
   answered,
   col,
   containerRef,
+  direction,
   id,
   inputRef,
   isHighlighted,
@@ -38,7 +41,7 @@ function Clue({
 }: ClueProps) {
   const bem = getBem('Clue');
 
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLButtonElement>(null);
   const selectCells = useCellsStore((state) => state.select);
   const selectClue = useCluesStore((state) => state.select);
 
@@ -79,23 +82,20 @@ function Clue({
   }, [scrollTo]);
 
   return (
-    <div
+    <button
+      aria-current={isHighlighted ? 'true' : undefined}
       className={bem(
         'Clue',
         answered ? 'Clue--answered' : null,
         isHighlighted ? 'Clue--highlighted' : null,
       )}
+      data-clue-id={id}
       onClick={updateSelectedClue}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter') {
-          updateSelectedClue();
-        }
-      }}
-      role="button"
       ref={ref}
-      tabIndex={0}
+      type="button"
     >
       <span className={bem('Clue__num')}>{num}</span>
+      <span className={VISUALLY_HIDDEN_CLASS}> {direction}</span>
       <span
         className={bem('Clue__text')}
         dangerouslySetInnerHTML={{
@@ -105,7 +105,10 @@ function Clue({
         }}
         data-text={sanitize(decodeHtmlEntities(text))}
       />
-    </div>
+      {answered ? (
+        <span className={VISUALLY_HIDDEN_CLASS}> (answered)</span>
+      ) : null}
+    </button>
   );
 }
 

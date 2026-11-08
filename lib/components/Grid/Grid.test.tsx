@@ -760,3 +760,197 @@ describe('Grid', () => {
     expect(onCellChange).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('Grid accessibility', () => {
+  function ConnectedGrid({
+    onCellFocus,
+    onEscape,
+  }: {
+    onCellFocus?: (cellFocus: CellFocus) => void;
+    onEscape?: () => void;
+  }) {
+    const cells = useCellsStore((state) => state.cells);
+    const clues = useCluesStore((state) => state.clues);
+
+    return (
+      <Grid
+        cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
+        cells={cells}
+        clues={clues}
+        cols={testData.dimensions.cols}
+        guessGrid={emptyGuessGrid}
+        onCellFocus={onCellFocus}
+        onEscape={onEscape}
+        rawClues={testData.entries}
+        rows={testData.dimensions.rows}
+        setGuessGrid={vi.fn()}
+      />
+    );
+  }
+
+  const getAnnouncement = () =>
+    screen.getByTestId('grid-announcement').textContent;
+
+  test('the grid is presented via a labelled input', () => {
+    initialiseStores(testData);
+    render(<ConnectedGrid />);
+
+    const svg = screen.getByTestId('grid').querySelector('svg');
+    expect(svg).toHaveAttribute('aria-hidden', 'true');
+
+    const input = screen.getByRole('textbox', { name: 'Crossword grid' });
+    expect(input).toHaveAccessibleDescription(/arrow keys/i);
+    expect(input).toHaveAccessibleDescription(/escape to leave the grid/i);
+
+    const liveRegion = screen.getByTestId('grid-announcement');
+    expect(liveRegion).toHaveAttribute('aria-live', 'polite');
+    expect(liveRegion).toBeEmptyDOMElement();
+  });
+
+  test('tabbing to the grid selects and announces the first clue', async () => {
+    initialiseStores(testData);
+    const cellFocus = vi.fn();
+    render(<ConnectedGrid onCellFocus={cellFocus} />);
+
+    await userEvent.tab();
+
+    expect(screen.getByRole('textbox')).toHaveFocus();
+    expect(getSelectedClue()?.id).toBe('1-across');
+    expect(getSelectedCell()?.pos).toEqual({ col: 0, row: 0 });
+    expect(cellFocus).toHaveBeenCalledWith({
+      pos: { col: 0, row: 0 },
+      clueId: '1-across',
+    });
+    expect(getAnnouncement()).toBe(
+      '1 across: Toy on a string (2-2). Letter 1 of 4, blank.',
+    );
+  });
+
+  test('tabbing to the grid keeps an existing selection', async () => {
+    initialiseStores(testData);
+    useCluesStore.getState().select('4-across');
+    useCellsStore.getState().select({ col: 2, row: 2 });
+    render(<ConnectedGrid />);
+
+    await userEvent.tab();
+
+    expect(getSelectedClue()?.id).toBe('4-across');
+    expect(getSelectedCell()?.pos).toEqual({ col: 2, row: 2 });
+    expect(getAnnouncement()).toBe(
+      '4 across: Have a rest (3,4). Letter 3 of 7, blank.',
+    );
+  });
+
+  test('clicking a cell announces it', async () => {
+    initialiseStores(testData);
+    render(<ConnectedGrid />);
+
+    // the 4 across cell number
+    await userEvent.click(screen.getByText('4').parentElement!);
+
+    expect(screen.getByRole('textbox')).toHaveFocus();
+    expect(getAnnouncement()).toBe(
+      '4 across: Have a rest (3,4). Letter 1 of 7, blank.',
+    );
+  });
+
+  test('announces moving and typing within and between clues', async () => {
+    initialiseStores(testData);
+    render(<ConnectedGrid />);
+
+    await userEvent.tab();
+    const input = screen.getByRole('textbox');
+
+    // within the clue only the letter is announced
+    fireEvent.keyDown(input, Arrows.RIGHT);
+    expect(getAnnouncement()).toBe('Letter 2 of 4, blank.');
+
+    // typing moves on to the next cell
+    fireEvent.change(input, { target: { value: 'Y' } });
+    expect(getAnnouncement()).toBe('Letter 3 of 4, blank.');
+
+    // typing in the last cell stays put and announces the letter
+    fireEvent.keyDown(input, Arrows.RIGHT);
+    fireEvent.change(input, { target: { value: 'O' } });
+    expect(getSelectedCell()?.pos).toEqual({ col: 3, row: 0 });
+    expect(getAnnouncement()).toBe('Letter 4 of 4, O.');
+
+    // switching direction announces the crossing clue
+    fireEvent.keyDown(input, Arrows.DOWN);
+    expect(getSelectedClue()?.id).toBe('2-down');
+    expect(getAnnouncement()).toBe(
+      '2 down, 3 down: Bits and bobs (4,3,4). Letter 1 of 11, O.',
+    );
+
+    // deleting announces the cleared cell
+    fireEvent.keyDown(input, { key: 'Delete', code: 'Delete' });
+    expect(getAnnouncement()).toBe('Letter 1 of 11, blank.');
+  });
+
+  test('announces checked cells', async () => {
+    initialiseStores(testData);
+    render(<ConnectedGrid />);
+
+    await userEvent.tab();
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'X' } });
+    fireEvent.keyDown(input, Arrows.LEFT);
+    expect(getAnnouncement()).toBe('Letter 1 of 4, X.');
+
+    act(() => {
+      const { cells, setCells } = useCellsStore.getState();
+      setCells(
+        cells.map((cell) =>
+          cell.guess !== undefined ? { ...cell, checked: true } : cell,
+        ),
+      );
+    });
+    expect(getAnnouncement()).toBe('Letter 1 of 4, X, incorrect.');
+  });
+
+  test('the announcement is cleared on blur and repeated on refocus', async () => {
+    initialiseStores(testData);
+    render(<ConnectedGrid />);
+
+    await userEvent.tab();
+    const input = screen.getByRole('textbox');
+    fireEvent.keyDown(input, Arrows.RIGHT);
+    expect(getAnnouncement()).toBe('Letter 2 of 4, blank.');
+
+    act(() => input.blur());
+    expect(getAnnouncement()).toBe('');
+
+    act(() => input.focus());
+    expect(getAnnouncement()).toBe(
+      '1 across: Toy on a string (2-2). Letter 2 of 4, blank.',
+    );
+  });
+
+  test('changes are not announced while the grid is not focused', () => {
+    initialiseStores(testData);
+    render(<ConnectedGrid />);
+
+    act(() => {
+      useCluesStore.getState().select('1-across');
+      useCellsStore.getState().select({ col: 0, row: 0 });
+    });
+
+    expect(getAnnouncement()).toBe('');
+  });
+
+  test('Escape leaves the grid', async () => {
+    initialiseStores(testData);
+    const onEscape = vi.fn();
+    const { rerender } = render(<ConnectedGrid onEscape={onEscape} />);
+
+    await userEvent.tab();
+    await userEvent.keyboard('{Escape}');
+    expect(onEscape).toHaveBeenCalledTimes(1);
+
+    // without a handler, the input is blurred
+    rerender(<ConnectedGrid />);
+    await userEvent.keyboard('{Escape}');
+    expect(screen.getByRole('textbox')).not.toHaveFocus();
+  });
+});

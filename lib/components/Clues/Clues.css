@@ -8,6 +8,11 @@
   margin: 0 var(--grid-size);
   width: 50%;
 }
+.MyCrossword .Clues__listBody {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 .MyCrossword .Clues__listHeader {
   border-bottom: 1px solid var(--light-grey);
   margin-top: 0;

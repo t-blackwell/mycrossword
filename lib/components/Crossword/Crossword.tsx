@@ -10,6 +10,7 @@ import {
   CellFocus,
   CellPosition,
   Char,
+  Clue,
   GuardianCrossword,
   GuessGrid,
 } from '~/types';
@@ -24,6 +25,8 @@ import Grid from '~/components/Grid/Grid';
 import Clues from '~/components/Clues/Clues';
 import AnagramHelper from '~/components/AnagramHelper/AnagramHelper';
 import useLocalStorage from '~/hooks/useLocalStorage/useLocalStorage';
+import { useEventCallback } from '~/hooks/useEventCallback/useEventCallback';
+import { useIsomorphicLayoutEffect } from '~/hooks/useIsomorphicLayoutEffect/useIsomorphicLayoutEffect';
 import { initialiseCells, mergeCell } from '~/utils/cell';
 import {
   getGroupCells,
@@ -53,6 +56,62 @@ interface CrosswordProps {
   urlHash?: boolean;
 }
 
+/** The cells and clues set up from a crossword's data. */
+type Puzzle = {
+  cells: Cell[];
+  clues: Clue[];
+  data: GuardianCrossword;
+  error: string | null;
+  id: string;
+};
+
+function setUpPuzzle(
+  id: string,
+  data: GuardianCrossword,
+  allowMissingSolutions: boolean,
+  guessGrid?: GuessGrid,
+): Puzzle {
+  try {
+    const cells = initialiseCells({
+      cols: data.dimensions.cols,
+      rows: data.dimensions.rows,
+      entries: data.entries,
+      guessGrid,
+      allowMissingSolutions,
+    });
+
+    return {
+      cells,
+      clues: initialiseClues(data.entries, cells),
+      data,
+      error: null,
+      id,
+    };
+  } catch (err: unknown) {
+    return {
+      cells: [],
+      clues: [],
+      data,
+      error: err instanceof Error ? err.message : 'An unknown error occurred',
+      id,
+    };
+  }
+}
+
+/**
+ * Reads the progress saved in localStorage (only available in the browser).
+ */
+function readSavedGuessGrid(key: string): GuessGrid | undefined {
+  try {
+    const value = window.localStorage.getItem(key);
+    const guessGrid = value ? (JSON.parse(value) as GuessGrid) : undefined;
+
+    return Array.isArray(guessGrid?.value) ? guessGrid : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export default function Crossword({
   allowedHtmlTags,
   allowMissingSolutions,
@@ -69,13 +128,16 @@ export default function Crossword({
   urlHash = false,
 }: CrosswordProps) {
   const bem = getBem('Crossword');
+  const guessGridKey = `crosswords.${id}`;
+  // not read when first rendering, so the server and the browser's first
+  // render (which hydrates the server HTML) match; see restoreSavedProgress
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
-    `crosswords.${id}`,
+    guessGridKey,
     initialiseGuessGrid(data.dimensions.cols, data.dimensions.rows),
+    { initializeWithValue: false },
   );
   const [locationHash] = useLocationHash();
   const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const crosswordRef = React.useRef<HTMLDivElement>(null);
 
@@ -84,61 +146,67 @@ export default function Crossword({
   const storeCells = useCellsStore((store) => store.cells);
   const storeClues = useCluesStore((store) => store.clues);
   const setCells = useCellsStore((store) => store.setCells);
-  const setClues = useCluesStore((store) => store.setClues);
   const selectCells = useCellsStore((store) => store.select);
   const selectClue = useCluesStore((store) => store.select);
   const answerSomeClues = useCluesStore((store) => store.answerSome);
   const checkComplete = useCellsStore((store) => store.checkComplete);
-  const resetComplete = useCellsStore((store) => store.resetComplete);
 
-  // Clear cells and clues when id/data changes
-  React.useEffect(() => {
-    setCells([]);
-    setClues([]);
-    resetComplete();
-  }, [id, data, setCells, setClues, resetComplete]);
+  // The cells and clues are set up while rendering (rather than in an effect)
+  // so that server rendered HTML includes the whole puzzle. They're set up
+  // again if the crossword changes.
+  const [puzzle, setPuzzle] = React.useState(() =>
+    setUpPuzzle(id, data, allowMissingSolutions, loadGrid ?? guessGrid),
+  );
 
-  // Initialize cells and clues once
-  React.useEffect(() => {
-    // Only initialize if no data exists in stores
-    if (storeCells.length === 0 || storeClues.length === 0) {
-      try {
-        const initialisedCells = initialiseCells({
-          cols: data.dimensions.cols,
-          rows: data.dimensions.rows,
-          entries: data.entries,
-          guessGrid: loadGrid ?? guessGrid,
-          allowMissingSolutions,
-        });
+  if (puzzle.id !== id || puzzle.data !== data) {
+    setPuzzle(
+      setUpPuzzle(id, data, allowMissingSolutions, loadGrid ?? guessGrid),
+    );
+  }
 
-        const initialisedClues = initialiseClues(
-          data.entries,
-          initialisedCells,
-        );
+  // The puzzle the stores were last set to. Until they're set (on the server
+  // and when hydrating) the puzzle is rendered directly.
+  const [storedPuzzle, setStoredPuzzle] = React.useState<Puzzle | null>(null);
+  const isStored = storedPuzzle === puzzle;
+  const cells = isStored ? storeCells : puzzle.cells;
+  const clues = isStored ? storeClues : puzzle.clues;
 
-        setCells(initialisedCells);
-        setClues(initialisedClues);
+  useIsomorphicLayoutEffect(() => {
+    stores.cells.setState({ cells: puzzle.cells, complete: false });
+    stores.clues.setState({ clues: puzzle.clues });
 
-        // Check for completion after initialization
-        setTimeout(checkComplete, 0);
-        setError(null);
-      } catch (err: unknown) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'An unknown error occurred';
-        setError(errorMessage);
-      }
+    // so onComplete isn't called for a grid that's already complete
+    stores.cells.getState().checkComplete();
+    setStoredPuzzle(puzzle);
+  }, [puzzle, stores]);
+
+  // Progress saved in localStorage is restored after the first render, as
+  // it's only available in the browser: using it in the first render would
+  // make the HTML differ from the server's and break hydration.
+  const restoreSavedProgress = useEventCallback(() => {
+    if (loadGrid !== undefined) {
+      return;
     }
-  }, [
-    data,
-    loadGrid,
-    guessGrid,
-    allowMissingSolutions,
-    storeCells.length,
-    storeClues.length,
-    setCells,
-    setClues,
-    checkComplete,
-  ]);
+
+    const savedGuessGrid = readSavedGuessGrid(guessGridKey);
+
+    if (
+      savedGuessGrid !== undefined &&
+      validateGuessGrid(
+        savedGuessGrid,
+        data.dimensions.cols,
+        data.dimensions.rows,
+        cellMatcher,
+      ) &&
+      savedGuessGrid.value.some((col) => col.some((guess) => guess !== ''))
+    ) {
+      setPuzzle(setUpPuzzle(id, data, allowMissingSolutions, savedGuessGrid));
+    }
+  });
+
+  useIsomorphicLayoutEffect(() => {
+    restoreSavedProgress();
+  }, [restoreSavedProgress, guessGridKey]);
 
   // Select the clue named in the URL hash e.g. #1-across (opt-in)
   React.useEffect(() => {
@@ -195,16 +263,16 @@ export default function Crossword({
 
   const moveToNextClue = React.useCallback(
     (forwards: boolean) => {
-      const index = storeClues.findIndex((clue) => clue.selected);
+      const index = clues.findIndex((clue) => clue.selected);
 
       let nextIndex;
       if (forwards) {
-        nextIndex = index < storeClues.length - 1 ? index + 1 : 0;
+        nextIndex = index < clues.length - 1 ? index + 1 : 0;
       } else {
-        nextIndex = index > 0 ? index - 1 : storeClues.length - 1;
+        nextIndex = index > 0 ? index - 1 : clues.length - 1;
       }
 
-      const nextClue = storeClues[nextIndex];
+      const nextClue = clues[nextIndex];
       const nextCluePos = {
         col: nextClue.position.x,
         row: nextClue.position.y,
@@ -219,7 +287,7 @@ export default function Crossword({
         inputRef.current.focus({ preventScroll: true });
       }
     },
-    [storeClues, selectClue, selectCells, cellFocus],
+    [clues, selectClue, selectCells, cellFocus],
   );
 
   // on leaving the grid, move focus to the selected clue in the clue list so
@@ -280,7 +348,7 @@ export default function Crossword({
 
     // mark the cell's clues as answered (or not)
     currentCell.clueIds.forEach((clueId) => {
-      const clue = storeClues.find((c) => c.id === clueId);
+      const clue = clues.find((c) => c.id === clueId);
 
       if (clue !== undefined) {
         answerSomeClues(clue.group, isCluePopulated(clue, updatedCells));
@@ -314,12 +382,12 @@ export default function Crossword({
   }
 
   // Handle initialization errors
-  if (error !== null) {
-    return renderGridError(error, data.dimensions);
+  if (puzzle.error !== null) {
+    return renderGridError(puzzle.error, data.dimensions);
   }
 
   // Find selected clue
-  const selectedClue = storeClues.find((clue) => clue.selected);
+  const selectedClue = clues.find((clue) => clue.selected);
 
   // Find parent clue
   let parentClue = undefined;
@@ -327,7 +395,7 @@ export default function Crossword({
     if (selectedClue.group.length === 1) {
       parentClue = selectedClue;
     } else {
-      parentClue = storeClues.find((clue) => clue.id === selectedClue.group[0]);
+      parentClue = clues.find((clue) => clue.id === selectedClue.group[0]);
     }
   }
 
@@ -369,8 +437,8 @@ export default function Crossword({
             <AnagramHelper
               allowedHtmlTags={allowedHtmlTags}
               clue={parentClue}
-              groupCells={getGroupCells(parentClue.group, storeCells)}
-              groupSeparators={getGroupSeparators(parentClue.group, storeClues)}
+              groupCells={getGroupCells(parentClue.group, cells)}
+              groupSeparators={getGroupSeparators(parentClue.group, clues)}
               onCellGuess={setCellGuess}
               onClose={() => setIsAnagramHelperOpen(false)}
               style={{
@@ -398,25 +466,10 @@ export default function Crossword({
               ) : null}
               <Grid
                 cellMatcher={cellMatcher}
-                cells={storeCells}
+                cells={cells}
                 cellSize={cellSize}
-                clues={storeClues}
+                clues={clues}
                 cols={data.dimensions.cols}
-                guessGrid={
-                  // with custom persistence the local guess grid isn't kept
-                  // up to date, so start from the current cells; otherwise
-                  // remounting (e.g. after the anagram helper) would save a
-                  // stale grid over them
-                  saveGrid !== undefined
-                    ? storeCells.length > 0
-                      ? getGuessGrid(
-                          data.dimensions.cols,
-                          data.dimensions.rows,
-                          storeCells,
-                        )
-                      : (loadGrid ?? guessGrid)
-                    : guessGrid
-                }
                 inputRef={inputRef}
                 onCellChange={onCellChange}
                 onCellFocus={onCellFocus}
@@ -430,8 +483,8 @@ export default function Crossword({
           )}
         </div>
         <Controls
-          cells={storeCells}
-          clues={storeClues}
+          cells={cells}
+          clues={clues}
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
           onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
@@ -443,7 +496,7 @@ export default function Crossword({
       </div>
       <Clues
         allowedHtmlTags={allowedHtmlTags}
-        entries={storeClues}
+        entries={clues}
         gridHeight={gridHeight}
         inputRef={inputRef}
         onCellFocus={onCellFocus}

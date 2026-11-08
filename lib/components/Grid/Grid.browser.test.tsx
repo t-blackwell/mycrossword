@@ -1,6 +1,5 @@
 import { setViewport } from '~/utils/testBrowser';
 import testData from '~/testData/test.valid.1';
-import { initialiseGuessGrid } from '~/utils/guess';
 import { createTestStores, TestStores } from '~/utils/test';
 import Grid from './Grid';
 
@@ -13,10 +12,6 @@ function renderGrid(stores: TestStores, cellSize: number) {
         cells={stores.cells.getState().cells}
         clues={stores.clues.getState().clues}
         cols={testData.dimensions.cols}
-        guessGrid={initialiseGuessGrid(
-          testData.dimensions.cols,
-          testData.dimensions.rows,
-        )}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
         setGuessGrid={vi.fn()}

@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { CellFocus, CellPosition, GuessGrid } from '~/types';
 import testData from '~/testData/test.valid.1';
-import { initialiseGuessGrid } from '~/utils/guess';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { createTestStores, TestStores } from '~/utils/test';
 import Grid from './Grid';
@@ -11,11 +10,6 @@ import { useCellsStore, useCluesStore } from '~/stores/stores';
 const cellMatcher = /[A-Z]/;
 
 const debounceTime = 1000;
-
-const emptyGuessGrid = initialiseGuessGrid(
-  testData.dimensions.cols,
-  testData.dimensions.rows,
-);
 
 let stores: TestStores;
 
@@ -72,7 +66,6 @@ function expectSelectionsAndRerender(
       cells={getCells()}
       clues={getClues()}
       cols={testData.dimensions.cols}
-      guessGrid={emptyGuessGrid}
       onCellFocus={cellFocus}
       rawClues={testData.entries}
       rows={testData.dimensions.rows}
@@ -81,11 +74,12 @@ function expectSelectionsAndRerender(
   );
 }
 
-describe('Grid', () => {
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+// some tests use fake timers to skip the debounce delay before saving
+afterEach(() => {
+  vi.useRealTimers();
+});
 
+describe('Grid', () => {
   test('it renders', () => {
     stores.render(
       <Grid
@@ -94,7 +88,6 @@ describe('Grid', () => {
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
         setGuessGrid={vi.fn()}
@@ -120,14 +113,15 @@ describe('Grid', () => {
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         onCellFocus={cellFocus}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
         setGuessGrid={setGuessGrid}
       />,
     );
-    expect(setGuessGrid).toHaveBeenCalledTimes(1);
+
+    // nothing is saved when mounting
+    expect(setGuessGrid).not.toHaveBeenCalled();
 
     const input = screen.getByRole('textbox');
 
@@ -262,14 +256,15 @@ describe('Grid', () => {
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         onCellFocus={cellFocus}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
         setGuessGrid={setGuessGrid}
       />,
     );
-    expect(setGuessGrid).toHaveBeenCalledTimes(++guessGridCounter);
+
+    // nothing is saved when mounting
+    expect(setGuessGrid).toHaveBeenCalledTimes(guessGridCounter);
 
     const input = screen.getByRole('textbox');
 
@@ -692,7 +687,6 @@ describe('Grid', () => {
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         onCellChange={onCellChange}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
@@ -711,7 +705,6 @@ describe('Grid', () => {
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         onCellChange={onCellChange}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
@@ -729,7 +722,6 @@ describe('Grid', () => {
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         onCellChange={onCellChange}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
@@ -746,7 +738,6 @@ describe('Grid', () => {
         cells={getCells()}
         clues={getClues()}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         onCellChange={onCellChange}
         rawClues={testData.entries}
         rows={testData.dimensions.rows}
@@ -778,7 +769,6 @@ describe('Grid accessibility', () => {
         cells={cells}
         clues={clues}
         cols={testData.dimensions.cols}
-        guessGrid={emptyGuessGrid}
         onCellFocus={onCellFocus}
         onEscape={onEscape}
         rawClues={testData.entries}
@@ -942,5 +932,40 @@ describe('Grid accessibility', () => {
     rerender(<ConnectedGrid />);
     await userEvent.keyboard('{Escape}');
     expect(screen.getByRole('textbox')).not.toHaveFocus();
+  });
+
+  test('it saves pending changes when unmounting', () => {
+    vi.useFakeTimers();
+    const setGuessGrid = vi.fn();
+
+    function ConnectedGrid() {
+      const cells = useCellsStore((state) => state.cells);
+      const clues = useCluesStore((state) => state.clues);
+
+      return (
+        <Grid
+          cellMatcher={cellMatcher}
+          cellSize={DEFAULT_CELL_SIZE}
+          cells={cells}
+          clues={clues}
+          cols={testData.dimensions.cols}
+          rawClues={testData.entries}
+          rows={testData.dimensions.rows}
+          setGuessGrid={setGuessGrid}
+        />
+      );
+    }
+
+    const { unmount } = stores.render(<ConnectedGrid />);
+
+    fireEvent.click(screen.getByText('1').parentElement!);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'A' } });
+
+    // unmount before the debounce delay
+    expect(setGuessGrid).not.toHaveBeenCalled();
+    unmount();
+
+    expect(setGuessGrid).toHaveBeenCalledTimes(1);
+    expect(setGuessGrid.mock.calls[0][0].value[0][0]).toBe('A');
   });
 });

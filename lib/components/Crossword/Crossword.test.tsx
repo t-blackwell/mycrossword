@@ -129,7 +129,8 @@ test('it calls saveGrid', () => {
         stickyClue="auto"
       />,
     );
-    expect(saveGrid).toHaveBeenCalledTimes(1);
+    // nothing is saved until there's a change
+    expect(saveGrid).not.toHaveBeenCalled();
 
     // click first cell and type 'A'
     const gridCells = document.querySelectorAll('.GridCell');
@@ -137,13 +138,13 @@ test('it calls saveGrid', () => {
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'a' } });
 
     // saving is debounced
-    expect(saveGrid).toHaveBeenCalledTimes(1);
+    expect(saveGrid).not.toHaveBeenCalled();
 
     act(() => {
       vi.advanceTimersByTime(DEBOUNCE_TIME);
     });
-    expect(saveGrid).toHaveBeenCalledTimes(2);
-    expect(saveGrid.mock.calls[1][0].value[0][0]).toBe('A');
+    expect(saveGrid).toHaveBeenCalledTimes(1);
+    expect(saveGrid.mock.calls[0][0].value[0][0]).toBe('A');
   } finally {
     vi.useRealTimers();
   }

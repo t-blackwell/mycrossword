@@ -7,6 +7,11 @@ import '@testing-library/jest-dom/vitest';
 // selecting a clue can update the URL hash (with the urlHash prop) and progress
 // is autosaved to local storage, so reset both to keep tests isolated
 afterEach(() => {
+  // server rendering tests run without a DOM
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   window.history.replaceState(
     null,
     '',

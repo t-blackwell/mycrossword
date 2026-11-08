@@ -1,6 +1,9 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { hydrateRoot } from 'react-dom/client';
+import { renderToString } from 'react-dom/server';
 import validData from '~/testData/test.valid.1';
+import { initialiseGuessGrid } from '~/utils/guess';
 import MyCrossword from './MyCrossword';
 
 test('it renders', () => {
@@ -91,4 +94,63 @@ test("crosswords on the same page don't share state", async () => {
     'true',
   );
   expect(getGuesses('first')).toContain('Y');
+});
+
+test('it hydrates server HTML and then restores saved progress', async () => {
+  const savedGrid = initialiseGuessGrid(
+    validData.dimensions.cols,
+    validData.dimensions.rows,
+  );
+  // 1 across
+  savedGrid.value[0][0] = 'Y';
+  savedGrid.value[1][0] = 'O';
+  savedGrid.value[2][0] = 'Y';
+  savedGrid.value[3][0] = 'O';
+
+  const ui = <MyCrossword data={validData} id="hydrate-test" />;
+
+  // the server has no access to saved progress
+  const container = document.createElement('div');
+  container.innerHTML = renderToString(ui);
+  document.body.appendChild(container);
+
+  const getGuesses = () =>
+    Array.from(
+      container.querySelectorAll('.GridCell__text'),
+      (text) => text.textContent,
+    ).join('');
+
+  expect(container.querySelectorAll('.GridCell')).toHaveLength(23);
+  expect(getGuesses()).toBe('');
+
+  localStorage.setItem('crosswords.hydrate-test', JSON.stringify(savedGrid));
+
+  const consoleError = vi.spyOn(console, 'error');
+  const onRecoverableError = vi.fn();
+
+  try {
+    const root = await act(async () =>
+      hydrateRoot(container, ui, { onRecoverableError }),
+    );
+
+    // the browser's first render matched the server HTML
+    expect(onRecoverableError).not.toHaveBeenCalled();
+    expect(consoleError).not.toHaveBeenCalled();
+
+    // and the saved letters were restored after hydrating
+    expect(getGuesses()).toBe('YOYO');
+    expect(
+      within(container).getByRole('button', { name: /^1\s*across/ }),
+    ).toHaveClass('Clue--answered');
+
+    // without overwriting what was saved
+    expect(
+      JSON.parse(localStorage.getItem('crosswords.hydrate-test') ?? ''),
+    ).toEqual(savedGrid);
+
+    act(() => root.unmount());
+  } finally {
+    consoleError.mockRestore();
+    container.remove();
+  }
 });

@@ -55,7 +55,6 @@ interface GridProps {
   cellSize: number;
   clues: Clue[];
   cols: number;
-  guessGrid: GuessGrid;
   inputRef?: React.RefObject<HTMLInputElement | null>;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
@@ -73,7 +72,6 @@ export default function Grid({
   cellSize,
   clues,
   cols,
-  guessGrid,
   inputRef,
   onCellChange,
   onCellFocus,
@@ -88,8 +86,10 @@ export default function Grid({
   const selectedClue = clues.find((clue) => clue.selected);
   const width = cols * cellSize + cols + 1;
   const height = rows * cellSize + rows + 1;
-  const [guesses, setGuesses] = React.useState<GuessGrid>(guessGrid);
-  const debouncedGuesses: GuessGrid = useDebounce<GuessGrid>(guesses, 1000);
+  // the latest guesses to save (null until there's a change to save)
+  const [guesses, setGuesses] = React.useState<GuessGrid | null>(null);
+  const debouncedGuesses = useDebounce<GuessGrid | null>(guesses, 1000);
+  const unsavedGuessesRef = React.useRef<GuessGrid | null>(null);
   const svgRef = React.useRef<SVGSVGElement>(null);
   const [viewBoxScale, setViewBoxScale] = React.useState<number>(1);
   const localInputRef = React.useRef<HTMLInputElement>(null);
@@ -136,9 +136,28 @@ export default function Grid({
   const saveGuessGrid = useEventCallback(setGuessGrid);
 
   React.useEffect(() => {
-    // only update local storage after debounce delay
-    saveGuessGrid(debouncedGuesses);
+    // only save after the debounce delay. Nothing is saved when mounting, as
+    // that could overwrite progress that's yet to be restored
+    if (debouncedGuesses !== null) {
+      saveGuessGrid(debouncedGuesses);
+
+      if (unsavedGuessesRef.current === debouncedGuesses) {
+        unsavedGuessesRef.current = null;
+      }
+    }
   }, [debouncedGuesses, saveGuessGrid]);
+
+  // save any changes still waiting for the debounce delay when unmounting,
+  // e.g. when the anagram helper is opened
+  React.useEffect(
+    () => () => {
+      if (unsavedGuessesRef.current !== null) {
+        saveGuessGrid(unsavedGuessesRef.current);
+        unsavedGuessesRef.current = null;
+      }
+    },
+    [saveGuessGrid],
+  );
 
   /**
    * Announce the selected cell (and its clue if the clue has changed) if it
@@ -252,7 +271,9 @@ export default function Grid({
   };
 
   const updateGuesses = (updatedCells: Cell[]) => {
-    setGuesses(getGuessGrid(cols, rows, updatedCells));
+    const updatedGuesses = getGuessGrid(cols, rows, updatedCells);
+    unsavedGuessesRef.current = updatedGuesses;
+    setGuesses(updatedGuesses);
   };
 
   const movePrev = () => {

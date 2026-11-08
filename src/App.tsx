@@ -133,6 +133,7 @@ function App() {
           data={selectedCrossword.data}
           onComplete={() => setComplete(true)}
           theme={theme}
+          urlHash
         />
       </main>
     </div>

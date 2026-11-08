@@ -47,6 +47,7 @@ interface CrosswordProps {
   onComplete?: () => void;
   saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
   stickyClue: 'always' | 'never' | 'auto';
+  urlHash?: boolean;
 }
 
 export default function Crossword({
@@ -62,6 +63,7 @@ export default function Crossword({
   onComplete,
   saveGrid,
   stickyClue,
+  urlHash = false,
 }: CrosswordProps) {
   const bem = getBem('Crossword');
   const [guessGrid, setGuessGrid] = useLocalStorage<GuessGrid>(
@@ -89,7 +91,7 @@ export default function Crossword({
     setCells([]);
     setClues([]);
     resetComplete();
-  }, [id, data, setCells, setClues]);
+  }, [id, data, setCells, setClues, resetComplete]);
 
   // Initialize cells and clues once
   React.useEffect(() => {
@@ -128,11 +130,15 @@ export default function Crossword({
     allowMissingSolutions,
     storeCells.length,
     storeClues.length,
+    setCells,
+    setClues,
+    checkComplete,
   ]);
 
-  // Handle location hash changes
+  // Select the clue named in the URL hash e.g. #1-across (opt-in)
   React.useEffect(() => {
     if (
+      urlHash &&
       locationHash !== undefined &&
       locationHash !== '' &&
       storeClues.length > 0
@@ -144,13 +150,43 @@ export default function Crossword({
         selectClue(clueId);
       }
     }
-  }, [locationHash, storeClues, selectClue]);
+  }, [urlHash, locationHash, storeClues, selectClue]);
 
-  const cellFocus = (pos: CellPosition, clueId: string) => {
-    if (onCellFocus !== undefined) {
-      onCellFocus({ pos, clueId });
+  // Write the selected clue to the URL hash (opt-in). The existing
+  // history.state is kept, as routers (e.g. React Router/Remix) store their
+  // own navigation and scroll restoration data there.
+  React.useEffect(() => {
+    if (!urlHash) {
+      return;
     }
-  };
+
+    // Read the selection from the live store rather than this render's
+    // clues: on remount this render can still hold the previous crossword's
+    // clues, which the reset effect above has just cleared
+    const selectedClueId = useCluesStore
+      .getState()
+      .clues.find((clue) => clue.selected)?.id;
+
+    if (
+      selectedClueId === undefined ||
+      window.location.hash === `#${selectedClueId}`
+    ) {
+      return;
+    }
+
+    window.history.replaceState(window.history.state, '', `#${selectedClueId}`);
+    // run on every clues change (not only when the selected id changes) so
+    // reselecting a clue restores its hash if something else changed it
+  }, [urlHash, storeClues]);
+
+  const cellFocus = React.useCallback(
+    (pos: CellPosition, clueId: string) => {
+      if (onCellFocus !== undefined) {
+        onCellFocus({ pos, clueId });
+      }
+    },
+    [onCellFocus],
+  );
 
   const moveToNextClue = React.useCallback(
     (forwards: boolean) => {

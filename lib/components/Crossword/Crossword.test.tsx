@@ -195,6 +195,156 @@ test('it never shows sticky clue', async () => {
 
 // see Crossword.browser.test.tsx for the 'auto' sticky clue tests
 
+test("it doesn't change the URL hash by default", async () => {
+  const user = userEvent.setup();
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test"
+      stickyClue="never"
+    />,
+  );
+
+  await user.click(screen.getByText('Have a rest (3,4)'));
+
+  expect(window.location.hash).toBe('');
+});
+
+test('it ignores the URL hash on load by default', () => {
+  window.history.replaceState(null, '', '#4-across');
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test"
+      stickyClue="never"
+    />,
+  );
+
+  expect(document.querySelector('.Clue--highlighted')).toBeNull();
+});
+
+test('it writes the selected clue to the URL hash, keeping history.state', async () => {
+  const user = userEvent.setup();
+  const routerState = { key: 'abc123', idx: 2 };
+  window.history.replaceState(routerState, '');
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test"
+      stickyClue="never"
+      urlHash
+    />,
+  );
+
+  await user.click(screen.getByText('Have a rest (3,4)'));
+
+  expect(window.location.hash).toBe('#4-across');
+  expect(window.history.state).toEqual(routerState);
+});
+
+test('it restores the URL hash when the same clue is selected again', async () => {
+  const user = userEvent.setup();
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test"
+      stickyClue="never"
+      urlHash
+    />,
+  );
+
+  await user.click(screen.getByText('Have a rest (3,4)'));
+  expect(window.location.hash).toBe('#4-across');
+
+  // e.g. an in-page link elsewhere on the host page
+  window.history.replaceState(null, '', '#comments');
+
+  await user.click(screen.getByText('Have a rest (3,4)'));
+  expect(window.location.hash).toBe('#4-across');
+});
+
+test("a remounted crossword doesn't write the previous crossword's clue to the URL hash", async () => {
+  const user = userEvent.setup();
+
+  const { rerender } = render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test-1"
+      key="test-1"
+      stickyClue="never"
+      urlHash
+    />,
+  );
+
+  await user.click(screen.getByText('Have a rest (3,4)'));
+  expect(window.location.hash).toBe('#4-across');
+
+  // e.g. a client-side navigation to another page with a new crossword
+  window.history.replaceState(null, '', window.location.pathname);
+
+  rerender(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test-2"
+      key="test-2"
+      stickyClue="never"
+      urlHash
+    />,
+  );
+
+  expect(window.location.hash).toBe('');
+  expect(document.querySelector('.Clue--highlighted')).toBeNull();
+});
+
+test('it selects the clue in the URL hash on load', () => {
+  window.history.replaceState(null, '', '#4-across');
+
+  render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test"
+      stickyClue="never"
+      urlHash
+    />,
+  );
+
+  expect(document.querySelector('.Clue--highlighted')).toHaveTextContent(
+    'Have a rest (3,4)',
+  );
+});
+
 test('the anagram helper enters letters in the grid', async () => {
   const onCellChange = vi.fn();
   const saveGrid = vi.fn();

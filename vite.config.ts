@@ -84,7 +84,7 @@ export default defineConfig(({ mode }) => ({
       exclude: [
         'lib/**/*.test.*',
         'lib/testData',
-        'lib/utils/test.ts',
+        'lib/utils/test.tsx',
         'lib/utils/testBrowser.ts',
       ],
     }),

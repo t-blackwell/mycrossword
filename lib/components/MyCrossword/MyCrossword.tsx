@@ -3,6 +3,7 @@ import { CellChange, CellFocus, GuardianCrossword, GuessGrid } from '~/types';
 import { DEFAULT_CELL_MATCHER, DEFAULT_HTML_TAGS } from '~/utils/general';
 import classNames from 'classnames';
 import Crossword from '~/components/Crossword/Crossword';
+import CrosswordStoresProvider from '~/stores/CrosswordStoresProvider';
 import * as React from 'react';
 import Intro, { IntroProps } from '~/components/Intro/Intro';
 import { injectStyles } from '~/utils/styles';
@@ -91,22 +92,25 @@ export default function MyCrossword({
           onContinue={handleIntroContinue}
         />
       ) : (
-        <Crossword
-          allowedHtmlTags={allowedHtmlTags}
-          allowMissingSolutions={allowMissingSolutions}
-          cellMatcher={cellMatcher}
-          cellSize={cellSize}
-          data={data}
-          id={id}
-          key={id}
-          loadGrid={loadGrid}
-          onCellChange={onCellChange}
-          onCellFocus={onCellFocus}
-          onComplete={onComplete}
-          saveGrid={saveGrid}
-          stickyClue={stickyClue}
-          urlHash={urlHash}
-        />
+        // each crossword has its own stores, so crosswords on the same page
+        // don't share state (and a new id starts from fresh stores)
+        <CrosswordStoresProvider key={id}>
+          <Crossword
+            allowedHtmlTags={allowedHtmlTags}
+            allowMissingSolutions={allowMissingSolutions}
+            cellMatcher={cellMatcher}
+            cellSize={cellSize}
+            data={data}
+            id={id}
+            loadGrid={loadGrid}
+            onCellChange={onCellChange}
+            onCellFocus={onCellFocus}
+            onComplete={onComplete}
+            saveGrid={saveGrid}
+            stickyClue={stickyClue}
+            urlHash={urlHash}
+          />
+        </CrosswordStoresProvider>
       )}
     </div>
   );

@@ -221,7 +221,7 @@ While the project has been created from scratch, it should be considered as a co
 - Built with Vite
 - Switched to functional components
 - Better performance (memoization, useCallback etc.)
-- Simplified global state management using Zustand
+- Simplified state management using Zustand, with separate state for each crossword so several can be shown on one page
 - More modular component hierarchy
 - Scoped CSS
 - Full unit test coverage using Vitest (plus real-browser tests for responsive styles)

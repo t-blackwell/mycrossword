@@ -2,20 +2,21 @@ import userEvent from '@testing-library/user-event';
 import { CellPosition } from '~/types';
 import testData from '~/testData/test.valid.1';
 import { restoreConsoleMessage, suppressConsoleMessage } from '~/utils/test';
-import { initialiseStores } from '~/utils/test';
+import { createTestStores, TestStores } from '~/utils/test';
 import GridCell from './GridCell';
 import { getDimensions } from './dimensions';
-import { render } from '@testing-library/react';
 import { DEFAULT_CELL_SIZE } from '~/utils/general';
 
 const cellPos: CellPosition = { col: 0, row: 0 };
 
+let stores: TestStores;
+
 beforeEach(() => {
-  initialiseStores(testData);
+  stores = createTestStores(testData);
 });
 
 test('it renders', () => {
-  const { container } = render(
+  const { container } = stores.render(
     <svg>
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
@@ -53,7 +54,7 @@ test('it renders', () => {
 });
 
 test('it renders with num', () => {
-  const { container } = render(
+  const { container } = stores.render(
     <svg>
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
@@ -86,7 +87,7 @@ test('it renders with num', () => {
 
 test('it renders with guess', () => {
   const guess = 'X';
-  const { container } = render(
+  const { container } = stores.render(
     <svg>
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
@@ -106,7 +107,7 @@ test('it renders with guess', () => {
 });
 
 test('it renders highlighted', () => {
-  const { container } = render(
+  const { container } = stores.render(
     <svg>
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
@@ -126,7 +127,7 @@ test('it renders highlighted', () => {
 });
 
 test('it renders selected', () => {
-  const { container } = render(
+  const { container } = stores.render(
     <svg>
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
@@ -147,7 +148,7 @@ test('it renders selected', () => {
 
 test('it calls onCellFocus on click', async () => {
   const cellFocus = vi.fn();
-  const { container } = render(
+  const { container } = stores.render(
     <svg>
       <GridCell
         cellSize={DEFAULT_CELL_SIZE}
@@ -171,7 +172,7 @@ test('it throws with 0 clueIds', () => {
   suppressConsoleMessage('error');
 
   expect(() =>
-    render(
+    stores.render(
       <svg>
         <GridCell
           cellSize={DEFAULT_CELL_SIZE}
@@ -192,7 +193,7 @@ test('it throws with more than 2 clueIds', () => {
   suppressConsoleMessage('error');
 
   expect(() =>
-    render(
+    stores.render(
       <svg>
         <GridCell
           cellSize={DEFAULT_CELL_SIZE}

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { getBem } from '~/utils/bem';
 import type { CellFocus, CellPosition, Direction } from '~/types';
-import { useCellsStore } from '~/stores/useCellsStore';
-import { useCluesStore } from '~/stores/useCluesStore';
+import { useCellsStore, useCluesStore } from '~/stores/stores';
 import { isInPerimeterRect } from '~/utils/general';
 import { decodeHtmlEntities, sanitize } from '~/utils/html';
 import { VISUALLY_HIDDEN_CLASS } from '~/utils/a11y';
@@ -79,7 +78,7 @@ function Clue({
         });
       }
     }
-  }, [scrollTo]);
+  }, [scrollTo, containerRef]);
 
   return (
     <button

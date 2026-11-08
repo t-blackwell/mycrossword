@@ -1,21 +1,22 @@
 import { render, screen } from '@testing-library/react';
 import data from '~/testData/test.valid.1';
 import { getGroupCells } from '~/utils/clue';
-import { useCellsStore } from '~/stores/useCellsStore';
 import userEvent from '@testing-library/user-event';
 import SolutionDisplay from './SolutionDisplay';
 import { getSolutionBoxes } from './solution';
-import { initialiseStores } from '~/utils/test';
+import { createTestStores, TestStores } from '~/utils/test';
 
 const noSeparators = { ',': [], '-': [] };
 
 function getCells(clueIds: string[]) {
-  const cells = useCellsStore.getState().cells;
+  const cells = stores.cells.getState().cells;
   return getGroupCells(clueIds, cells);
 }
 
+let stores: TestStores;
+
 beforeEach(() => {
-  initialiseStores(data);
+  stores = createTestStores(data);
 });
 
 test('it renders', () => {

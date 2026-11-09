@@ -2,6 +2,7 @@ import { MyCrossword } from 'mycrossword';
 import data28505 from './examples/guardian.cryptic.28505';
 import data25220 from './examples/guardian.prize.25220';
 import dataMini from './examples/mini';
+import dataBarred from './examples/barred';
 import { useState } from 'react';
 import './App.css';
 
@@ -37,6 +38,11 @@ const crosswords = [
     id: 'mini',
     name: 'Mini crossword No 1',
     data: dataMini,
+  },
+  {
+    id: 'barred',
+    name: 'Barred crossword No 1',
+    data: dataBarred,
   },
 ] as const;
 
@@ -124,7 +130,11 @@ function App() {
           allowedHtmlTags={
             showDefinitions ? ['u', ...ALLOWED_HTML_TAGS] : ALLOWED_HTML_TAGS
           }
-          cellSize={selectedCrosswordId === 'mini' ? 50 : 31}
+          cellSize={
+            selectedCrosswordId === 'mini' || selectedCrosswordId === 'barred'
+              ? 50
+              : 31
+          }
           id={`example.${selectedCrosswordId}`}
           intro={{
             node: <span className="Page__advert">advertisement</span>,

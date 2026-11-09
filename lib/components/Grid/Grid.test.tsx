@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { CellFocus, CellPosition, GuessGrid } from '~/types';
 import testData from '~/testData/test.valid.1';
+import barredData from '~/testData/test.barred.1';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { createTestStores, TestStores } from '~/utils/test';
 import Grid from './Grid';
@@ -974,5 +975,67 @@ describe('Grid accessibility', () => {
 
     expect(setGuessGrid).toHaveBeenCalledTimes(1);
     expect(setGuessGrid.mock.calls[0][0].value[0][0]).toBe('A');
+  });
+});
+
+describe('Barred grid', () => {
+  beforeEach(() => {
+    stores = createTestStores(barredData);
+  });
+
+  function ConnectedGrid() {
+    const cells = useCellsStore((state) => state.cells);
+    const clues = useCluesStore((state) => state.clues);
+
+    return (
+      <Grid
+        cellMatcher={cellMatcher}
+        cellSize={DEFAULT_CELL_SIZE}
+        cells={cells}
+        clues={clues}
+        cols={barredData.dimensions.cols}
+        rawClues={barredData.entries}
+        rows={barredData.dimensions.rows}
+        setGuessGrid={vi.fn()}
+      />
+    );
+  }
+
+  test('it renders every cell and the bars', () => {
+    stores.render(<ConnectedGrid />);
+
+    const grid = getGrid();
+    expect(grid.querySelectorAll('.GridCell').length).toBe(25);
+    expect(grid.querySelectorAll('.GridSeparators rect').length).toBe(8);
+  });
+
+  test('typing fills an entry and arrows cross bars into other entries', () => {
+    stores.render(<ConnectedGrid />);
+
+    fireEvent.click(screen.getByText('5').parentElement!);
+    expect(getSelectedClue()?.id).toBe('5-across');
+
+    const input = screen.getByRole('textbox');
+    ['C', 'A', 'P'].forEach((value) => {
+      fireEvent.change(input, { target: { value } });
+    });
+
+    // typing stops at the end of the entry, before the bar
+    expect(getSelectedCell()?.pos).toEqual({ col: 2, row: 1 });
+    expect(
+      getCells()
+        .filter((cell) => cell.pos.row === 1)
+        .sort((a, b) => a.pos.col - b.pos.col)
+        .map((cell) => cell.guess ?? ''),
+    ).toEqual(['C', 'A', 'P', '', '']);
+
+    // the cells after the bar are only in down entries
+    fireEvent.keyDown(input, Arrows.RIGHT);
+    expect(getSelectedCell()?.pos).toEqual({ col: 3, row: 1 });
+    expect(getSelectedClue()?.id).toBe('3-down');
+
+    fireEvent.keyDown(input, Arrows.RIGHT);
+    expect(getSelectedCell()?.pos).toEqual({ col: 4, row: 1 });
+    expect(getSelectedClue()?.id).toBe('4-down');
   });
 });

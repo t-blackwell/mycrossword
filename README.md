@@ -8,6 +8,7 @@ React crossword component built to work with Guardian crossword data.
 
 - Displays crossword grid and list of clues
 - Displays separators in the grid for hyphenated and multi-word solutions
+- Supports barred grids as well as blocked grids (see [Barred grids](#barred-grids))
 - Responsive to different screen sizes
 - Clue selection highlights relevant cells
 - Grouped clues span multiple columns or rows
@@ -197,6 +198,14 @@ This is an example of the JSON data required to create the crossword shown above
   crosswordType: 'quick',
 };
 ```
+
+### Barred grids
+
+Barred grids work with the same data: there's no extra setting or field. The grid only draws cells that are in an entry, so a blocked grid's blocks are the cells that aren't in any entry. In a barred grid every cell is in an entry, so there are no blocks, and a bar is drawn between two neighbouring cells in a row (or column) that aren't in the same across (or down) entry. Blocked grids never have such cells, so they look the same as before.
+
+To make a barred grid, give an entry for every answer, as for a blocked grid, so that every cell is in at least one entry. Unchecked cells, i.e. cells in only one entry, are fine. A cell that isn't in any entry is drawn as a block.
+
+Answers are entered in the grid as they appear in the `solution`, so puzzles where the entry is changed before it's written in (e.g. jumbled, misprinted or with letters removed) aren't supported.
 
 ## Guess grid
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Direction, GuardianClue } from '~/types';
+import { Bar, getBars } from '~/utils/bars';
 
 function getPos(val: number, cellSize: number) {
   return val * (cellSize + 1) + 1;
@@ -49,6 +50,26 @@ function GridSeparator({
   return <></>;
 }
 
+/**
+ * Draws a bar over the grid line before a cell, three units thick so it stands
+ * out from the grid lines and word separators. It overhangs each end of the
+ * cell's edge so that bars meeting at a corner join up.
+ */
+function GridBar({ bar, cellSize }: { bar: Bar; cellSize: number }) {
+  const top = getPos(bar.row, cellSize);
+  const left = getPos(bar.col, cellSize);
+  const across = bar.direction === 'across';
+
+  return (
+    <rect
+      width={across ? 3 : cellSize + 4}
+      height={across ? cellSize + 4 : 3}
+      x={left - 2}
+      y={top - 2}
+    />
+  );
+}
+
 function getGridSeparator(
   char: ',' | '-',
   pos: number,
@@ -80,8 +101,17 @@ interface GridSeparatorsProps {
 }
 
 function GridSeparators({ clues, cellSize }: GridSeparatorsProps) {
+  const bars = React.useMemo(() => getBars(clues), [clues]);
+
   return (
     <svg className="GridSeparators">
+      {bars.map((bar) => (
+        <GridBar
+          bar={bar}
+          cellSize={cellSize}
+          key={['bar', bar.col, bar.row, bar.direction].join(',')}
+        />
+      ))}
       {clues
         .filter((clue) => Object.keys(clue.separatorLocations).length > 0)
         .map((clue) => {

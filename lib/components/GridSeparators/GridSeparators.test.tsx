@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import data from '~/testData/test.valid.1';
+import barredData from '~/testData/test.barred.1';
 import GridSeparators from './GridSeparators';
 import { DEFAULT_CELL_SIZE } from '~/utils/general';
 
@@ -30,4 +31,26 @@ test('it renders', () => {
     expect(rect.getAttribute('x')).toBe(expectedRects[i].x);
     expect(rect.getAttribute('y')).toBe(expectedRects[i].y);
   });
+});
+
+test('it renders bars in a barred grid', () => {
+  const { container } = render(
+    <GridSeparators cellSize={DEFAULT_CELL_SIZE} clues={barredData.entries} />,
+  );
+
+  const rects = container.querySelectorAll('rect');
+  expect(rects.length).toBe(8);
+
+  // the first bar is between the cells at (1, 0) and (1, 1): three units
+  // thick over the grid line, overhanging the cell's edge by two at each end
+  expect(rects[0].getAttribute('width')).toBe('35');
+  expect(rects[0].getAttribute('height')).toBe('3');
+  expect(rects[0].getAttribute('x')).toBe('31');
+  expect(rects[0].getAttribute('y')).toBe('31');
+
+  // the next is between the cells at (2, 1) and (3, 1)
+  expect(rects[1].getAttribute('width')).toBe('3');
+  expect(rects[1].getAttribute('height')).toBe('35');
+  expect(rects[1].getAttribute('x')).toBe('95');
+  expect(rects[1].getAttribute('y')).toBe('31');
 });

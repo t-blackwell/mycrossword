@@ -9,6 +9,7 @@ import {
   Clue,
   GuardianCrossword,
   GuessGrid,
+  MultiplayerConnection,
 } from '~/types';
 import {
   useCellsStore,
@@ -33,6 +34,7 @@ import { isValidChar } from '~/utils/general';
 import { getBem } from '~/utils/bem';
 import Controls from '~/components/Controls/Controls';
 import useLocationHash from '~/hooks/useLocationHash/useLocationHash';
+import { useMultiplayer } from '~/hooks/useMultiplayer/useMultiplayer';
 import './Crossword.css';
 
 interface CrosswordProps {
@@ -43,6 +45,7 @@ interface CrosswordProps {
   data: GuardianCrossword;
   id: string;
   loadGrid?: GuessGrid;
+  multiplayer?: MultiplayerConnection;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   onComplete?: () => void;
@@ -115,6 +118,7 @@ export default function Crossword({
   data,
   id,
   loadGrid,
+  multiplayer,
   onCellChange,
   onCellFocus,
   onComplete,
@@ -150,6 +154,28 @@ export default function Crossword({
   const selectClue = useCluesStore((store) => store.select);
   const answerSomeClues = useCluesStore((store) => store.answerSome);
   const checkComplete = useCellsStore((store) => store.checkComplete);
+
+  // solving with others (opt-in)
+  const { remotePlayers, sendCellChange } = useMultiplayer({
+    cellMatcher,
+    cols: data.dimensions.cols,
+    connection: multiplayer,
+    onComplete,
+    // the crossword is set up again when its data changes (with the same id)
+    puzzle: data,
+    rows: data.dimensions.rows,
+    saveGuessGrid: saveGrid ?? setGuessGrid,
+  });
+
+  // called with each change the player makes to the grid. It's undefined
+  // when nothing needs to know, so the changes needn't be worked out.
+  const handleCellChange =
+    onCellChange !== undefined || sendCellChange !== undefined
+      ? (cellChange: CellChange) => {
+          onCellChange?.(cellChange);
+          sendCellChange?.(cellChange);
+        }
+      : undefined;
 
   // The cells and clues are set up while rendering (rather than in an effect)
   // so that server rendered HTML includes the whole puzzle. They're set up
@@ -329,8 +355,8 @@ export default function Crossword({
       return true;
     }
 
-    if (onCellChange !== undefined) {
-      onCellChange({
+    if (handleCellChange !== undefined) {
+      handleCellChange({
         pos: currentCell.pos,
         guess,
         previousGuess: currentCell.guess,
@@ -469,11 +495,14 @@ export default function Crossword({
                 clues={clues}
                 cols={data.dimensions.cols}
                 inputRef={inputRef}
-                onCellChange={onCellChange}
+                onCellChange={handleCellChange}
                 onCellFocus={onCellFocus}
                 onComplete={onComplete}
                 onEscape={focusSelectedClue}
                 rawClues={data.entries}
+                remotePlayers={
+                  multiplayer !== undefined ? remotePlayers : undefined
+                }
                 rows={data.dimensions.rows}
                 setGuessGrid={saveGrid ?? setGuessGrid}
               />
@@ -486,7 +515,7 @@ export default function Crossword({
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
           onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
-          onCellChange={onCellChange}
+          onCellChange={handleCellChange}
           onComplete={onComplete}
           setGuessGrid={saveGrid ?? setGuessGrid}
           solutionsAvailable={data.solutionAvailable}

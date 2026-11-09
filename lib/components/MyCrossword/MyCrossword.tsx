@@ -1,5 +1,11 @@
 import { getBem } from '~/utils/bem';
-import { CellChange, CellFocus, GuardianCrossword, GuessGrid } from '~/types';
+import {
+  CellChange,
+  CellFocus,
+  GuardianCrossword,
+  GuessGrid,
+  MultiplayerConnection,
+} from '~/types';
 import { DEFAULT_CELL_MATCHER, DEFAULT_HTML_TAGS } from '~/utils/general';
 import classNames from 'classnames';
 import Crossword from '~/components/Crossword/Crossword';
@@ -33,6 +39,7 @@ export interface MyCrosswordProps {
   id: string;
   intro?: Omit<IntroProps, 'onContinue'>;
   loadGrid?: GuessGrid;
+  multiplayer?: MultiplayerConnection;
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   onComplete?: () => void;
@@ -51,6 +58,7 @@ export default function MyCrossword({
   data,
   id,
   loadGrid,
+  multiplayer,
   onCellChange,
   onCellFocus,
   onComplete,
@@ -103,6 +111,7 @@ export default function MyCrossword({
             data={data}
             id={id}
             loadGrid={loadGrid}
+            multiplayer={multiplayer}
             onCellChange={onCellChange}
             onCellFocus={onCellFocus}
             onComplete={onComplete}

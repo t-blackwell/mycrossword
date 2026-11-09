@@ -20,6 +20,7 @@ React crossword component built to work with Guardian crossword data.
 - Smart clearing: Clear word keeps letters shared with crossing answers that are in progress
 - Check and reveal solution functions (provided the data has `solutionAvailable: true`)
 - Anagram helper
+- Solve together: players connected to a host (e.g. over WebSockets) see each other's letters and selected cells (see [Solving together](#solving-together))
 
 ## Accessibility
 
@@ -81,7 +82,8 @@ Existing code that already imports `mycrossword/style.css` will continue to work
 | `id`                    | `string`<br />Required string to uniquely identify the crossword. Progress is saved in local storage under the key `crosswords.<id>` (unless `saveGrid` is given). Changing the `id` starts the crossword afresh.                                                                                                                                                                                                                                                                                    |
 | `intro`                 | `{ node: React.ReactNode; countdown?: { seconds: number; label?: string }; continueLabel?: string }`<br />Optional configuration for an introductory screen shown before the crossword.<br />- `node`: Content to display in the intro.<br />- `countdown.seconds`: Number of seconds before the continue button is enabled.<br />- `countdown.label`: Label for the countdown (defaults to "Skip in").<br />- `continueLabel`: Label for the continue button (defaults to "Continue to crossword"). |
 | `loadGrid`              | `GuessGrid \| undefined`<br />Optional guess grid to start from, overriding the storage mechanism: when given, progress isn't read from local storage. It's read when the crossword is set up, i.e. on mount or when `id` or `data` changes, so later changes alone have no effect. An invalid grid (wrong size or characters not matched by `cellMatcher`) shows an error instead of the crossword. See [guess grid](#guess-grid) below for more information.                                       |
-| `onCellChange`          | `(cellChange: CellChange) => void \| undefined`<br />Optional function. Called after a grid cell has changed its guess. The object contains the properties `pos`, `guess` and `previousGuess`.                                                                                                                                                                                                                                                                                                       |
+| `multiplayer`           | `MultiplayerConnection \| undefined`<br />Optional connection to a host for solving the crossword with others, e.g. from `createWebSocketConnection`. Changing it leaves the old connection and joins with the new one. See [Solving together](#solving-together).                                                                                                                                                                                                                                   |
+| `onCellChange`          | `(cellChange: CellChange) => void \| undefined`<br />Optional function. Called after a grid cell has changed its guess. The object contains the properties `pos`, `guess` and `previousGuess`. It's only called for changes made by this player, not for changes made by other players when solving together.                                                                                                                                                                                        |
 | `onCellFocus`           | `(cellFocus: CellFocus) => void \| undefined`<br />Optional function. Called after the focus switches to a new cell. The object returned contains the properties `pos` and `clueId`.                                                                                                                                                                                                                                                                                                                 |
 | `onComplete`            | `() => void \| undefined`<br />Optional function. Called when every cell in the grid matches its solution, whether entered or revealed. It's called at most once while the crossword is shown, and not for a grid that's already complete when loaded.                                                                                                                                                                                                                                               |
 | `saveGrid`              | `(value: GuessGrid) => void \| undefined`<br />Optional function to override the storage mechanism: when given, progress isn't saved to local storage. Called with the [guess grid](#guess-grid) after the grid has changed. Letters typed into the grid are saved after a one second pause in typing; other changes (e.g. check, reveal or clear) are saved straight away.                                                                                                                          |
@@ -103,6 +105,8 @@ import type {
   GuardianClue, // a clue in the crossword data
   GuardianCrossword, // the crossword data
   GuessGrid, // the user's guesses (see below)
+  MultiplayerConnection, // the multiplayer prop's connection
+  MultiplayerMessage, // the messages sent when solving together
   MyCrosswordProps, // the component's props
   Theme, // the theme prop's values
 } from 'mycrossword';
@@ -240,6 +244,109 @@ Some functions require or return the state of the crossword grid. This is a 2-di
   ]
 }
 ```
+
+## Solving together
+
+Several people can solve a crossword together, each in their own browser: everyone sees the letters the others enter (including checked, revealed and cleared letters), and each player's selected cell is outlined in their own colour in the others' grids. Checking letters only affects your own grid.
+
+The players connect to a host, which passes messages between the players in the same room and keeps the room's grid so that anyone joining later starts from the same place. The library includes both halves: `createWebSocketConnection` for the browser and `createMultiplayerHost` (from `mycrossword/host`) for the server.
+
+### In the browser
+
+Pass a connection to the `multiplayer` prop. Create it in an event handler or effect rather than while rendering, and close it when you're done:
+
+```js
+import { createWebSocketConnection, MyCrossword } from 'mycrossword';
+
+export default function MyPage() {
+  const [connection, setConnection] = React.useState(null);
+
+  const join = (room) => {
+    setConnection(
+      createWebSocketConnection(
+        `wss://example.com/crossword?room=${encodeURIComponent(room)}`,
+      ),
+    );
+  };
+
+  // close the connection when it's replaced or the page is left
+  React.useEffect(() => () => connection?.close(), [connection]);
+
+  return (
+    <>
+      <button onClick={() => join('crossword-1/my-room')}>
+        Solve together
+      </button>
+      <MyCrossword
+        id="crossword-1"
+        data={data}
+        multiplayer={connection ?? undefined}
+      />
+    </>
+  );
+}
+```
+
+`createWebSocketConnection(urlOrWebSocket, { playerId })` takes the host's URL (or an existing `WebSocket`) and an optional player id, which is generated if not given. Each connection in a room needs its own id (the host ignores a player joining with an id that's already in use), so if you base it on a user's id, add something unique to each connection, e.g. for the same user in two tabs. Messages sent while the WebSocket is still connecting are sent once it opens. It doesn't reconnect if the connection drops: to reconnect, create a new connection and pass it to the crossword, which then joins again and catches up with the room's grid.
+
+Use a separate room for each crossword. Progress is still saved as usual (to local storage or with `saveGrid`), including other players' changes, which are saved after a one second pause. `onComplete` is called when the grid is completed, whoever entered the last letter.
+
+### On the server
+
+`mycrossword/host` has no dependencies and doesn't start a server itself, so it can be used with any WebSocket server. Pass each connection to `host.connect` with its room, then pass on the messages it receives and tell the host when it closes. For example, with [ws](https://github.com/websockets/ws) on Node.js:
+
+```js
+import { WebSocketServer } from 'ws';
+import { createMultiplayerHost } from 'mycrossword/host';
+
+const host = createMultiplayerHost();
+const server = new WebSocketServer({ port: 8080, maxPayload: 64 * 1024 });
+
+server.on('connection', (socket, request) => {
+  const url = new URL(request.url ?? '', 'http://localhost');
+  const connection = host.connect(socket, url.searchParams.get('room') ?? '');
+
+  socket.on('message', (data, isBinary) => {
+    if (!isBinary) {
+      connection.receive(data.toString());
+    }
+  });
+  socket.on('close', () => connection.close());
+  // without a listener, an error (e.g. a message over maxPayload) would crash
+  // the server. The socket is closed after an error.
+  socket.on('error', (error) => console.warn(error));
+});
+```
+
+The host keeps rooms in memory and removes a room (and its grid) once its last player has disconnected. `host.getGrid(roomId)` returns a room's grid. Players aren't authenticated, so anyone who knows a room's name can join it: check who's connecting before calling `host.connect` if that matters to you.
+
+The demo app (`npm run dev`) runs this host on its dev server: enter the same room name in two browser windows and select Join.
+
+### Using another transport or host
+
+The `multiplayer` prop isn't tied to WebSockets. Any object with `send` and `subscribe` functions can be used (and an optional `playerId`), as long as messages are delivered in order, e.g. to use a hosted real-time service:
+
+```ts
+import type { MultiplayerConnection } from 'mycrossword';
+
+const connection: MultiplayerConnection = {
+  playerId: 'player-1',
+  send: (message) => channel.publish(message),
+  subscribe: (listener) => channel.subscribe(listener), // returns an unsubscribe function
+};
+```
+
+Messages received are checked before they're used, so invalid ones are ignored. If you write your own host, it needs to handle these messages (the `MultiplayerMessage` type):
+
+| Message                                    | Sent by | Description                                                                                                                                                                                                                                                     |
+| ------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `{ type: 'join', playerId }`               | Player  | Sent when the crossword connects, and again if its `data` changes. The host replies to the player with `sync`, and passes it on to the other players, who reply with their `focus`. A player joining with an id another player in the room is using is ignored. |
+| `{ type: 'sync', grid }`                   | Both    | The room's [guess grid](#guess-grid), or `null` if the host doesn't have one yet. A player sent `null` replies with its own grid, which the host keeps (if it doesn't have one by then) and passes on to the other players.                                     |
+| `{ type: 'cells', playerId, changes }`     | Player  | The cells a player has changed, as `{ pos, guess }` objects (a `guess` of `''` clears a cell). The host applies them to the room's grid and passes them on to **every** player, including the sender, in the order it received them.                            |
+| `{ type: 'focus', playerId, pos, clueId }` | Player  | The cell and clue the player has selected, passed on to the other players.                                                                                                                                                                                      |
+| `{ type: 'leave', playerId }`              | Both    | Sent when the crossword disconnects, and by the host when a player's connection closes. Passed on to the other players.                                                                                                                                         |
+
+The host sending `cells` back to the sender is what keeps everyone's grid the same when two players change a cell at the same time: a player ignores other players' changes to a cell until the host has sent back its own change to it, so the change the host received last wins everywhere.
 
 ## What's new?
 

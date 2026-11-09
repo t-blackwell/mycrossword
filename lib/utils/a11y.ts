@@ -1,4 +1,4 @@
-import type { Cell, Clue } from '~/types';
+import type { Cell, Clue, RemotePlayer } from '~/types';
 import { getGroupCells } from '~/utils/clue';
 import { decodeHtmlEntities, sanitize } from '~/utils/html';
 
@@ -73,6 +73,60 @@ export function describeCell({
   }
 
   return `${getClueLabel(clue, clues)}: ${getPlainClueText(clue, clues)}. ${letter}`;
+}
+
+/**
+ * Describe where other players solving the crossword are, e.g. "Another
+ * player is at 4 across, letter 1 of 7." Players whose cell or clue isn't in
+ * the crossword are left out.
+ */
+export function describeRemotePlayers(
+  players: RemotePlayer[],
+  cells: Cell[],
+  clues: Clue[],
+) {
+  const isAtPos = (cell: Cell, player: RemotePlayer) =>
+    cell.pos.col === player.pos.col && cell.pos.row === player.pos.row;
+
+  const positions = players.flatMap((player) => {
+    const clue = clues.find((c) => c.id === player.clueId);
+    const cell = cells.find((c) => isAtPos(c, player));
+
+    if (
+      clue === undefined ||
+      cell === undefined ||
+      !cell.clueIds.includes(clue.id)
+    ) {
+      return [];
+    }
+
+    const groupCells = getGroupCells(clue.group, cells);
+    const index = groupCells.findIndex((c) => isAtPos(c, player));
+
+    return [
+      `${getClueLabel(clue, clues)}, letter ${index + 1} of ${groupCells.length}`,
+    ];
+  });
+
+  if (positions.length === 0) {
+    return '';
+  }
+
+  return `${positions.length === 1 ? 'Another player is' : 'Other players are'} at ${positions.join('; ')}.`;
+}
+
+/**
+ * Describe how many other players are solving the crossword, e.g. "2 other
+ * players are solving."
+ */
+export function describeRemotePlayerCount(count: number) {
+  if (count === 0) {
+    return 'No other players are solving.';
+  }
+
+  return count === 1
+    ? '1 other player is solving.'
+    : `${count} other players are solving.`;
 }
 
 /**

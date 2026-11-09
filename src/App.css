@@ -70,3 +70,7 @@ h6 {
   font-size: 0.875rem;
   text-align: center;
 }
+.Page__status {
+  color: #57606a;
+  font-size: 0.8rem;
+}

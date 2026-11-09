@@ -48,8 +48,6 @@ export function validateGuessGrid(
     return false;
   }
 
-  // index every column and cell rather than using `every`, which skips the
-  // holes in sparse arrays e.g. `new Array(rows)`
   for (let col = 0; col < cols; col += 1) {
     const column: unknown = value[col];
 

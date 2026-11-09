@@ -246,3 +246,58 @@ test('invalid messages are ignored', () => {
   expect(alice.take()).toEqual([]);
   expect(host.getGrid('room')).toEqual(grid());
 });
+
+test('a player can’t join with an id another player in the room is using', () => {
+  const host = createMultiplayerHost();
+  const alice = connectPlayer(host);
+  const aliceAgain = connectPlayer(host);
+  const bob = connectPlayer(host);
+  const elsewhere = connectPlayer(host, 'another room');
+
+  alice.send({ type: 'join', playerId: 'alice' });
+  alice.send({ type: 'sync', grid: grid() });
+  bob.send({ type: 'join', playerId: 'bob' });
+  alice.take();
+  bob.take();
+
+  // e.g. the same user in a second tab
+  aliceAgain.send({ type: 'join', playerId: 'alice' });
+  aliceAgain.send({
+    type: 'cells',
+    playerId: 'alice',
+    changes: [{ pos: { col: 1, row: 0 }, guess: 'X' }],
+  });
+
+  expect(aliceAgain.take()).toEqual([]);
+  expect(alice.take()).toEqual([]);
+  expect(bob.take()).toEqual([]);
+  expect(host.getGrid('room')?.value[1][0]).toBe('');
+
+  // the id can be used in another room, or once its player has left
+  elsewhere.send({ type: 'join', playerId: 'alice' });
+  expect(elsewhere.take()).toEqual([{ type: 'sync', grid: null }]);
+
+  alice.close();
+  bob.take();
+  aliceAgain.send({ type: 'join', playerId: 'alice' });
+  expect(aliceAgain.take()).toEqual([{ type: 'sync', grid: grid() }]);
+  expect(bob.take()).toEqual([{ type: 'join', playerId: 'alice' }]);
+});
+
+test('a player rejoining with the same id gets the grid again', () => {
+  const host = createMultiplayerHost();
+  const alice = connectPlayer(host);
+  const bob = connectPlayer(host);
+
+  alice.send({ type: 'join', playerId: 'alice' });
+  alice.send({ type: 'sync', grid: grid() });
+  bob.send({ type: 'join', playerId: 'bob' });
+  alice.take();
+  bob.take();
+
+  bob.send({ type: 'join', playerId: 'bob' });
+
+  expect(bob.take()).toEqual([{ type: 'sync', grid: grid() }]);
+  // the others aren't told it left, only asked where they are
+  expect(alice.take()).toEqual([{ type: 'join', playerId: 'bob' }]);
+});

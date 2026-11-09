@@ -6,7 +6,10 @@ const CONNECTING = 0;
 const OPEN = 1;
 
 export interface WebSocketConnectionOptions {
-  /** Identifies this player. Generated if not given. */
+  /**
+   * Identifies this player. Generated if not given. It must be unique to the
+   * connection (e.g. not just a user's id, as they may have two tabs open).
+   */
   playerId?: string;
 }
 

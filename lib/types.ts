@@ -158,7 +158,10 @@ export type MultiplayerMessage =
  * WebSocket, but any transport that delivers messages in order can be used.
  */
 export interface MultiplayerConnection {
-  /** Identifies this player. Generated if not given. */
+  /**
+   * Identifies this player. Generated if not given. It must be unique to
+   * the connection, as a player recognises its own changes by its id.
+   */
   playerId?: string;
   /** Sends a message to the host. */
   send: (message: MultiplayerMessage) => void;

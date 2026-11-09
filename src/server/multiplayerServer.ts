@@ -46,6 +46,11 @@ export function multiplayerServer(): Plugin {
             }
           });
           ws.on('close', () => connection.close());
+          // e.g. a message over maxPayload, which would otherwise crash the
+          // dev server. The socket is closed after an error.
+          ws.on('error', (error) => {
+            server.config.logger.warn(`Multiplayer socket error: ${error}`);
+          });
         });
       });
 

@@ -132,7 +132,7 @@ function App() {
 
     // join the same room for the new crossword
     if (connection !== null) {
-      setConnection(connectToRoom(crosswordId, room));
+      setConnection(connectToRoom(crosswordId, room.trim()));
     }
   };
 

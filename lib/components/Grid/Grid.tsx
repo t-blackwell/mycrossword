@@ -26,7 +26,12 @@ import {
 import { getCellKey, getCellsByKey, mergeCell } from '~/utils/cell';
 import { isCluePopulated } from '~/utils/clue';
 import { getBem } from '~/utils/bem';
-import { describeCell, VISUALLY_HIDDEN_CLASS } from '~/utils/a11y';
+import {
+  describeCell,
+  describeRemotePlayerCount,
+  describeRemotePlayers,
+  VISUALLY_HIDDEN_CLASS,
+} from '~/utils/a11y';
 import './Grid.css';
 
 const ARROWS_KEYS = [
@@ -63,7 +68,10 @@ interface GridProps {
   /** Called when the user presses Escape to leave the grid */
   onEscape?: () => void;
   rawClues: GuardianClue[];
-  /** Other players solving the crossword, whose selected cells are shown */
+  /**
+   * Other players solving the crossword, whose selected cells are shown.
+   * Undefined when not solving with others.
+   */
   remotePlayers?: RemotePlayer[];
   rows: number;
   setGuessGrid: (value: GuessGrid) => void;
@@ -81,7 +89,7 @@ export default function Grid({
   onComplete,
   onEscape,
   rawClues,
-  remotePlayers = [],
+  remotePlayers,
   rows,
   setGuessGrid,
 }: GridProps) {
@@ -100,6 +108,30 @@ export default function Grid({
   const localInputRef = React.useRef<HTMLInputElement>(null);
   const gridInputRef = inputRef ?? localInputRef;
   const instructionsId = React.useId();
+  const remotePlayersId = React.useId();
+
+  // other players are only shown on the grid's cells
+  const visibleRemotePlayers = (remotePlayers ?? []).filter(({ pos }) =>
+    cellsByKey.has(getCellKey(pos)),
+  );
+  const remotePlayersDescription = describeRemotePlayers(
+    visibleRemotePlayers,
+    cells,
+    clues,
+  );
+
+  // announce other players starting and stopping solving (the outlines of
+  // their selected cells aren't available to screen readers)
+  const [remotePlayerCount, setRemotePlayerCount] = React.useState(0);
+  const [remotePlayersAnnouncement, setRemotePlayersAnnouncement] =
+    React.useState('');
+
+  if (visibleRemotePlayers.length !== remotePlayerCount) {
+    setRemotePlayerCount(visibleRemotePlayers.length);
+    setRemotePlayersAnnouncement(
+      describeRemotePlayerCount(visibleRemotePlayers.length),
+    );
+  }
 
   // screen reader announcement of the selected cell, made via a live region
   // as focus stays on the same input while the selection moves
@@ -717,12 +749,7 @@ export default function Grid({
           );
         })}
         <GridSeparators cellSize={cellSize} clues={rawClues} />
-        {remotePlayers.map(({ colour, playerId, pos }) => {
-          // only shown on the grid's cells
-          if (!cellsByKey.has(getCellKey(pos))) {
-            return null;
-          }
-
+        {visibleRemotePlayers.map(({ colour, playerId, pos }) => {
           const { xRect, yRect } = getDimensions(cellSize, pos);
 
           return (
@@ -757,7 +784,11 @@ export default function Grid({
         }}
       >
         <GridInput
-          ariaDescribedBy={instructionsId}
+          ariaDescribedBy={
+            remotePlayersDescription !== ''
+              ? `${instructionsId} ${remotePlayersId}`
+              : instructionsId
+          }
           ariaLabel="Crossword grid"
           onBlur={handleBlur}
           onChange={handleChange}
@@ -771,6 +802,11 @@ export default function Grid({
         Type to enter letters. Use the arrow keys to move between cells, Tab and
         Shift+Tab to move between clues, and Escape to leave the grid.
       </p>
+      {remotePlayersDescription !== '' ? (
+        <p className={VISUALLY_HIDDEN_CLASS} id={remotePlayersId}>
+          {remotePlayersDescription}
+        </p>
+      ) : null}
       <div
         aria-atomic="true"
         aria-live="polite"
@@ -778,6 +814,13 @@ export default function Grid({
       >
         {announcement}
       </div>
+      {/* only when solving with others (rendered before there's anything to
+          announce, so screen readers notice the changes) */}
+      {remotePlayers !== undefined ? (
+        <div aria-live="polite" className={VISUALLY_HIDDEN_CLASS}>
+          {remotePlayersAnnouncement}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -161,6 +161,8 @@ export default function Crossword({
     cols: data.dimensions.cols,
     connection: multiplayer,
     onComplete,
+    // the crossword is set up again when its data changes (with the same id)
+    puzzle: data,
     rows: data.dimensions.rows,
     saveGuessGrid: saveGrid ?? setGuessGrid,
   });
@@ -498,7 +500,9 @@ export default function Crossword({
                 onComplete={onComplete}
                 onEscape={focusSelectedClue}
                 rawClues={data.entries}
-                remotePlayers={remotePlayers}
+                remotePlayers={
+                  multiplayer !== undefined ? remotePlayers : undefined
+                }
                 rows={data.dimensions.rows}
                 setGuessGrid={saveGrid ?? setGuessGrid}
               />

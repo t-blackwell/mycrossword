@@ -37,6 +37,8 @@ type Session = {
    */
   pending: Map<string, number>;
   playerId: string;
+  /** The puzzle the grid was set up from when the host last sent it. */
+  puzzle: unknown;
   scheduled: { cells: boolean; focus: boolean };
 };
 
@@ -59,6 +61,11 @@ interface UseMultiplayerOptions {
   cols: number;
   connection?: MultiplayerConnection;
   onComplete?: () => void;
+  /**
+   * Identifies the puzzle the grid is set up from (e.g. its data). When it
+   * changes the grid is set up again, so the host is asked for its grid.
+   */
+  puzzle: unknown;
   rows: number;
   saveGuessGrid: (value: GuessGrid) => void;
 }
@@ -74,6 +81,7 @@ export function useMultiplayer({
   cols,
   connection,
   onComplete,
+  puzzle,
   rows,
   saveGuessGrid,
 }: UseMultiplayerOptions) {
@@ -85,6 +93,7 @@ export function useMultiplayer({
     null,
   );
 
+  const getPuzzle = useEventCallback(() => puzzle);
   const getLocalGuessGrid = useEventCallback(() =>
     getGuessGrid(cols, rows, stores.cells.getState().cells),
   );
@@ -315,6 +324,7 @@ export function useMultiplayer({
       outgoing: [],
       pending: new Map(),
       playerId: connection.playerId ?? generatedPlayerIdRef.current,
+      puzzle: getPuzzle(),
       scheduled: { cells: false, focus: false },
     };
 
@@ -341,7 +351,21 @@ export function useMultiplayer({
     };
     // scheduleFocus and sendFocus only use the stores and the session
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection, stores, handleMessage]);
+  }, [connection, stores, handleMessage, getPuzzle]);
+
+  // when the puzzle is set up again (e.g. its data changed) the grid is
+  // reset, so join again to get the host's grid
+  React.useEffect(() => {
+    const session = sessionRef.current;
+
+    if (session === null || session.puzzle === puzzle) {
+      return;
+    }
+
+    session.puzzle = puzzle;
+    session.lastFocusKey = null;
+    session.connection.send({ type: 'join', playerId: session.playerId });
+  }, [puzzle]);
 
   /** Sends a change this player has made to the grid. */
   const sendCellChange = React.useCallback((change: CellChange) => {

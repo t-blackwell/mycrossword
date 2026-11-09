@@ -514,3 +514,88 @@ test('other players’ changes wait for the player’s own to reach the host', a
   await emit(otherChange);
   expect(getGuesses(container)).toBe('B');
 });
+
+test('screen reader users are told where the other players are', async () => {
+  const user = userEvent.setup();
+  const network = createNetwork();
+
+  render(
+    <MyCrossword
+      data={validData}
+      id="bob"
+      multiplayer={network.connect('bob')}
+    />,
+  );
+  const { container: alice, unmount } = render(
+    <MyCrossword
+      data={validData}
+      id="alice"
+      multiplayer={network.connect('alice')}
+    />,
+  );
+  await network.deliver();
+
+  const bobGrid = screen.getAllByRole('textbox', { name: 'Crossword grid' })[0];
+
+  expect(bobGrid).toHaveAccessibleDescription(
+    expect.not.stringContaining('player'),
+  );
+
+  await user.click(within(alice).getByText('Have a rest (3,4)'));
+  await network.deliver();
+
+  // when the grid is focused, along with the instructions
+  expect(bobGrid).toHaveAccessibleDescription(
+    expect.stringContaining('Another player is at 4 across, letter 1 of 7.'),
+  );
+  // and as players start and stop solving
+  expect(screen.getByText('1 other player is solving.')).toHaveAttribute(
+    'aria-live',
+    'polite',
+  );
+
+  unmount();
+  await network.deliver();
+
+  expect(bobGrid).toHaveAccessibleDescription(
+    expect.not.stringContaining('player'),
+  );
+  screen.getByText('No other players are solving.');
+});
+
+test('it gets the host’s grid again when its data changes', async () => {
+  const user = userEvent.setup();
+  const network = createNetwork();
+
+  const { container: alice } = render(
+    <MyCrossword
+      data={validData}
+      id="alice"
+      multiplayer={network.connect('alice')}
+    />,
+  );
+  const bobConnection = network.connect('bob');
+  const { container: bob, rerender } = render(
+    <MyCrossword data={validData} id="bob" multiplayer={bobConnection} />,
+  );
+  await network.deliver();
+
+  await user.click(within(alice).getByText('Toy on a string (2-2)'));
+  await user.keyboard('yo');
+  await network.deliver();
+  expect(getGuesses(bob)).toBe('YO');
+
+  // the crossword is set up again (before Alice's letters were saved), so
+  // they're lost until the host sends its grid
+  rerender(
+    <MyCrossword
+      data={{ ...validData }}
+      id="bob"
+      multiplayer={bobConnection}
+    />,
+  );
+  expect(getGuesses(bob)).toBe('');
+
+  await network.deliver();
+  expect(getGuesses(bob)).toBe('YO');
+});

@@ -287,7 +287,7 @@ export default function MyPage() {
 }
 ```
 
-`createWebSocketConnection(urlOrWebSocket, { playerId })` takes the host's URL (or an existing `WebSocket`) and an optional player id, which is generated if not given. Messages sent while the WebSocket is still connecting are sent once it opens. It doesn't reconnect if the connection drops: to reconnect, create a new connection and pass it to the crossword, which then joins again and catches up with the room's grid.
+`createWebSocketConnection(urlOrWebSocket, { playerId })` takes the host's URL (or an existing `WebSocket`) and an optional player id, which is generated if not given. Each connection in a room needs its own id (the host ignores a player joining with an id that's already in use), so if you base it on a user's id, add something unique to each connection, e.g. for the same user in two tabs. Messages sent while the WebSocket is still connecting are sent once it opens. It doesn't reconnect if the connection drops: to reconnect, create a new connection and pass it to the crossword, which then joins again and catches up with the room's grid.
 
 Use a separate room for each crossword. Progress is still saved as usual (to local storage or with `saveGrid`), including other players' changes, which are saved after a one second pause. `onComplete` is called when the grid is completed, whoever entered the last letter.
 
@@ -312,6 +312,9 @@ server.on('connection', (socket, request) => {
     }
   });
   socket.on('close', () => connection.close());
+  // without a listener, an error (e.g. a message over maxPayload) would crash
+  // the server. The socket is closed after an error.
+  socket.on('error', (error) => console.warn(error));
 });
 ```
 
@@ -335,13 +338,13 @@ const connection: MultiplayerConnection = {
 
 Messages received are checked before they're used, so invalid ones are ignored. If you write your own host, it needs to handle these messages (the `MultiplayerMessage` type):
 
-| Message                                    | Sent by | Description                                                                                                                                                                                                                          |
-| ------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `{ type: 'join', playerId }`               | Player  | Sent when the crossword connects. The host replies to the player with `sync`, and passes it on to the other players, who reply with their `focus`.                                                                                   |
-| `{ type: 'sync', grid }`                   | Both    | The room's [guess grid](#guess-grid), or `null` if the host doesn't have one yet. A player sent `null` replies with its own grid, which the host keeps (if it doesn't have one by then) and passes on to the other players.          |
-| `{ type: 'cells', playerId, changes }`     | Player  | The cells a player has changed, as `{ pos, guess }` objects (a `guess` of `''` clears a cell). The host applies them to the room's grid and passes them on to **every** player, including the sender, in the order it received them. |
-| `{ type: 'focus', playerId, pos, clueId }` | Player  | The cell and clue the player has selected, passed on to the other players.                                                                                                                                                           |
-| `{ type: 'leave', playerId }`              | Both    | Sent when the crossword disconnects, and by the host when a player's connection closes. Passed on to the other players.                                                                                                              |
+| Message                                    | Sent by | Description                                                                                                                                                                                                                                                     |
+| ------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `{ type: 'join', playerId }`               | Player  | Sent when the crossword connects, and again if its `data` changes. The host replies to the player with `sync`, and passes it on to the other players, who reply with their `focus`. A player joining with an id another player in the room is using is ignored. |
+| `{ type: 'sync', grid }`                   | Both    | The room's [guess grid](#guess-grid), or `null` if the host doesn't have one yet. A player sent `null` replies with its own grid, which the host keeps (if it doesn't have one by then) and passes on to the other players.                                     |
+| `{ type: 'cells', playerId, changes }`     | Player  | The cells a player has changed, as `{ pos, guess }` objects (a `guess` of `''` clears a cell). The host applies them to the room's grid and passes them on to **every** player, including the sender, in the order it received them.                            |
+| `{ type: 'focus', playerId, pos, clueId }` | Player  | The cell and clue the player has selected, passed on to the other players.                                                                                                                                                                                      |
+| `{ type: 'leave', playerId }`              | Both    | Sent when the crossword disconnects, and by the host when a player's connection closes. Passed on to the other players.                                                                                                                                         |
 
 The host sending `cells` back to the sender is what keeps everyone's grid the same when two players change a cell at the same time: a player ignores other players' changes to a cell until the host has sent back its own change to it, so the change the host received last wins everywhere.
 

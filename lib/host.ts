@@ -178,6 +178,9 @@ function applyChanges(grid: GuessGrid, changes: MultiplayerCellChange[]) {
  *
  *   socket.on('message', (data) => connection.receive(data.toString()));
  *   socket.on('close', () => connection.close());
+ *   // without a listener, an error (e.g. a malformed message) would crash
+ *   // the server. The socket is closed after an error.
+ *   socket.on('error', (error) => console.warn(error));
  * });
  * ```
  */
@@ -225,10 +228,25 @@ export function createMultiplayerHost({
         return;
       }
 
+      // ids must be unique within a room, as players recognise their own
+      // changes (sent back by the host) by their id
+      const idTaken = Array.from(room.players).some(
+        ([other, playerId]) => other !== client && playerId === message.playerId,
+      );
+
+      if (idTaken) {
+        return;
+      }
+
       const previousId = room.players.get(client);
 
-      // rejoining with a new id replaces the old one
-      if (previousId !== null && previousId !== undefined) {
+      // rejoining with a new id replaces the old one (rejoining with the same
+      // id, e.g. to get the grid again, doesn't)
+      if (
+        previousId !== null &&
+        previousId !== undefined &&
+        previousId !== message.playerId
+      ) {
         broadcast(room, { type: 'leave', playerId: previousId }, client);
       }
 

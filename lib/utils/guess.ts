@@ -44,21 +44,31 @@ export function validateGuessGrid(
 ) {
   const value: unknown = guessGrid?.value;
 
-  // check there's an array of rows for each column
-  if (
-    !Array.isArray(value) ||
-    value.length !== cols ||
-    !value.every((col) => Array.isArray(col) && col.length === rows)
-  ) {
+  if (!Array.isArray(value) || value.length !== cols) {
     return false;
   }
 
-  // check all entries are empty or valid characters
-  return (value as unknown[][]).every((col) =>
-    col.every(
-      (cell) =>
-        cell === '' ||
-        (typeof cell === 'string' && Boolean(isValidChar(cell, cellMatcher))),
-    ),
-  );
+  // index every column and cell rather than using `every`, which skips the
+  // holes in sparse arrays e.g. `new Array(rows)`
+  for (let col = 0; col < cols; col += 1) {
+    const column: unknown = value[col];
+
+    if (!Array.isArray(column) || column.length !== rows) {
+      return false;
+    }
+
+    for (let row = 0; row < rows; row += 1) {
+      const cell: unknown = column[row];
+
+      // empty or a valid character
+      if (
+        cell !== '' &&
+        (typeof cell !== 'string' || !isValidChar(cell, cellMatcher))
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }

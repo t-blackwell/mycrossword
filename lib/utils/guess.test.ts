@@ -93,6 +93,18 @@ describe('validateGuessGrid', () => {
     expect(validate({ value: [['', '', ''], [''], ['', '']] })).toBe(false);
   });
 
+  test('it rejects sparse grids with missing columns or cells', () => {
+    // the right lengths, but holes rather than strings
+    expect(validate({ value: new Array(3) })).toBe(false);
+    expect(
+      validate({ value: Array.from({ length: 3 }, () => new Array(2)) }),
+    ).toBe(false);
+
+    const missingCell = initialiseGuessGrid(3, 2);
+    delete (missingCell.value[2] as unknown[])[1];
+    expect(validate(missingCell)).toBe(false);
+  });
+
   test("it rejects (rather than throws for) data that isn't a guess grid", () => {
     expect(validate(undefined)).toBe(false);
     expect(validate(null)).toBe(false);

@@ -1,3 +1,4 @@
+import { act } from '@testing-library/react';
 import { setViewport } from '~/utils/testBrowser';
 import testData from '~/testData/test.valid.1';
 import { createTestStores, TestStores } from '~/utils/test';
@@ -58,3 +59,28 @@ test.each([
     await expectInputToCoverSelectedCell();
   },
 );
+
+test('the input covers the selected cell when the grid is resized without the window resizing', async () => {
+  // on small screens the grid fills its container
+  await setViewport(400, 800);
+
+  const stores = createTestStores(testData);
+  stores.cells.getState().select({ col: 3, row: 2 });
+  stores.clues.getState().select('4-across');
+
+  stores.render(
+    <div data-testid="container" style={{ width: 360 }}>
+      {renderGrid(stores, 31)}
+    </div>,
+  );
+  await expectInputToCoverSelectedCell();
+
+  // e.g. a sidebar opening next to the crossword
+  act(() => {
+    document.querySelector<HTMLElement>(
+      '[data-testid="container"]',
+    )!.style.width = '200px';
+  });
+  await expectInputToCoverSelectedCell();
+  expect(getSize('.GridCell--selected .GridCell__rect').width).toBeLessThan(20);
+});

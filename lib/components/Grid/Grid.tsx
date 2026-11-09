@@ -22,7 +22,7 @@ import {
   useCluesStore,
   useCrosswordStores,
 } from '~/stores/stores';
-import { mergeCell } from '~/utils/cell';
+import { getCellKey, getCellsByKey, mergeCell } from '~/utils/cell';
 import { isCluePopulated } from '~/utils/clue';
 import { getBem } from '~/utils/bem';
 import { describeCell, VISUALLY_HIDDEN_CLASS } from '~/utils/a11y';
@@ -83,6 +83,7 @@ export default function Grid({
 }: GridProps) {
   const bem = getBem('Grid');
   const selectedCell = cells.find((cell) => cell.selected);
+  const cellsByKey = React.useMemo(() => getCellsByKey(cells), [cells]);
   const selectedClue = clues.find((clue) => clue.selected);
   const width = cols * cellSize + cols + 1;
   const height = rows * cellSize + rows + 1;
@@ -121,13 +122,27 @@ export default function Grid({
     }
   }, [width, height]);
 
+  // rescale when the grid's size changes, which isn't only when the window
+  // is resized (e.g. the page layout or the grid's container changes)
   React.useEffect(() => {
-    window.addEventListener('resize', updateViewBoxScale);
     updateViewBoxScale();
 
-    return function cleanup() {
-      window.removeEventListener('resize', updateViewBoxScale);
-    };
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateViewBoxScale);
+
+      return () => window.removeEventListener('resize', updateViewBoxScale);
+    }
+
+    const svg = svgRef.current;
+
+    if (svg === null) {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(() => updateViewBoxScale());
+    resizeObserver.observe(svg);
+
+    return () => resizeObserver.disconnect();
   }, [updateViewBoxScale]);
 
   // a stable reference to the latest setGuessGrid, as it may be a consumer's
@@ -402,9 +417,7 @@ export default function Grid({
         row = nextPos(row, rowDelta, rows);
       }
 
-      const tempCell = cells.find(
-        (cell) => cell.pos.col === col && cell.pos.row === row,
-      );
+      const tempCell = cellsByKey.get(getCellKey({ col, row }));
 
       if (tempCell !== undefined) {
         return tempCell;
@@ -418,11 +431,7 @@ export default function Grid({
     }
 
     // Get the current cell from cells array to check its clueIds
-    const currentCell = cells.find(
-      (cell) =>
-        cell.pos.col === selectedCell.pos.col &&
-        cell.pos.row === selectedCell.pos.row,
-    );
+    const currentCell = cellsByKey.get(getCellKey(selectedCell.pos));
 
     if (!currentCell) {
       return;

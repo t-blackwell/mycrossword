@@ -22,6 +22,59 @@ export function mergeCell({
   });
 }
 
+/** A key for a cell's position, for looking cells up by position. */
+export function getCellKey(pos: CellPosition) {
+  return `${pos.col},${pos.row}`;
+}
+
+/** Maps cells by their position (see `getCellKey`) for fast lookups. */
+export function getCellsByKey(cells: Cell[]) {
+  return new Map(cells.map((cell) => [getCellKey(cell.pos), cell]));
+}
+
+/**
+ * Checks an entry's data that doesn't depend on the other entries' cells.
+ * Throws an error if it's invalid.
+ */
+function validateEntry(
+  entry: GuardianClue,
+  cols: number,
+  rows: number,
+  entryIds: Set<string>,
+  allowMissingSolutions: boolean,
+) {
+  if (entry.length < 1) {
+    return;
+  }
+
+  // an entry's cells are in a line, so its first and last cells are enough
+  // to check they're all within the grid
+  const across = entry.direction === 'across';
+  const { x, y } = entry.position;
+  const lastCol = across ? x + entry.length - 1 : x;
+  const lastRow = across ? y : y + entry.length - 1;
+
+  if (x < 0 || y < 0 || lastCol >= cols || lastRow >= rows) {
+    throw new Error('Crossword data error: out of bounds');
+  }
+
+  if (
+    !allowMissingSolutions &&
+    entry.solution !== undefined &&
+    entry.length !== entry.solution.length
+  ) {
+    throw new Error('Crossword data error: solution length mismatch');
+  }
+
+  if (!entry.group.includes(entry.id)) {
+    throw new Error('Crossword data error: clue id missing from group');
+  }
+
+  if (!entry.group.every((clueId) => entryIds.has(clueId))) {
+    throw new Error('Crossword data error: group clue id not found');
+  }
+}
+
 /**
  * Transpose clue entries to cell array.
  * @param cols
@@ -43,39 +96,21 @@ export function initialiseCells({
   allowMissingSolutions?: boolean;
 }) {
   const cells: Cell[] = [];
-  const entryIds = entries.map((entry) => entry.id);
+  const cellsByKey = new Map<string, Cell>();
+  const entryIds = new Set(entries.map((entry) => entry.id));
 
   entries.forEach((entry) => {
+    validateEntry(entry, cols, rows, entryIds, allowMissingSolutions);
+
+    const across = entry.direction === 'across';
+
     for (let i = 0; i < entry.length; i += 1) {
-      const across = entry.direction === 'across';
       const col = across ? entry.position.x + i : entry.position.x;
       const row = across ? entry.position.y : entry.position.y + i;
-
-      // grid validation
-      if (col < 0 || col >= cols || row < 0 || row >= rows) {
-        throw new Error('Crossword data error: out of bounds');
-      }
-
-      if (
-        !allowMissingSolutions &&
-        entry.solution !== undefined &&
-        entry.length !== entry.solution.length
-      ) {
-        throw new Error('Crossword data error: solution length mismatch');
-      }
-
-      if (!entry.group.includes(entry.id)) {
-        throw new Error('Crossword data error: clue id missing from group');
-      }
-
-      if (!entry.group.every((clueId) => entryIds.includes(clueId))) {
-        throw new Error('Crossword data error: group clue id not found');
-      }
+      const key = getCellKey({ col, row });
 
       // check if the cell already exists
-      const currentCell = cells.find(
-        ({ pos }) => pos.col === col && pos.row === row,
-      );
+      const currentCell = cellsByKey.get(key);
 
       if (currentCell === undefined) {
         const guess = guessGrid?.value[col][row];
@@ -91,6 +126,7 @@ export function initialiseCells({
         };
 
         cells.push(newCell);
+        cellsByKey.set(key, newCell);
       } else {
         if (
           across &&

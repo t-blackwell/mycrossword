@@ -169,11 +169,28 @@ function findByPos(cells: Cell[], cellPos: CellPosition) {
   );
 }
 
+/**
+ * Checks whether the cells either side of a cell in the crossing entry are
+ * blank, i.e. the crossing entry isn't in progress around the cell. `across`
+ * is the direction of the entry being cleared, so the crossing entry is down
+ * if it's `true`. A neighbouring cell that isn't in the crossing entry (e.g.
+ * beyond a bar in a barred grid) counts as blank.
+ */
 export function blankNeighbours(
   cells: Cell[],
   currentCell: Cell,
   across: boolean,
 ) {
+  const crossingClueId = currentCell.clueIds.find((clueId) =>
+    clueId.endsWith(across ? 'down' : 'across'),
+  );
+
+  const isBlank = (cell: Cell | undefined) =>
+    cell === undefined ||
+    cell.guess === undefined ||
+    crossingClueId === undefined ||
+    !cell.clueIds.includes(crossingClueId);
+
   const cellOne = findByPos(cells, {
     col: currentCell.pos.col - (across ? 0 : 1),
     row: currentCell.pos.row - (across ? 1 : 0),
@@ -184,5 +201,5 @@ export function blankNeighbours(
     row: currentCell.pos.row + (across ? 1 : 0),
   });
 
-  return cellOne?.guess === undefined && cellTwo?.guess === undefined;
+  return isBlank(cellOne) && isBlank(cellTwo);
 }

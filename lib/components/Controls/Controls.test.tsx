@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event';
-import { CellPosition, GuessGrid } from '~/types';
+import { CellPosition, Char, GuessGrid } from '~/types';
 import data from '~/testData/test.valid.1';
+import barredData from '~/testData/test.barred.1';
 import { initialiseGuessGrid } from '~/utils/guess';
 import { createTestStores } from '~/utils/test';
 import Controls from './Controls';
@@ -497,6 +498,49 @@ test('it clears word', async () => {
       expect(currentCellLs).toBe('');
     }
   }
+});
+
+test('it clears word in a barred grid, ignoring letters beyond bars', async () => {
+  // fill 6-across ABATE and 8-across LOG, which is below its last three letters
+  const guessGrid = initialiseGuessGrid(
+    barredData.dimensions.cols,
+    barredData.dimensions.rows,
+  );
+  [...'ABATE'].forEach((char, col) => {
+    guessGrid.value[col][2] = char as Char;
+  });
+  [...'LOG'].forEach((char, i) => {
+    guessGrid.value[i + 2][3] = char as Char;
+  });
+  const stores = createTestStores(barredData, guessGrid);
+
+  stores.cells.getState().select({ col: 0, row: 2 });
+  stores.clues.getState().select('6-across');
+
+  stores.render(
+    <Controls
+      cells={stores.cells.getState().cells}
+      clues={stores.clues.getState().clues}
+      gridCols={barredData.dimensions.cols}
+      gridRows={barredData.dimensions.rows}
+      onAnagramHelperClick={vi.fn()}
+      setGuessGrid={vi.fn()}
+      solutionsAvailable
+    />,
+  );
+
+  await userEvent.click(screen.getByRole('button', { name: 'Clear' }));
+  await userEvent.click(screen.getByText('Clear word'));
+
+  const row = stores.cells
+    .getState()
+    .cells.filter((cell) => cell.pos.row === 2)
+    .sort((a, b) => a.pos.col - b.pos.col)
+    .map((cell) => cell.guess ?? '');
+
+  // the A and E are kept as 2-down and 4-down continue into 8-across's L and
+  // G, but the T is cleared: 3-down ends at the bar above 8-across's O
+  expect(row).toEqual(['', '', 'A', '', 'E']);
 });
 
 test('it clears grid', async () => {

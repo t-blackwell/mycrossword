@@ -1,5 +1,6 @@
 import validData from '~/testData/test.valid.1';
 import incompleteData from '~/testData/test.incomplete.1';
+import barredData from '~/testData/test.barred.1';
 import type { Cell, GuardianCrossword } from '~/types';
 import {
   blankNeighbours,
@@ -162,5 +163,26 @@ describe('blankNeighbours', () => {
     expect(blankNeighbours(withGuess, cell, true)).toBe(false);
     // the cells to the left and right aren't in the grid
     expect(blankNeighbours(withGuess, cell, false)).toBe(true);
+  });
+
+  test('it ignores filled cells beyond a bar, outside the crossing entry', () => {
+    // in 6-across ABATE, the T at (3, 2) is the end of 3-down VAT, and the O
+    // below it is beyond a bar, only in 8-across LOG
+    const cells = initialise(barredData);
+    const cell = findCell(cells, 3, 2)!;
+
+    const withGuessBeyondBar = mergeCell({
+      cells,
+      newCell: { ...findCell(cells, 3, 3)!, guess: 'O' },
+    });
+
+    expect(blankNeighbours(withGuessBeyondBar, cell, true)).toBe(true);
+
+    const withGuessInCrossing = mergeCell({
+      cells: withGuessBeyondBar,
+      newCell: { ...findCell(cells, 3, 1)!, guess: 'A' },
+    });
+
+    expect(blankNeighbours(withGuessInCrossing, cell, true)).toBe(false);
   });
 });

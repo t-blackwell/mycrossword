@@ -5,6 +5,7 @@ import { playwright } from '@vitest/browser-playwright';
 import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
 import pkg from './package.json' with { type: 'json' };
+import { multiplayerServer } from './src/server/multiplayerServer.ts';
 
 // the library's dependencies are left for the app to install (and dedupe),
 // rather than bundled, including subpaths e.g. `zustand/vanilla`
@@ -93,6 +94,8 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     libraryStyles(),
+    // a host for the demo app's multiplayer mode (dev server only)
+    multiplayerServer(),
     dts({
       include: ['lib'],
       exclude: [
@@ -115,9 +118,13 @@ export default defineConfig(({ mode }) => ({
   build: {
     copyPublicDir: false,
     lib: {
-      entry: resolve(import.meta.dirname, 'lib/main.ts'),
+      entry: {
+        main: resolve(import.meta.dirname, 'lib/main.ts'),
+        // the multiplayer host, for servers (`mycrossword/host`)
+        host: resolve(import.meta.dirname, 'lib/host.ts'),
+      },
       formats: ['es'],
-      fileName: 'main',
+      fileName: (_format, entryName) => `${entryName}.js`,
       cssFileName: 'style',
     },
     rolldownOptions: {

@@ -116,3 +116,64 @@ export type CellFocus = {
 export type GuessGrid = {
   value: Char[][];
 };
+
+/**
+ * A change to a cell's guess sent between players. A cleared cell has a
+ * `guess` of `''`.
+ */
+export type MultiplayerCellChange = {
+  pos: CellPosition;
+  guess: Char;
+};
+
+/**
+ * The messages sent between the players and the host when solving together.
+ *
+ * - `join`: sent by a player when it connects. The host replies with `sync`
+ *   and passes it on to the other players (who reply with `focus`).
+ * - `sync`: the whole grid, sent by the host to a player that joins (`null`
+ *   if the host doesn't have the grid yet). A player sent `null` replies with
+ *   its own grid to start the room off.
+ * - `cells`: guesses a player has changed. The host passes it on to every
+ *   player, including the sender, in the order received.
+ * - `focus`: the cell (and clue) a player has selected.
+ * - `leave`: sent when a player stops solving, or by the host when a player
+ *   disconnects.
+ */
+export type MultiplayerMessage =
+  | { type: 'join'; playerId: string }
+  | { type: 'leave'; playerId: string }
+  | { type: 'sync'; grid: GuessGrid | null }
+  | { type: 'cells'; playerId: string; changes: MultiplayerCellChange[] }
+  | {
+      type: 'focus';
+      playerId: string;
+      pos: CellPosition;
+      clueId: string;
+    };
+
+/**
+ * A connection to the host (or other players) when solving together. It
+ * isn't tied to WebSockets: `createWebSocketConnection` creates one for a
+ * WebSocket, but any transport that delivers messages in order can be used.
+ */
+export interface MultiplayerConnection {
+  /** Identifies this player. Generated if not given. */
+  playerId?: string;
+  /** Sends a message to the host. */
+  send: (message: MultiplayerMessage) => void;
+  /**
+   * Calls the listener with each message received from the host, until the
+   * returned function is called. Messages are checked before they're used,
+   * so they needn't be validated first.
+   */
+  subscribe: (listener: (message: unknown) => void) => () => void;
+}
+
+/** Another player solving the crossword. */
+export type RemotePlayer = {
+  clueId: string;
+  colour: string;
+  playerId: string;
+  pos: CellPosition;
+};

@@ -4,6 +4,12 @@ export type {
   Theme,
 } from './components/MyCrossword/MyCrossword';
 
+export { createWebSocketConnection } from './utils/webSocketConnection';
+export type {
+  WebSocketConnection,
+  WebSocketConnectionOptions,
+} from './utils/webSocketConnection';
+
 export type {
   CellChange,
   CellFocus,
@@ -13,4 +19,7 @@ export type {
   GuardianClue,
   GuardianCrossword,
   GuessGrid,
+  MultiplayerCellChange,
+  MultiplayerConnection,
+  MultiplayerMessage,
 } from './types';

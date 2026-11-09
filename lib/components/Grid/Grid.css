@@ -30,3 +30,8 @@
     scroll-margin-top: calc(var(--grid-size) * 5);
   }
 }
+.MyCrossword .Grid__remoteSelection {
+  fill: none;
+  pointer-events: none;
+  stroke-width: 2;
+}

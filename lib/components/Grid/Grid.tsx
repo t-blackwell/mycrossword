@@ -15,6 +15,7 @@ import {
   Clue,
   GuardianClue,
   GuessGrid,
+  RemotePlayer,
 } from '~/types';
 import { getGuessGrid } from '~/utils/guess';
 import {
@@ -62,6 +63,8 @@ interface GridProps {
   /** Called when the user presses Escape to leave the grid */
   onEscape?: () => void;
   rawClues: GuardianClue[];
+  /** Other players solving the crossword, whose selected cells are shown */
+  remotePlayers?: RemotePlayer[];
   rows: number;
   setGuessGrid: (value: GuessGrid) => void;
 }
@@ -78,6 +81,7 @@ export default function Grid({
   onComplete,
   onEscape,
   rawClues,
+  remotePlayers = [],
   rows,
   setGuessGrid,
 }: GridProps) {
@@ -150,28 +154,34 @@ export default function Grid({
   // write the debounced (possibly stale) guesses over newer ones
   const saveGuessGrid = useEventCallback(setGuessGrid);
 
+  // the latest guesses, which may have changed since they were debounced
+  // (e.g. the grid was cleared, or another player made a change)
+  const saveLatestGuesses = useEventCallback(() => {
+    saveGuessGrid(getGuessGrid(cols, rows, stores.cells.getState().cells));
+  });
+
   React.useEffect(() => {
     // only save after the debounce delay. Nothing is saved when mounting, as
     // that could overwrite progress that's yet to be restored
     if (debouncedGuesses !== null) {
-      saveGuessGrid(debouncedGuesses);
+      saveLatestGuesses();
 
       if (unsavedGuessesRef.current === debouncedGuesses) {
         unsavedGuessesRef.current = null;
       }
     }
-  }, [debouncedGuesses, saveGuessGrid]);
+  }, [debouncedGuesses, saveLatestGuesses]);
 
   // save any changes still waiting for the debounce delay when unmounting,
   // e.g. when the anagram helper is opened
   React.useEffect(
     () => () => {
       if (unsavedGuessesRef.current !== null) {
-        saveGuessGrid(unsavedGuessesRef.current);
+        saveLatestGuesses();
         unsavedGuessesRef.current = null;
       }
     },
-    [saveGuessGrid],
+    [saveLatestGuesses],
   );
 
   /**
@@ -707,6 +717,27 @@ export default function Grid({
           );
         })}
         <GridSeparators cellSize={cellSize} clues={rawClues} />
+        {remotePlayers.map(({ colour, playerId, pos }) => {
+          // only shown on the grid's cells
+          if (!cellsByKey.has(getCellKey(pos))) {
+            return null;
+          }
+
+          const { xRect, yRect } = getDimensions(cellSize, pos);
+
+          return (
+            <rect
+              className={bem('Grid__remoteSelection')}
+              data-player-id={playerId}
+              height={cellSize - 2}
+              key={playerId}
+              style={{ stroke: colour }}
+              width={cellSize - 2}
+              x={xRect + 1}
+              y={yRect + 1}
+            />
+          );
+        })}
       </svg>
       <div
         className={bem('Grid__inputContainer')}

@@ -1,11 +1,18 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "types": ["node"]
   },
-  "include": ["vite.config.ts", "eslint.config.js"]
+  "include": [
+    "vite.config.ts",
+    "eslint.config.js",
+    "src/server",
+    "lib/host.ts",
+    "lib/types.ts"
+  ]
 }

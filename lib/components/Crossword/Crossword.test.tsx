@@ -117,6 +117,48 @@ test('it displays error with invalid guess grid', () => {
   screen.getByText('Error loading grid');
 });
 
+test("it displays error with a guess grid that doesn't fit the crossword", () => {
+  // the right number of cells, but in columns of the wrong lengths
+  const { cols, rows } = validData.dimensions;
+  const guessGrid = initialiseGuessGrid(cols, rows);
+  guessGrid.value[0].push('');
+  guessGrid.value[1].pop();
+
+  createTestStores().render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="test"
+      loadGrid={guessGrid}
+      stickyClue="auto"
+    />,
+  );
+
+  screen.getByText('Error loading grid');
+});
+
+test('it ignores corrupt saved progress', () => {
+  localStorage.setItem('crosswords.corrupt-test', '{"value":[null]}');
+
+  createTestStores().render(
+    <Crossword
+      allowedHtmlTags={DEFAULT_HTML_TAGS}
+      allowMissingSolutions={false}
+      cellMatcher={DEFAULT_CELL_MATCHER}
+      cellSize={DEFAULT_CELL_SIZE}
+      data={validData}
+      id="corrupt-test"
+      stickyClue="auto"
+    />,
+  );
+
+  screen.getByText('Toy on a string (2-2)');
+  expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
+});
+
 test('it calls saveGrid', () => {
   vi.useFakeTimers();
 

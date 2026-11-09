@@ -30,23 +30,39 @@ export function getGuessGrid(cols: number, rows: number, cells: Cell[]) {
   return grid;
 }
 
+/**
+ * Whether the guess grid has the right shape for the crossword (an array of
+ * `cols` columns, each an array of `rows` strings) and only valid characters.
+ *
+ * Doesn't trust the type, as the grid may come from storage or a consumer.
+ */
 export function validateGuessGrid(
   guessGrid: GuessGrid,
   cols: number,
   rows: number,
   cellMatcher: RegExp,
 ) {
-  // check grid has correct total
-  const total = guessGrid.value.reduce((count, row) => count + row.length, 0);
-  if (total !== cols * rows) {
+  const value: unknown = guessGrid?.value;
+
+  if (!Array.isArray(value) || value.length !== cols) {
     return false;
   }
 
-  // check all entries are valid characters
-  for (let i = 0; i < cols; i += 1) {
-    for (let j = 0; j < rows; j += 1) {
-      const cell = guessGrid.value[i][j];
-      if (cell !== '' && !isValidChar(cell, cellMatcher)) {
+  for (let col = 0; col < cols; col += 1) {
+    const column: unknown = value[col];
+
+    if (!Array.isArray(column) || column.length !== rows) {
+      return false;
+    }
+
+    for (let row = 0; row < rows; row += 1) {
+      const cell: unknown = column[row];
+
+      // empty or a valid character
+      if (
+        cell !== '' &&
+        (typeof cell !== 'string' || !isValidChar(cell, cellMatcher))
+      ) {
         return false;
       }
     }

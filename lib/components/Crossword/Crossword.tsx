@@ -46,7 +46,7 @@ interface CrosswordProps {
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   onComplete?: () => void;
-  saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
+  saveGrid?: (value: GuessGrid) => void;
   stickyClue: 'always' | 'never' | 'auto';
   urlHash?: boolean;
 }

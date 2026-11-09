@@ -1,5 +1,16 @@
 export { default as MyCrossword } from './components/MyCrossword/MyCrossword';
-export type { MyCrosswordProps } from './components/MyCrossword/MyCrossword';
+export type {
+  MyCrosswordProps,
+  Theme,
+} from './components/MyCrossword/MyCrossword';
 
-export type { GuardianCrossword } from './types';
-export type { GuardianClue } from './types';
+export type {
+  CellChange,
+  CellFocus,
+  CellPosition,
+  Char,
+  Direction,
+  GuardianClue,
+  GuardianCrossword,
+  GuessGrid,
+} from './types';

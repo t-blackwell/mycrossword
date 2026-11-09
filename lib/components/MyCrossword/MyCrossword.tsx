@@ -9,7 +9,7 @@ import Intro, { IntroProps } from '~/components/Intro/Intro';
 import { injectStyles } from '~/utils/styles';
 import './MyCrossword.css';
 
-type Theme =
+export type Theme =
   | 'red'
   | 'pink'
   | 'purple'
@@ -36,7 +36,7 @@ export interface MyCrosswordProps {
   onCellChange?: (cellChange: CellChange) => void;
   onCellFocus?: (cellFocus: CellFocus) => void;
   onComplete?: () => void;
-  saveGrid?: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
+  saveGrid?: (value: GuessGrid) => void;
   stickyClue?: 'always' | 'never' | 'auto';
   theme?: Theme;
   urlHash?: boolean;

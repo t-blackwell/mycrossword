@@ -231,7 +231,8 @@ export function createMultiplayerHost({
       // ids must be unique within a room, as players recognise their own
       // changes (sent back by the host) by their id
       const idTaken = Array.from(room.players).some(
-        ([other, playerId]) => other !== client && playerId === message.playerId,
+        ([other, playerId]) =>
+          other !== client && playerId === message.playerId,
       );
 
       if (idTaken) {

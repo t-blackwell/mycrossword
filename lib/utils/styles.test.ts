@@ -24,3 +24,21 @@ test('it injects the stylesheet once, before existing styles', () => {
 test('it does nothing without a document (e.g. server rendering)', () => {
   expect(() => injectStyles(undefined)).not.toThrow();
 });
+
+test('it waits for the document to have a head', () => {
+  // e.g. while React re-renders the whole document after a hydration error
+  const html = document.documentElement;
+  document.removeChild(html);
+
+  try {
+    expect(document.head).toBeNull();
+    expect(injectStyles()).toBe(false);
+  } finally {
+    document.appendChild(html);
+  }
+
+  expect(injectStyles()).toBe(true);
+  expect(document.head.querySelectorAll('style[data-mycrossword]').length).toBe(
+    1,
+  );
+});

@@ -13,6 +13,7 @@ import CrosswordStoresProvider from '~/stores/CrosswordStoresProvider';
 import * as React from 'react';
 import Intro, { IntroProps } from '~/components/Intro/Intro';
 import { injectStyles } from '~/utils/styles';
+import { useIsomorphicLayoutEffect } from '~/hooks/useIsomorphicLayoutEffect/useIsomorphicLayoutEffect';
 import './MyCrossword.css';
 
 export type Theme =
@@ -72,6 +73,13 @@ export default function MyCrossword({
 
   // add the stylesheet before the crossword is painted
   React.useInsertionEffect(() => {
+    injectStyles();
+  }, []);
+
+  // the document can be without a <head> during the insertion effect (e.g.
+  // when React re-renders the whole document after a hydration error), so
+  // try again once the DOM has been updated, which is still before paint
+  useIsomorphicLayoutEffect(() => {
     injectStyles();
   }, []);
 
